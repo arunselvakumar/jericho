@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "exports": {
+    "MeMeSquad.Entity/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.6",
+      "compile": {
+        "bin/Debug/MeMeSquad.Entity.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/MeMeSquad.Entity.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/MeMeSquad.Entity.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    }
+  }
+}
