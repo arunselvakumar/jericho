@@ -1,4 +1,5 @@
-﻿using MeMeSquad.Services;
+﻿using MeMeSquad.Config;
+using MeMeSquad.Services;
 using MeMeSquad.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,8 @@ namespace MeMeSquad
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<DocumentDbConfig>(Configuration.GetSection("AppSettings:DocumentDb"));
+
             this.RegisterServices(services);
 
             // Add framework services.
@@ -67,7 +70,6 @@ namespace MeMeSquad
         {
             services.AddTransient<IPostService, PostService>();
             services.AddTransient<IDocumentClient, DocumentClient>();
-            services.AddTransient<ITagService, TagService>();
         }
         #endregion
     }

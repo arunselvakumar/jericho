@@ -1,26 +1,18 @@
-﻿namespace MeMeSquad.Services
+﻿using System.Threading.Tasks;
+using MeMeSquad.Entity;
+
+namespace MeMeSquad.Services
 {
-    using System.Threading.Tasks;
     using MeMeSquad.Services.Interfaces;
 
     public class UserService : IUserService
     {
-        public Task<bool> IsAuthorized()
+        public Task CreateUserAsync(User user)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<bool> IsAuthorizedToPost()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<bool> IsAuthorizedToDelete()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<bool> IsAuthorizedToModified()
+        public Task LoginUserAsync(User user)
         {
             throw new System.NotImplementedException();
         }

@@ -1,15 +1,12 @@
 ﻿using System.Threading.Tasks;
+using MeMeSquad.Entity;
 
 namespace MeMeSquad.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<bool> IsAuthorized();
+        Task CreateUserAsync(User user);
 
-        Task<bool> IsAuthorizedToPost();
-
-        Task<bool> IsAuthorizedToDelete();
-
-        Task<bool> IsAuthorizedToModified();
+        Task LoginUserAsync(User user);
     }
 }

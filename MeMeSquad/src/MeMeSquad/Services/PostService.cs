@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace MeMeSquad.Services
+﻿namespace MeMeSquad.Services
 {
+    using System;
+    using MeMeSquad.Config;
+    using Microsoft.Extensions.Options;
     using System.Threading.Tasks;
     using MeMeSquad.Services.Interfaces;
     using Microsoft.Azure.Documents;
@@ -13,18 +14,19 @@ namespace MeMeSquad.Services
     public class PostService : IPostService
     {
         #region Fields
-        private readonly ITagService tagService;
+
+        private readonly DocumentDbConfig documentDbConfig;
         private IDocumentClient documentClient;
         #endregion
 
         #region Constructor
 
-        public PostService(IDocumentClient documentClient, ITagService tagService)
+        public PostService(IOptions<DocumentDbConfig> documentDbConfig, IDocumentClient documentClient)
         {
+            this.documentDbConfig = documentDbConfig.Value;
             this.documentClient = documentClient;
-            this.tagService = tagService;
 
-            this.InitializeProperties();
+            this.InitializeDbConnection();
         }
 
         #endregion
@@ -33,24 +35,18 @@ namespace MeMeSquad.Services
 
         public async Task CreatePostAsync(Post post, IEnumerable<string> tags)
         {
-            await this.tagService.CreateTagsAsync(tags);
-            await this.documentClient.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri("DBNAME", "COLLECTIONNAME"), post);
+            await this.documentClient.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName), post);
         }
 
         public async Task<Document> GetPostAsync(string id)
         {
-            var document = await this.documentClient.ReadDocumentAsync(UriFactory.CreateDocumentUri("DBNAME", "COLLECTIONNAME", id));
+            var document = await this.documentClient.ReadDocumentAsync(UriFactory.CreateDocumentUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName, id));
             return document.Resource;
-        }
-
-        public Task<IEnumerable<Document>> GetPostsForTag(string tag)
-        {
-            return this.tagService.GetPostsForTag(tag);
         }
 
         public IEnumerable<Post> GetAllPosts()
         {
-            var documents = this.documentClient.CreateDocumentQuery<Post>(UriFactory.CreateDocumentCollectionUri("DBNAME", "COLLECTIONNAME"))
+            var documents = this.documentClient.CreateDocumentQuery<Post>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName))
                 .Where(document => document.IsActive)
                 .OrderByDescending(document => document.Version);
 
@@ -60,7 +56,7 @@ namespace MeMeSquad.Services
 
         #region Private Methods
 
-        private void InitializeProperties()
+        private void InitializeDbConnection()
         {
             // TechEd Europe https://www.youtube.com/watch?v=-5HKtWhqWC8
             // Enabled TCP & Direct Connection for increased throughput.
@@ -70,7 +66,7 @@ namespace MeMeSquad.Services
                 ConnectionProtocol = Protocol.Tcp
             };
 
-            this.documentClient = new DocumentClient(new Uri("URI"), string.Empty, connectionPolicy);
+            this.documentClient = new DocumentClient(new Uri(this.documentDbConfig.EndPointUri), this.documentDbConfig.PrimaryKey, connectionPolicy);
         }
         #endregion
     }
