@@ -5,11 +5,11 @@
     using Microsoft.Extensions.Options;
     using System.Threading.Tasks;
     using MeMeSquad.Services.Interfaces;
-    using Microsoft.Azure.Documents;
-    using Entity;
+    using Microsoft.Azure.Documents;    
     using Microsoft.Azure.Documents.Client;
     using System.Collections.Generic;
     using System.Linq;
+    using MeMeSquad.Models;
 
     public class PostService : IPostService
     {

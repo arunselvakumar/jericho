@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using MeMeSquad.Entity;
+using MeMeSquad.Models;
 
 namespace MeMeSquad.Services
 {
