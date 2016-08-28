@@ -1,4 +1,6 @@
-﻿namespace MeMeSquad.Services
+﻿using Microsoft.Extensions.Logging;
+
+namespace MeMeSquad.Services
 {
     using System;
     using MeMeSquad.Config;
@@ -21,10 +23,9 @@
 
         #region Constructor
 
-        public PostService(IOptions<DocumentDbConfig> documentDbConfig, IDocumentClient documentClient)
+        public PostService(IOptions<DocumentDbConfig> documentDbConfig, ILoggerFactory loggerFactory)
         {
             this.documentDbConfig = documentDbConfig.Value;
-            this.documentClient = documentClient;
 
             this.InitializeDbConnection();
         }

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MeMeSquad.Models;
+using MeMeSquad.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeMeSquad.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
@@ -15,7 +16,10 @@ namespace MeMeSquad.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            var post = new Post();
+            post.Id = new Guid();
+            //this.postService.CreatePostAsync(post, null);
+            return new List<string> { "foo", "bar"};
         }
 
         // GET api/values/5
