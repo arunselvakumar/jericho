@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace MeMeSquad.Services
+﻿namespace MeMeSquad.Services
 {
+    using MeMeSquad.Models.Entities;
+    using Microsoft.Extensions.Logging;
     using System;
     using MeMeSquad.Config;
     using Microsoft.Extensions.Options;
@@ -34,7 +34,7 @@ namespace MeMeSquad.Services
 
         #region Public Methods
 
-        public async Task CreatePostAsync(Post post, IEnumerable<string> tags)
+        public async Task CreatePostAsync(PostEntity post, IEnumerable<string> tags)
         {
             await this.documentClient.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName), post);
         }
@@ -45,9 +45,9 @@ namespace MeMeSquad.Services
             return document.Resource;
         }
 
-        public IEnumerable<Post> GetAllPosts()
+        public IEnumerable<PostEntity> GetAllPosts()
         {
-            var documents = this.documentClient.CreateDocumentQuery<Post>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName))
+            var documents = this.documentClient.CreateDocumentQuery<PostEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName))
                 .Where(document => document.IsActive)
                 .OrderByDescending(document => document.Version);
 

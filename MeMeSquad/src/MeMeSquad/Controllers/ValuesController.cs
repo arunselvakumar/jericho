@@ -16,9 +16,6 @@ namespace MeMeSquad.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            var post = new Post();
-            post.Id = new Guid();
-            //this.postService.CreatePostAsync(post, null);
             return new List<string> { "foo", "bar"};
         }
 

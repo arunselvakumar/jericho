@@ -1,9 +1,9 @@
-﻿namespace MeMeSquad.Models
+﻿namespace MeMeSquad.Models.Entities
 {
     using System;
     using Newtonsoft.Json;
 
-    public class User
+    public class UserEntity
     {
         #region Properties
 

@@ -1,11 +1,12 @@
-﻿namespace MeMeSquad.Models
+﻿using MeMeSquad.Models.Entities.Enums;
+
+namespace MeMeSquad.Models.Entities
 {
-    using Enums;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
 
-    public class Post
+    public class PostEntity
     {
         #region Properties
 
@@ -25,6 +26,8 @@
         public long UpVotes { get; set; }
 
         public long DownVotes { get; set; }
+
+        public Guid PostedBy { get; set; }
 
         public DateTime Version { get; set; }
         #endregion

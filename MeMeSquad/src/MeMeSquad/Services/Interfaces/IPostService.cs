@@ -1,5 +1,6 @@
 ﻿namespace MeMeSquad.Services.Interfaces
 {
+    using MeMeSquad.Models.Entities;
     using Microsoft.Azure.Documents;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -7,10 +8,10 @@
 
     public interface IPostService
     {
-        Task CreatePostAsync(Post post, IEnumerable<string> tags);
+        Task CreatePostAsync(PostEntity post, IEnumerable<string> tags);
 
         Task<Document> GetPostAsync(string id);
         
-        IEnumerable<Post> GetAllPosts();
+        IEnumerable<PostEntity> GetAllPosts();
     }
 }

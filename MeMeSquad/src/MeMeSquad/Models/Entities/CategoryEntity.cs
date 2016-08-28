@@ -1,9 +1,9 @@
-﻿namespace MeMeSquad.Models
+﻿namespace MeMeSquad.Models.Entities
 {
-    using Newtonsoft.Json;
     using System;
+    using Newtonsoft.Json;
 
-    public class Category
+    public class CategoryEntity
     {
         [JsonProperty(PropertyName = "id")]
         public Guid Id { get; set; }

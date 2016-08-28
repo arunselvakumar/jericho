@@ -1,18 +1,18 @@
-﻿using System.Threading.Tasks;
-using MeMeSquad.Models;
-
-namespace MeMeSquad.Services
+﻿namespace MeMeSquad.Services
 {
+    using System.Threading.Tasks;
+    using MeMeSquad.Models;
+    using MeMeSquad.Models.Entities;
     using MeMeSquad.Services.Interfaces;
 
     public class UserService : IUserService
     {
-        public Task CreateUserAsync(User user)
+        public Task CreateUserAsync(UserEntity user)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task LoginUserAsync(User user)
+        public Task LoginUserAsync(UserEntity user)
         {
             throw new System.NotImplementedException();
         }

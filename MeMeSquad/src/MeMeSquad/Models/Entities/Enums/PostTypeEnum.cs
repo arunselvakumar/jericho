@@ -1,4 +1,4 @@
-﻿namespace MeMeSquad.Models.Enums
+﻿namespace MeMeSquad.Models.Entities.Enums
 {
     public enum PostTypeEnum
     {

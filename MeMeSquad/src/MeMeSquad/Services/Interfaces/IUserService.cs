@@ -1,12 +1,13 @@
-﻿using System.Threading.Tasks;
-using MeMeSquad.Models;
-
-namespace MeMeSquad.Services.Interfaces
+﻿namespace MeMeSquad.Services.Interfaces
 {
+    using System.Threading.Tasks;
+    using MeMeSquad.Models;
+    using MeMeSquad.Models.Entities;
+
     public interface IUserService
     {
-        Task CreateUserAsync(User user);
+        Task CreateUserAsync(UserEntity user);
 
-        Task LoginUserAsync(User user);
+        Task LoginUserAsync(UserEntity user);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using AutoMapper;
 
 namespace MeMeSquad
 {
@@ -8,8 +9,6 @@ namespace MeMeSquad
     using MeMeSquad.Services.Interfaces;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Azure.Documents;
-    using Microsoft.Azure.Documents.Client;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -18,9 +17,9 @@ namespace MeMeSquad
     public class Startup
     {
         #region Fields
+        private MapperConfiguration mapperConfiguration { get; set; }
 
         public IConfigurationRoot Configuration { get; }
-
         #endregion
 
         #region Public Methods
@@ -49,13 +48,14 @@ namespace MeMeSquad
             services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
 
+            this.RegisterAutoMapper(services);
             this.RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            this.ConfigureJWTAuthentication(app);
+            this.ConfigureJwtAuthentication(app);
 
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
 
@@ -71,12 +71,22 @@ namespace MeMeSquad
 
         #region Private Methods
 
+        private void RegisterAutoMapper(IServiceCollection services)
+        {
+            this.mapperConfiguration = new MapperConfiguration(config =>
+            {
+                config.AddProfile(new AutoMapperConfig());
+            });
+
+            services.AddSingleton<IMapper>(sp => this.mapperConfiguration.CreateMapper());
+        }
+
         private void RegisterServices(IServiceCollection services)
         {
             services.AddSingleton<IPostService, PostService>();
         }
 
-        private void ConfigureJWTAuthentication(IApplicationBuilder app)
+        private void ConfigureJwtAuthentication(IApplicationBuilder app)
         {
             var secretKey = Configuration.GetValue<string>("Authentication:SecretKey");
             var tokenValidationParameters = new TokenValidationParameters

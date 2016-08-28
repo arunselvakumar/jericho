@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MeMeSquad.Models.DTOs;
 
 namespace MeMeSquad.Controllers.APIs.v1
 {
-    using MeMeSquad.Models;
     using Microsoft.AspNetCore.Mvc;
     using MeMeSquad.Services.Interfaces;
 
@@ -25,13 +25,12 @@ namespace MeMeSquad.Controllers.APIs.v1
 
         #region Public Methods
 
-        [HttpGet]
-        public async Task<string> SavePostAsync()
+        [HttpPost]
+        public async Task<string> SavePostAsync([FromBody]PostDto postDto)
         {
-            var post = new Post();
-            post.Id = new Guid();
-            await this.postService.CreatePostAsync(post, null);
-            return "test";
+            //post.Id = new Guid();
+            //await this.postService.CreatePostAsync(post, null);
+            return "test 2";
         }
         #endregion
     }
