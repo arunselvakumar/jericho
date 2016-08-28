@@ -1,16 +1,20 @@
-﻿using MeMeSquad.Config;
-using MeMeSquad.Services;
-using MeMeSquad.Services.Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using System.IO;
 
 namespace MeMeSquad
 {
+    using System.Text;
+    using MeMeSquad.Config;
+    using MeMeSquad.Services;
+    using MeMeSquad.Services.Interfaces;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Azure.Documents;
+    using Microsoft.Azure.Documents.Client;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.IdentityModel.Tokens;
+
     public class Startup
     {
         #region Fields
@@ -24,9 +28,8 @@ namespace MeMeSquad
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
             
             if (env.IsEnvironment("Development"))
             {
@@ -45,31 +48,50 @@ namespace MeMeSquad
 
             this.RegisterServices(services);
 
-            // Add framework services.
-            //services.AddApplicationInsightsTelemetry(Configuration);
-
+            services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            this.ConfigureJWTAuthentication(app);
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+
             loggerFactory.AddDebug();
 
-            //app.UseApplicationInsightsRequestTelemetry();
+            app.UseApplicationInsightsRequestTelemetry();
 
-            //app.UseApplicationInsightsExceptionTelemetry();
+            app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseMvc();
         }
         #endregion
 
         #region Private Methods
+
         private void RegisterServices(IServiceCollection services)
         {
             services.AddTransient<IPostService, PostService>();
             services.AddTransient<IDocumentClient, DocumentClient>();
+        }
+
+        private void ConfigureJWTAuthentication(IApplicationBuilder app)
+        {
+            var secretKey = Configuration.GetValue<string>("Authentication:SecretKey");
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey))
+            };
+
+            app.UseJwtBearerAuthentication(new JwtBearerOptions
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = tokenValidationParameters
+            });
         }
         #endregion
     }
