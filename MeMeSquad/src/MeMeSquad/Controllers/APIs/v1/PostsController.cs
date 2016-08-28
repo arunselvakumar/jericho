@@ -1,9 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using MeMeSquad.Models.DTOs;
+﻿using System.Net;
+using System.Net.Http;
+using MeMeSquad.Models.Entities;
 
 namespace MeMeSquad.Controllers.APIs.v1
 {
+    using System.Threading.Tasks;
+    using AutoMapper;
+    using MeMeSquad.Models.DTOs;
     using Microsoft.AspNetCore.Mvc;
     using MeMeSquad.Services.Interfaces;
 
@@ -11,26 +14,28 @@ namespace MeMeSquad.Controllers.APIs.v1
     public class PostsController
     {
         #region Fields
-
         private readonly IPostService postService;
+        private readonly IMapper mapper;
         #endregion
 
         #region Constructor
 
-        public PostsController([FromServices]IPostService postService)
+        public PostsController([FromServices]IPostService postService, IMapper mapper)
         {
             this.postService = postService;
+            this.mapper = mapper;
         }
         #endregion
 
         #region Public Methods
 
         [HttpPost]
-        public async Task<string> SavePostAsync([FromBody]PostDto postDto)
+        public async Task<IActionResult> SavePostAsync([FromBody]PostDto postDto)
         {
-            //post.Id = new Guid();
-            //await this.postService.CreatePostAsync(post, null);
-            return "test 2";
+            var postEntity = this.mapper.Map<PostEntity>(postDto);
+            await this.postService.CreatePostAsync(postEntity, null);
+
+            return new CreatedResult(string.Empty, null);
         }
         #endregion
     }

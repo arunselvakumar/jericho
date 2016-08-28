@@ -1,4 +1,8 @@
-﻿namespace MeMeSquad.Services
+﻿using System.Net;
+using AutoMapper;
+using MeMeSquad.Models.DTOs;
+
+namespace MeMeSquad.Services
 {
     using MeMeSquad.Models.Entities;
     using Microsoft.Extensions.Logging;
@@ -18,14 +22,17 @@
         #region Fields
 
         private readonly DocumentDbConfig documentDbConfig;
+        private readonly IMapper mapper;
         private IDocumentClient documentClient;
+
         #endregion
 
         #region Constructor
 
-        public PostService(IOptions<DocumentDbConfig> documentDbConfig, ILoggerFactory loggerFactory)
+        public PostService(IOptions<DocumentDbConfig> documentDbConfig, IMapper mapper)
         {
             this.documentDbConfig = documentDbConfig.Value;
+            this.mapper = mapper;
 
             this.InitializeDbConnection();
         }

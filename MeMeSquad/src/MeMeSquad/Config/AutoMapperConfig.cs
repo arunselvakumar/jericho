@@ -22,7 +22,7 @@ namespace MeMeSquad.Config
         private void ConfigurePostMappers()
         {
             CreateMap<PostDto, PostEntity>()
-                .ForMember(postEntity => postEntity.Id, opt => opt.UseValue(new Guid()))
+                .ForMember(postEntity => postEntity.Id, opt => opt.UseValue(Guid.NewGuid()))
                 .ForMember(postEntity => postEntity.UpVotes, opt => opt.UseValue(0))
                 .ForMember(postEntity => postEntity.DownVotes, opt => opt.UseValue(0))
                 .ForMember(postEntity => postEntity.Version, opt => opt.UseValue(DateTime.Now));

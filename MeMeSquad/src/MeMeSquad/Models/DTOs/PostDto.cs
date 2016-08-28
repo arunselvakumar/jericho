@@ -15,5 +15,9 @@ namespace MeMeSquad.Models.DTOs
         public string PostedBy { get; set; }
 
         public IEnumerable<string> Tags { get; set; }
+
+        public long UpVotes { get; set; }
+
+        public long DownVotes { get; set; }
     }
 }
