@@ -1,9 +1,9 @@
 ﻿namespace MeMeSquad.Services.Interfaces
 {
-    using Entity;
     using Microsoft.Azure.Documents;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using MeMeSquad.Models;
 
     public interface IPostService
     {
