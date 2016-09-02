@@ -1,23 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using MeMeSquad.Models.Entities.Enums;
-
-namespace MeMeSquad.Models.DTOs
+﻿namespace MeMeSquad.Models.DTOs
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     public class PostDto
     {
-        public PostTypeEnum Type { get; set; }
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Post Type")]
+        public string Type { get; set; }
 
         public Dictionary<char, string> Content { get; set; }
 
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Category Id")]
         public string CategoryId { get; set; }
 
+        [Required]
+        [DataType(DataType.Text)]
+        [Display(Name = "Posted By")]
         public string PostedBy { get; set; }
+
 
         public IEnumerable<string> Tags { get; set; }
 
+        [Display(Name = "Up Votes")]
         public long UpVotes { get; set; }
 
+        [Display(Name = "Down Votes")]
         public long DownVotes { get; set; }
     }
 }
