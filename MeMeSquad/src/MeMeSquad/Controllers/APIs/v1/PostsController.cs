@@ -17,6 +17,11 @@
 
         #region Constructor
 
+        /// <summary>
+        /// Initiates a new Post Controller and exposes REST APIs for Posts.
+        /// </summary>
+        /// <param name="postService"></param>
+        /// <param name="mapper"></param>
         public PostsController([FromServices]IPostService postService, IMapper mapper)
         {
             this.postService = postService;
@@ -26,6 +31,11 @@
 
         #region Public Methods
 
+        /// <summary>
+        /// Validates the Model States and Adds new posts to the Data Store.
+        /// </summary>
+        /// <param name="postDto"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> SavePostAsync([FromBody]PostDto postDto)
         {
@@ -40,13 +50,41 @@
             return new CreatedResult(string.Empty, null);
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Get the post from the Data Store.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("{id}")]
+        [Produces("application/json")]
         public async Task<IActionResult> GetPostByIdAsync(string id)
         {
             var postEntity = await this.postService.GetPostAsync(id);
+            var postDto = this.mapper.Map<PostDto>(postEntity);
 
-            var contentResult = new ContentResult();
-            contentResult.StatusCode = 200;
+            var contentResult = new ContentResult
+            {
+                Content = postDto.ToString(),
+                StatusCode = 200
+            };
+
+            return contentResult;
+        }
+
+        /// <summary>
+        /// Updates the post from Data Store.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPatch("{id}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> UpdatePostByIdAsync(string id)
+        {
+            var contentResult = new ContentResult
+            {
+                Content = string.Empty,
+                StatusCode = 200
+            };
 
             return contentResult;
         }

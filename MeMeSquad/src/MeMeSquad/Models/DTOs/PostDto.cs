@@ -1,10 +1,14 @@
-﻿namespace MeMeSquad.Models.DTOs
+﻿using Newtonsoft.Json;
+
+namespace MeMeSquad.Models.DTOs
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class PostDto
     {
+        #region Public Properties
+
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "Post Type")]
@@ -30,5 +34,20 @@
 
         [Display(Name = "Down Votes")]
         public long DownVotes { get; set; }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Returns JSON string that represents the current object.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+
+        #endregion
     }
 }

@@ -43,13 +43,15 @@ namespace MeMeSquad.Services
 
         public async Task CreatePostAsync(PostEntity post, IEnumerable<string> tags)
         {
-            await this.documentClient.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName), post);
+            var documentUri = UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName);
+            await this.documentClient.CreateDocumentAsync(documentUri, post);
         }
 
-        public async Task<Document> GetPostAsync(string id)
+        public async Task<PostEntity> GetPostAsync(string id)
         {
-            var document = await this.documentClient.ReadDocumentAsync(UriFactory.CreateDocumentUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName, id));
-            return document.Resource;
+            var documentUri = UriFactory.CreateDocumentUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName, id);
+            var document = await this.documentClient.ReadDocumentAsync(documentUri);
+            return (dynamic)document.Resource;
         }
 
         public IEnumerable<PostEntity> GetAllPosts()

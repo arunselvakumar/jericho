@@ -10,7 +10,7 @@
     {
         Task CreatePostAsync(PostEntity post, IEnumerable<string> tags);
 
-        Task<Document> GetPostAsync(string id);
+        Task<PostEntity> GetPostAsync(string id);
         
         IEnumerable<PostEntity> GetAllPosts();
     }
