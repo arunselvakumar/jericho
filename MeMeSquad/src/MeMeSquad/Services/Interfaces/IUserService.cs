@@ -1,7 +1,7 @@
 ﻿namespace MeMeSquad.Services.Interfaces
 {
     using System.Threading.Tasks;
-    using MeMeSquad.Models;
+
     using MeMeSquad.Models.Entities;
 
     public interface IUserService

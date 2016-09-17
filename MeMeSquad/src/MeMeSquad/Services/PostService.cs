@@ -1,28 +1,25 @@
-﻿using System.Net;
-using AutoMapper;
-using MeMeSquad.Models.DTOs;
-
-namespace MeMeSquad.Services
+﻿namespace MeMeSquad.Services
 {
-    using MeMeSquad.Models.Entities;
-    using Microsoft.Extensions.Logging;
     using System;
-    using MeMeSquad.Config;
-    using Microsoft.Extensions.Options;
-    using System.Threading.Tasks;
-    using MeMeSquad.Services.Interfaces;
-    using Microsoft.Azure.Documents;    
-    using Microsoft.Azure.Documents.Client;
     using System.Collections.Generic;
     using System.Linq;
-    using MeMeSquad.Models;
+    using System.Threading.Tasks;
+
+    using AutoMapper;
+
+    using MeMeSquad.Config;
+    using MeMeSquad.Models.Entities;
+    using MeMeSquad.Services.Interfaces;
+
+    using Microsoft.Azure.Documents;
+    using Microsoft.Azure.Documents.Client;
+    using Microsoft.Extensions.Options;
 
     public class PostService : IPostService
     {
         #region Fields
 
         private readonly DocumentDbConfig documentDbConfig;
-        private readonly IMapper mapper;
         private IDocumentClient documentClient;
 
         #endregion
@@ -32,7 +29,6 @@ namespace MeMeSquad.Services
         public PostService(IOptions<DocumentDbConfig> documentDbConfig, IMapper mapper)
         {
             this.documentDbConfig = documentDbConfig.Value;
-            this.mapper = mapper;
 
             this.InitializeDbConnection();
         }

@@ -1,7 +1,7 @@
 ﻿namespace MeMeSquad.Services
 {
     using System.Threading.Tasks;
-    using MeMeSquad.Models;
+
     using MeMeSquad.Models.Entities;
     using MeMeSquad.Services.Interfaces;
 

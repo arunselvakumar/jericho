@@ -1,12 +1,19 @@
-﻿namespace MeMeSquad.Controllers.APIs.v1
+﻿ // ReSharper disable once StyleCop.SA1300
+namespace MeMeSquad.Controllers.APIs.v1
 {
     using System.Threading.Tasks;
-    using AutoMapper;
-    using MeMeSquad.Models.DTOs;
-    using Microsoft.AspNetCore.Mvc;
-    using MeMeSquad.Services.Interfaces;
-    using MeMeSquad.Models.Entities;
 
+    using AutoMapper;
+
+    using MeMeSquad.Models.DTOs;
+    using MeMeSquad.Models.Entities;
+    using MeMeSquad.Services.Interfaces;
+
+    using Microsoft.AspNetCore.Mvc;
+
+    /// <summary>
+    /// Posts Controller.
+    /// </summary>
     [Route("api/v1/[controller]")]
     public class PostsController : Controller
     {
@@ -18,10 +25,10 @@
         #region Constructor
 
         /// <summary>
-        /// Initiates a new Post Controller and exposes REST APIs for Posts.
+        /// Initializes a new instance of the <see cref="PostsController"/> class. 
         /// </summary>
-        /// <param name="postService"></param>
-        /// <param name="mapper"></param>
+        /// <param name="postService">Post Service </param>
+        /// <param name="mapper">Auto Mapper </param>
         public PostsController([FromServices]IPostService postService, IMapper mapper)
         {
             this.postService = postService;
@@ -34,12 +41,12 @@
         /// <summary>
         /// Validates the Model States and Adds new posts to the Data Store.
         /// </summary>
-        /// <param name="postDto"></param>
-        /// <returns></returns>
+        /// <param name="postDto">Post DTO</param>
+        /// <returns>Service Response</returns>
         [HttpPost]
         public async Task<IActionResult> SavePostAsync([FromBody]PostDto postDto)
         {
-            if(!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
                 return new BadRequestObjectResult(this.ModelState.Values);
             }
@@ -53,13 +60,13 @@
         /// <summary>
         /// Get the post from the Data Store.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpGet("{id}")]
+        /// <param name="postId">Post ID</param>
+        /// <returns>Post Document</returns>
+        [HttpGet("{postId}")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetPostByIdAsync(string id)
+        public async Task<IActionResult> GetPostByIdAsync(string postId)
         {
-            var postEntity = await this.postService.GetPostAsync(id);
+            var postEntity = await this.postService.GetPostAsync(postId);
             var postDto = this.mapper.Map<PostDto>(postEntity);
 
             var contentResult = new ContentResult
@@ -74,9 +81,9 @@
         /// <summary>
         /// Updates the post from Data Store.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPatch("{id}")]
+        /// <param name="id">Post ID</param>
+        /// <returns>Post Document</returns>
+        [HttpPatch("{postId}")]
         [Produces("application/json")]
         public async Task<IActionResult> UpdatePostByIdAsync(string id)
         {

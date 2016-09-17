@@ -1,10 +1,11 @@
-﻿using MeMeSquad.Models.Entities.Enums;
-
-namespace MeMeSquad.Models.Entities
+﻿namespace MeMeSquad.Models.Entities
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
+
+    using MeMeSquad.Models.Entities.Enums;
+
+    using Newtonsoft.Json;
 
     public class PostEntity
     {

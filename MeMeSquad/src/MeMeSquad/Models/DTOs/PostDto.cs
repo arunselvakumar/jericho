@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-
-namespace MeMeSquad.Models.DTOs
+﻿namespace MeMeSquad.Models.DTOs
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+
+    using Newtonsoft.Json;
 
     public class PostDto
     {
@@ -26,7 +26,6 @@ namespace MeMeSquad.Models.DTOs
         [Display(Name = "Posted By")]
         public string PostedBy { get; set; }
 
-
         public IEnumerable<string> Tags { get; set; }
 
         [Display(Name = "Up Votes")]
@@ -42,7 +41,7 @@ namespace MeMeSquad.Models.DTOs
         /// <summary>
         /// Returns JSON string that represents the current object.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>JSON formatted string</returns>
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this);
