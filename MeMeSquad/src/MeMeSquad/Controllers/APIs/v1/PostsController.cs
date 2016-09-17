@@ -18,8 +18,11 @@ namespace MeMeSquad.Controllers.APIs.v1
     public class PostsController : Controller
     {
         #region Fields
+
         private readonly IPostService postService;
+
         private readonly IMapper mapper;
+
         #endregion
 
         #region Constructor

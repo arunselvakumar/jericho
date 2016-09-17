@@ -39,20 +39,20 @@
 
         public async Task CreatePostAsync(PostEntity post, IEnumerable<string> tags)
         {
-            var documentUri = UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName);
+            var documentUri = UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostsCollectionName);
             await this.documentClient.CreateDocumentAsync(documentUri, post);
         }
 
         public async Task<PostEntity> GetPostAsync(string id)
         {
-            var documentUri = UriFactory.CreateDocumentUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName, id);
+            var documentUri = UriFactory.CreateDocumentUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostsCollectionName, id);
             var document = await this.documentClient.ReadDocumentAsync(documentUri);
             return (dynamic)document.Resource;
         }
 
         public IEnumerable<PostEntity> GetAllPosts()
         {
-            var documents = this.documentClient.CreateDocumentQuery<PostEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostCollectionName))
+            var documents = this.documentClient.CreateDocumentQuery<PostEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostsCollectionName))
                 .Where(document => document.IsActive)
                 .OrderByDescending(document => document.Version);
 

@@ -1,10 +1,12 @@
-﻿using System;
-using MeMeSquad.Models.DTOs;
-using MeMeSquad.Models.Entities;
-
-namespace MeMeSquad.Config
+﻿namespace MeMeSquad.Config
 {
+    using System;
+
     using AutoMapper;
+
+    using MeMeSquad.Models.DTOs;
+    using MeMeSquad.Models.DTOs.User;
+    using MeMeSquad.Models.Entities;
 
     public class AutoMapperConfig : Profile
     {
@@ -32,7 +34,9 @@ namespace MeMeSquad.Config
 
         private void ConfigureUserMappers()
         {
-            
+            this.CreateMap<CreateUserDto, UserEntity>()
+                .ForMember(userEntity => userEntity.Id, opt => opt.UseValue(Guid.NewGuid()))
+                .ForMember(userEntity => userEntity.IsActivated, opt => opt.UseValue(false));
         }
         #endregion
     }

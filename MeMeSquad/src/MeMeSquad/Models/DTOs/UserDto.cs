@@ -1,14 +1,10 @@
-﻿namespace MeMeSquad.Models.Entities
+﻿namespace MeMeSquad.Models.DTOs
 {
-    using System;
-    using Newtonsoft.Json;
-
-    public class UserEntity
+    public class UserDto
     {
         #region Properties
 
-        [JsonProperty(PropertyName = "id")]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         public string UserName { get; set; }
 
@@ -20,10 +16,6 @@
 
         public string Password { get; set; }
 
-        public long PhoneNumber { get; set; }
-
-        public bool IsActivated { get; set; }
-
         #endregion
 
         #region Methods
@@ -32,6 +24,7 @@
         {
             return this.UserName;
         }
+
         #endregion
     }
 }

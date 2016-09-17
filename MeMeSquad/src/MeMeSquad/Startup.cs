@@ -1,12 +1,14 @@
-﻿using System.IO;
-using AutoMapper;
-
-namespace MeMeSquad
+﻿namespace MeMeSquad
 {
+    using System.IO;
     using System.Text;
+
+    using AutoMapper;
+
     using MeMeSquad.Config;
     using MeMeSquad.Services;
     using MeMeSquad.Services.Interfaces;
+
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -43,9 +45,9 @@ namespace MeMeSquad
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<DocumentDbConfig>(Configuration.GetSection("DocumentDb"));
+            services.Configure<DocumentDbConfig>(this.Configuration.GetSection("DocumentDb"));
 
-            services.AddApplicationInsightsTelemetry(Configuration);
+            services.AddApplicationInsightsTelemetry(this.Configuration);
             services.AddMvc();
 
             this.RegisterAutoMapper(services);
@@ -57,7 +59,7 @@ namespace MeMeSquad
         {
             this.ConfigureJwtAuthentication(app);
 
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddConsole(this.Configuration.GetSection("Logging"));
 
             loggerFactory.AddDebug();
 
@@ -84,6 +86,7 @@ namespace MeMeSquad
         private void RegisterServices(IServiceCollection services)
         {
             services.AddSingleton<IPostService, PostService>();
+            services.AddSingleton<IUserService, UserService>();
         }
 
         private void ConfigureJwtAuthentication(IApplicationBuilder app)
