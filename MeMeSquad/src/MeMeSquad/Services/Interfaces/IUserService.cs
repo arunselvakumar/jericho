@@ -8,10 +8,10 @@
     {
         Task CreateUserAsync(UserEntity user);
 
-        Task LoginUserAsync(UserEntity user);
+        bool LoginUserAsync(UserEntity user);
 
-        Task<bool> IsUserNameExistsAsync(string userName);
+        bool IsUserNameExists(string userName);
 
-        Task<bool> IsEmailAddressExistsAsync(string email);
+        bool IsEmailAddressExists(string email);
     }
 }

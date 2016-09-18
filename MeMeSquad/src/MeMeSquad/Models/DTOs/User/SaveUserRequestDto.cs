@@ -2,28 +2,23 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class CreateUserDto
+    public class SaveUserRequestDto
     {
         #region Properties
 
-        [Required]
-        [DataType(DataType.Text)]
+        [Required, DataType(DataType.Text)]
         public string UserName { get; set; }
 
-        [Required]
-        [DataType(DataType.Text)]
+        [Required, DataType(DataType.Text)]
         public string FirstName { get; set; }
 
-        [Required]
-        [DataType(DataType.Text)]
+        [Required, DataType(DataType.Text)]
         public string LastName { get; set; }
 
-        [Required]
-        [DataType(DataType.EmailAddress)]
+        [Required, DataType(DataType.EmailAddress)]
         public string EMail { get; set; }
 
-        [Required]
-        [DataType(DataType.Password)]
+        [Required, DataType(DataType.Password)]
         public string Password { get; set; }
 
         #endregion

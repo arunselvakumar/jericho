@@ -34,9 +34,11 @@
 
         private void ConfigureUserMappers()
         {
-            this.CreateMap<CreateUserDto, UserEntity>()
+            this.CreateMap<SaveUserRequestDto, UserEntity>()
                 .ForMember(userEntity => userEntity.Id, opt => opt.UseValue(Guid.NewGuid()))
                 .ForMember(userEntity => userEntity.IsActivated, opt => opt.UseValue(false));
+
+            this.CreateMap<LoginUserRequestDto, UserEntity>();
         }
         #endregion
     }

@@ -53,6 +53,7 @@
         public IEnumerable<PostEntity> GetAllPosts()
         {
             var documents = this.documentClient.CreateDocumentQuery<PostEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostsCollectionName))
+                .AsEnumerable()
                 .Where(document => document.IsActive)
                 .OrderByDescending(document => document.Version);
 

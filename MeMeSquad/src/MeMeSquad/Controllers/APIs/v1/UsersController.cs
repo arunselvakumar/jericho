@@ -1,6 +1,7 @@
 ﻿ // ReSharper disable once StyleCop.SA1300
 namespace MeMeSquad.Controllers.APIs.v1
 {
+    using System.Linq;
     using System.Threading.Tasks;
 
     using AutoMapper;
@@ -9,25 +10,28 @@ namespace MeMeSquad.Controllers.APIs.v1
     using MeMeSquad.Models.DTOs.User;
     using MeMeSquad.Models.Entities;
     using MeMeSquad.Services.Interfaces;
+    using MeMeSquad.Validations.Interfaces;
 
     using Microsoft.AspNetCore.Mvc;
 
-    [Route("api/v1/[controller]")]
     public class UsersController : Controller
     {
         #region Fields
 
+        private readonly IMapper mapper;
+
         private readonly IUserService userService;
 
-        private readonly IMapper mapper;
+        private ICreateUserValidationService createUserValidationService;
 
         #endregion
 
         #region Constructor
 
-        public UsersController(IUserService userService, IMapper mapper)
+        public UsersController(IUserService userService, ICreateUserValidationService createUserValidationService, IMapper mapper)
         {
             this.userService = userService;
+            this.createUserValidationService = createUserValidationService;
             this.mapper = mapper;
         }
 
@@ -36,31 +40,45 @@ namespace MeMeSquad.Controllers.APIs.v1
         #region Public Method
 
         [HttpPost]
-        public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserDto userDto)
+        [Route("api/v1/[controller]/createuser")]
+        public async Task<IActionResult> SaveUserAsync([FromBody] SaveUserRequestDto saveUserRequestDto)
         {
             if (!this.ModelState.IsValid)
             {
                 return new BadRequestObjectResult(this.ModelState.Values);
             }
 
-            var userEntity = this.mapper.Map<UserEntity>(userDto);
-            await this.userService.CreateUserAsync(userEntity);
+            var createUserValidationErrors = this.createUserValidationService.Validate(saveUserRequestDto);
+            if (createUserValidationErrors.Any())
+            {
+                return new BadRequestObjectResult(createUserValidationErrors);
+            }
+
+            var userModel = this.mapper.Map<UserEntity>(saveUserRequestDto);
+            await this.userService.CreateUserAsync(userModel);
 
             return new CreatedResult(string.Empty, null);
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> LoginUserAsync([FromBody] UserDto userDto)
+        [HttpPost]
+        [Route("api/v1/[controller]/loginuser")]
+        public IActionResult LoginUserAsync([FromBody] LoginUserRequestDto loginUserRequestDto)
         {
             if (!this.ModelState.IsValid)
             {
                 return new BadRequestObjectResult(this.ModelState.Values);
             }
 
-            var userEntity = this.mapper.Map<UserEntity>(userDto);
-            await this.userService.CreateUserAsync(userEntity);
+            var userModel = this.mapper.Map<UserEntity>(loginUserRequestDto);
 
-            return new CreatedResult(string.Empty, null);
+            var isLoginSuccessful = this.userService.LoginUserAsync(userModel);
+
+            if (isLoginSuccessful)
+            {
+                return new OkResult();
+            }
+
+            return new BadRequestResult();
         }
         #endregion
     }

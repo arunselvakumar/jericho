@@ -1,6 +1,7 @@
 ﻿namespace MeMeSquad.Services
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using MeMeSquad.Config;
@@ -40,23 +41,44 @@
             await this.documentClient.CreateDocumentAsync(documentUri, user);
         }
 
-        public Task LoginUserAsync(UserEntity user)
+        public bool LoginUserAsync(UserEntity user)
         {
-            throw new System.NotImplementedException();
+            var isAnyDocumentsFound = this.documentClient.CreateDocumentQuery<UserEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.UsersCollectionName))
+                .AsEnumerable()
+                .Any(document => this.IsUserAuthorized(user, document));
+
+            return isAnyDocumentsFound;
         }
 
-        public Task<bool> IsUserNameExistsAsync(string username)
+        public bool IsUserNameExists(string username)
         {
-            throw new NotImplementedException();
+            var isAnyDocumentsFound = this.documentClient.CreateDocumentQuery<UserEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.UsersCollectionName))
+                .AsEnumerable()
+                .Any(document => document.UserName.Equals(username.Trim()));
+
+            return isAnyDocumentsFound;
         }
 
-        public Task<bool> IsEmailAddressExistsAsync(string email)
+        public bool IsEmailAddressExists(string email)
         {
-            throw new NotImplementedException();
+            var isAnyDocumentsFound = this.documentClient.CreateDocumentQuery<UserEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.UsersCollectionName))
+                .AsEnumerable()
+                .Any(document => document.EMail.Equals(email.Trim()));
+
+            return isAnyDocumentsFound;
         }
+
         #endregion
 
         #region Private Methods
+
+        private bool IsUserAuthorized(UserEntity user, UserEntity document)
+        {
+            var isUserNameAndPasswordMatches = user.UserName.Equals(document.UserName) && user.Password.Equals(document.Password);
+            var isEmailAddressAndPasswordMathes = user.UserName.Equals(document.EMail) && user.Password.Equals(document.Password);
+
+            return isUserNameAndPasswordMatches || isEmailAddressAndPasswordMathes;
+        }
 
         private void InitializeDbConnection()
         {

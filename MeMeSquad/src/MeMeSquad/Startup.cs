@@ -8,6 +8,8 @@
     using MeMeSquad.Config;
     using MeMeSquad.Services;
     using MeMeSquad.Services.Interfaces;
+    using MeMeSquad.Validations;
+    using MeMeSquad.Validations.Interfaces;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -87,6 +89,7 @@
         {
             services.AddSingleton<IPostService, PostService>();
             services.AddSingleton<IUserService, UserService>();
+            services.AddSingleton<ICreateUserValidationService, CreateUserValidationService>();
         }
 
         private void ConfigureJwtAuthentication(IApplicationBuilder app)

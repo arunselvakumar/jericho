@@ -1,10 +1,8 @@
 ﻿namespace MeMeSquad.Validations
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
 
     using MeMeSquad.Models.DTOs.User;
     using MeMeSquad.Services.Interfaces;
@@ -29,21 +27,15 @@
 
         #region Public Methods
 
-        public async Task<IEnumerable<string>> Validate(CreateUserDto userDtoToValidate)
+        public IEnumerable<string> Validate(SaveUserRequestDto userRequestDtoToValidate)
         {
             var errors = new List<string>();
 
-            var isUserNameValidError = this.IsUserNameValid(userDtoToValidate.UserName);
-            var isEmailAddressValidError = this.IsEmailAddressValid(userDtoToValidate.EMail);
-            var isUserNameExistsError = this.IsUserNameExistsAsync(userDtoToValidate.UserName);
-            var isEmailExistsError = this.IsEmailAddressExistsAsync(userDtoToValidate.EMail);
-
-            await Task.WhenAll(isUserNameExistsError, isEmailExistsError);
-
-            errors.AddRange(isUserNameValidError);
-            errors.Add(isEmailAddressValidError);
-            errors.Add(isUserNameExistsError.Result);
-            errors.Add(isEmailExistsError.Result);
+            errors.AddRange(this.IsUserNameValid(userRequestDtoToValidate.UserName));
+            errors.Add(this.IsEmailAddressValid(userRequestDtoToValidate.EMail));
+            errors.Add(this.IsUserNameExists(userRequestDtoToValidate.UserName));
+            errors.Add(this.IsEmailAddressExists(userRequestDtoToValidate.EMail));
+            errors.RemoveAll(string.IsNullOrEmpty);
 
             return errors;
         }
@@ -70,19 +62,20 @@
 
         private string IsEmailAddressValid(string email)
         {
+            // Regex Snippet copied from http://emailregex.com/
             var isEmail = Regex.IsMatch(email, @"^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$");
 
             return isEmail ? null : "Entered Email Format is Invalid";
         }
 
-        private Task<string> IsUserNameExistsAsync(string userName)
+        private string IsUserNameExists(string userName)
         {
-            throw new NotImplementedException();
+            return this.userService.IsUserNameExists(userName) ? "Username already exits" : null;
         }
 
-        private async Task<string> IsEmailAddressExistsAsync(string email)
+        private string IsEmailAddressExists(string email)
         {
-            throw new NotImplementedException();
+            return this.userService.IsEmailAddressExists(email) ? "EMail Address already exits" : null;
         }
         #endregion
     }
