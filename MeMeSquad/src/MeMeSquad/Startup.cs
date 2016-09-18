@@ -6,10 +6,7 @@
     using AutoMapper;
 
     using MeMeSquad.Config;
-    using MeMeSquad.Services;
-    using MeMeSquad.Services.Interfaces;
-    using MeMeSquad.Validations;
-    using MeMeSquad.Validations.Interfaces;
+    using MeMeSquad.Extensions;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -21,9 +18,11 @@
     public class Startup
     {
         #region Fields
-        private MapperConfiguration mapperConfiguration { get; set; }
 
         public IConfigurationRoot Configuration { get; }
+
+        private MapperConfiguration MapperConfiguration { get; set; }
+
         #endregion
 
         #region Public Methods
@@ -41,7 +40,7 @@
             }
 
             builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            this.Configuration = builder.Build();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container
@@ -52,8 +51,10 @@
             services.AddApplicationInsightsTelemetry(this.Configuration);
             services.AddMvc();
 
-            this.RegisterAutoMapper(services);
-            this.RegisterServices(services);
+            services.AddAutoMapper(this.MapperConfiguration);
+            services.AddCreateUserValidationService();
+            services.AddUserService();
+            services.AddPostService();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -75,26 +76,9 @@
 
         #region Private Methods
 
-        private void RegisterAutoMapper(IServiceCollection services)
-        {
-            this.mapperConfiguration = new MapperConfiguration(config =>
-            {
-                config.AddProfile(new AutoMapperConfig());
-            });
-
-            services.AddSingleton<IMapper>(sp => this.mapperConfiguration.CreateMapper());
-        }
-
-        private void RegisterServices(IServiceCollection services)
-        {
-            services.AddSingleton<IPostService, PostService>();
-            services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<ICreateUserValidationService, CreateUserValidationService>();
-        }
-
         private void ConfigureJwtAuthentication(IApplicationBuilder app)
         {
-            var secretKey = Configuration.GetValue<string>("Authentication:SecretKey");
+            var secretKey = this.Configuration.GetValue<string>("Authentication:SecretKey");
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
