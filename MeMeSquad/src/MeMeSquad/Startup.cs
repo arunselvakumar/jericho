@@ -3,6 +3,8 @@
     using System.IO;
     using System.Text;
 
+    using Swashbuckle.Swagger;
+
     using AutoMapper;
 
     using MeMeSquad.Config;
@@ -50,6 +52,7 @@
 
             services.AddApplicationInsightsTelemetry(this.Configuration);
             services.AddMvc();
+            services.AddSwaggerGen();
 
             services.AddAutoMapper(this.MapperConfiguration);
             services.AddCreateUserValidationService();
@@ -71,6 +74,9 @@
             app.UseApplicationInsightsExceptionTelemetry();
 
             app.UseMvc();
+
+            app.UseSwagger();
+            app.UseSwaggerUi();
         }
         #endregion
 

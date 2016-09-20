@@ -19,7 +19,8 @@
     "Microsoft.Framework.Configuration.Json": "1.0.0-beta8",
     "Newtonsoft.Json": "9.0.1",
     "System.IO": "4.1.0",
-    "AutoMapper": "5.1.1"
+    "AutoMapper": "5.1.1",
+    "Swashbuckle": "6.0.0-beta902"
   },
 
   "tools": {
@@ -34,7 +35,8 @@
 
   "buildOptions": {
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "xmlDoc": true
   },
 
   "publishOptions": {

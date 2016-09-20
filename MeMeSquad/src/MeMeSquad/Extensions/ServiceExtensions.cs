@@ -1,5 +1,6 @@
 ﻿namespace MeMeSquad.Extensions
 {
+    using System;
     using AutoMapper;
 
     using MeMeSquad.Config;
@@ -14,16 +15,31 @@
     {
         public static void AddUserService(this IServiceCollection service)
         {
+            if(service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
             service.AddSingleton<IUserService, UserService>();
         }
 
         public static void AddPostService(this IServiceCollection service)
         {
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
             service.AddSingleton<IPostService, PostService>();
         }
 
         public static void AddCreateUserValidationService(this IServiceCollection service)
         {
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
             service.AddSingleton<ICreateUserValidationService, CreateUserValidationService>();
         }
 
