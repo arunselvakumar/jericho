@@ -14,23 +14,24 @@
     using Microsoft.Azure.Documents;
     using Microsoft.Azure.Documents.Client;
     using Microsoft.Extensions.Options;
+    using Jericho.Helpers.Interfaces;
+    using MongoDB.Driver;
 
     public class PostService : IPostService
     {
         #region Fields
 
-        private readonly DocumentDbConfig documentDbConfig;
-        private IDocumentClient documentClient;
+        private readonly MongoDbConfig mongoDbConfig;
+        private readonly IMongoHelper mongoHelper;
 
         #endregion
 
         #region Constructor
-
-        public PostService(IOptions<DocumentDbConfig> documentDbConfig, IMapper mapper)
+        
+        public PostService(IOptions<MongoDbConfig> MongoDbConfig, IMapper mapper, IMongoHelper mongoHelper)
         {
-            this.documentDbConfig = documentDbConfig.Value;
-
-            this.InitializeDbConnection();
+            this.mongoHelper = mongoHelper;
+            this.mongoDbConfig = MongoDbConfig.Value;
         }
 
         #endregion
@@ -39,42 +40,29 @@
 
         public async Task CreatePostAsync(PostEntity post, IEnumerable<string> tags)
         {
-            var documentUri = UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostsCollectionName);
-            await this.documentClient.CreateDocumentAsync(documentUri, post);
+            //var documentUri = UriFactory.CreateDocumentCollectionUri(this.MongoDbConfig.DatabaseName, this.MongoDbConfig.PostsCollectionName);
+            //await this.documentClient.CreateDocumentAsync(documentUri, post);
         }
 
         public async Task<PostEntity> GetPostAsync(string id)
         {
-            var documentUri = UriFactory.CreateDocumentUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostsCollectionName, id);
-            var document = await this.documentClient.ReadDocumentAsync(documentUri);
-            return (dynamic)document.Resource;
+            var postCollection = mongoHelper.MongoDbInstance.GetCollection<PostEntity>(mongoDbConfig.PostsCollectionName);
+            var postEntity = await postCollection.FindAsync(entity => entity.Id == id);
+
+            return await postEntity.FirstOrDefaultAsync();
         }
 
         public IEnumerable<PostEntity> GetAllPosts()
         {
-            var documents = this.documentClient.CreateDocumentQuery<PostEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.PostsCollectionName))
-                .AsEnumerable()
-                .Where(document => document.IsActive)
-                .OrderByDescending(document => document.Version);
+            var postEntities = mongoHelper.MongoDbInstance.GetCollection<PostEntity>(mongoDbConfig.PostsCollectionName)
+                .AsQueryable()
+                .Where(postEntity=>postEntity.IsActive)
+                .OrderByDescending(postEntity=>postEntity.Version);
 
-            return documents;
+            return postEntities;
         }
+
         #endregion
-
-        #region Private Methods
-
-        private void InitializeDbConnection()
-        {
-            // TechEd Europe https://www.youtube.com/watch?v=-5HKtWhqWC8
-            // Enabled TCP & Direct Connection for increased throughput.
-            var connectionPolicy = new ConnectionPolicy
-            {
-                ConnectionMode = ConnectionMode.Direct,
-                ConnectionProtocol = Protocol.Tcp
-            };
-
-            this.documentClient = new DocumentClient(new Uri(this.documentDbConfig.EndPointUri), this.documentDbConfig.PrimaryKey, connectionPolicy);
-        }
-        #endregion
+      
     }
 }

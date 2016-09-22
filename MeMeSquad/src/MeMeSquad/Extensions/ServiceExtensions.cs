@@ -52,5 +52,19 @@
 
             service.AddSingleton(sp => mapperConfiguration.CreateMapper());
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="service"></param>
+        public static void AddMongoDbInstance(this IServiceCollection service)
+        {
+            if(service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            service.AddSingleton<IMongoHelper, MongoHelper>();
+        }
     }
 }

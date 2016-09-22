@@ -48,12 +48,13 @@
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<DocumentDbConfig>(this.Configuration.GetSection("DocumentDb"));
+            services.Configure<MongoDbConfig>(this.Configuration.GetSection("MongoDb"));
 
             services.AddApplicationInsightsTelemetry(this.Configuration);
             services.AddMvc();
             services.AddSwaggerGen();
 
+            services.AddMongoDbInstance();
             services.AddAutoMapper(this.MapperConfiguration);
             services.AddCreateUserValidationService();
             services.AddUserService();

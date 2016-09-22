@@ -6,13 +6,15 @@
     using MeMeSquad.Models.Entities.Enums;
 
     using Newtonsoft.Json;
+    using MongoDB.Bson.Serialization.Attributes;
+    using MongoDB.Bson;
 
     public class PostEntity
     {
         #region Properties
 
-        [JsonProperty(PropertyName = "id")]
-        public Guid Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public object Id { get; set; }
 
         public PostTypeEnum Type { get; set; }
 
