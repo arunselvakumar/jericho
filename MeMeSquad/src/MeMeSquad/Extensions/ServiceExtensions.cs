@@ -1,4 +1,7 @@
-﻿namespace MeMeSquad.Extensions
+﻿using Jericho.Helpers;
+using Jericho.Helpers.Interfaces;
+
+namespace MeMeSquad.Extensions
 {
     using System;
     using AutoMapper;

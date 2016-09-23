@@ -16,18 +16,14 @@
     {
         #region Fields
 
-        private readonly DocumentDbConfig documentDbConfig;
-
         private IDocumentClient documentClient;
 
         #endregion
 
         #region Constructor
 
-        public UserService(IOptions<DocumentDbConfig> documentDbConfig)
+        public UserService()
         {
-            this.documentDbConfig = documentDbConfig.Value;
-
             this.InitializeDbConnection();
         }
 
@@ -37,35 +33,22 @@
 
         public async Task CreateUserAsync(UserEntity user)
         {
-            var documentUri = UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.UsersCollectionName);
-            await this.documentClient.CreateDocumentAsync(documentUri, user);
+            throw new NotImplementedException();
         }
 
         public bool LoginUserAsync(UserEntity user)
         {
-            var isAnyDocumentsFound = this.documentClient.CreateDocumentQuery<UserEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.UsersCollectionName))
-                .AsEnumerable()
-                .Any(document => this.IsUserAuthorized(user, document));
-
-            return isAnyDocumentsFound;
+            throw new NotImplementedException();
         }
 
         public bool IsUserNameExists(string username)
         {
-            var isAnyDocumentsFound = this.documentClient.CreateDocumentQuery<UserEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.UsersCollectionName))
-                .AsEnumerable()
-                .Any(document => document.UserName.Equals(username.Trim()));
-
-            return isAnyDocumentsFound;
+            throw new NotImplementedException();
         }
 
         public bool IsEmailAddressExists(string email)
         {
-            var isAnyDocumentsFound = this.documentClient.CreateDocumentQuery<UserEntity>(UriFactory.CreateDocumentCollectionUri(this.documentDbConfig.DatabaseName, this.documentDbConfig.UsersCollectionName))
-                .AsEnumerable()
-                .Any(document => document.EMail.Equals(email.Trim()));
-
-            return isAnyDocumentsFound;
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -90,7 +73,7 @@
                 ConnectionProtocol = Protocol.Tcp
             };
 
-            this.documentClient = new DocumentClient(new Uri(this.documentDbConfig.EndPointUri), this.documentDbConfig.PrimaryKey, connectionPolicy);
+            // this.documentClient = new DocumentClient(new Uri(this.documentDbConfig.EndPointUri), this.documentDbConfig.PrimaryKey, connectionPolicy);
         }
 
         #endregion
