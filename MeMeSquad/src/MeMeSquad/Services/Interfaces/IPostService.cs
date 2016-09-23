@@ -10,7 +10,7 @@
 
     public interface IPostService
     {
-        Task CreatePostAsync(PostEntity post, IEnumerable<string> tags);
+        Task<PostEntity> CreatePostAsync(PostEntity post);
 
         Task<PostEntity> GetPostAsync(string id);
         

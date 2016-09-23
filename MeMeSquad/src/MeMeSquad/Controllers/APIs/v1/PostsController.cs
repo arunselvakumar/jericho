@@ -49,15 +49,15 @@ namespace MeMeSquad.Controllers.APIs.v1
         [HttpPost]
         public async Task<IActionResult> SavePostAsync([FromBody]PostDto postDto)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return new BadRequestObjectResult(this.ModelState.Values);
-            }
+            //if (!this.ModelState.IsValid)
+            //{
+            //    return new BadRequestObjectResult(this.ModelState.Values);
+            //}
 
             var postEntity = this.mapper.Map<PostEntity>(postDto);
-            await this.postService.CreatePostAsync(postEntity, null);
+            var result = await this.postService.CreatePostAsync(postEntity);
 
-            return new CreatedResult(string.Empty, null);
+            return new OkObjectResult(result);
         }
 
         /// <summary>

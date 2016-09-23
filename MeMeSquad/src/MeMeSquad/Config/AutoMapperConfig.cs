@@ -24,7 +24,6 @@
         private void ConfigurePostMappers()
         {
             this.CreateMap<PostDto, PostEntity>()
-                .ForMember(postEntity => postEntity.Id, opt => opt.UseValue(Guid.NewGuid()))
                 .ForMember(postEntity => postEntity.UpVotes, opt => opt.UseValue(0))
                 .ForMember(postEntity => postEntity.DownVotes, opt => opt.UseValue(0))
                 .ForMember(postEntity => postEntity.Version, opt => opt.UseValue(DateTime.Now));

@@ -22,7 +22,7 @@
         #region Fields
 
         private readonly MongoDbConfig mongoDbConfig;
-        private readonly IMongoHelper mongoHelper;
+        private readonly IMongoDatabase mongoDbInstance;
 
         #endregion
 
@@ -30,7 +30,7 @@
         
         public PostService(IOptions<MongoDbConfig> MongoDbConfig, IMapper mapper, IMongoHelper mongoHelper)
         {
-            this.mongoHelper = mongoHelper;
+            this.mongoDbInstance = mongoHelper.MongoDbInstance;
             this.mongoDbConfig = MongoDbConfig.Value;
         }
 
@@ -38,23 +38,25 @@
 
         #region Public Methods
 
-        public async Task CreatePostAsync(PostEntity post, IEnumerable<string> tags)
+        public async Task<PostEntity> CreatePostAsync(PostEntity postEntity)
         {
-            //var documentUri = UriFactory.CreateDocumentCollectionUri(this.MongoDbConfig.DatabaseName, this.MongoDbConfig.PostsCollectionName);
-            //await this.documentClient.CreateDocumentAsync(documentUri, post);
+            var postCollection = mongoDbInstance.GetCollection<PostEntity>(mongoDbConfig.PostsCollectionName);
+            await postCollection.InsertOneAsync(postEntity);
+
+            return await GetPostAsync(postEntity.Id.ToString());
         }
 
         public async Task<PostEntity> GetPostAsync(string id)
         {
-            var postCollection = mongoHelper.MongoDbInstance.GetCollection<PostEntity>(mongoDbConfig.PostsCollectionName);
-            var postEntity = await postCollection.FindAsync(entity => entity.Id == id);
+            var postCollection = mongoDbInstance.GetCollection<PostEntity>(mongoDbConfig.PostsCollectionName);
+            var postEntity = await postCollection.FindAsync(Builders<PostEntity>.Filter.Eq("_id", id));
 
             return await postEntity.FirstOrDefaultAsync();
         }
 
         public IEnumerable<PostEntity> GetAllPosts()
         {
-            var postEntities = mongoHelper.MongoDbInstance.GetCollection<PostEntity>(mongoDbConfig.PostsCollectionName)
+            var postEntities = mongoDbInstance.GetCollection<PostEntity>(mongoDbConfig.PostsCollectionName)
                 .AsQueryable()
                 .Where(postEntity=>postEntity.IsActive)
                 .OrderByDescending(postEntity=>postEntity.Version);

@@ -13,14 +13,14 @@
     {
         #region Properties
 
-        [BsonRepresentation(BsonType.ObjectId)]
-        public object Id { get; set; }
+        [BsonId]
+        public ObjectId Id { get; set; }
 
         public PostTypeEnum Type { get; set; }
 
         public Dictionary<char, string> Content { get; set; }
 
-        public Guid CategoryId { get; set; }
+        public string CategoryId { get; set; }
 
         public IEnumerable<string> Tags { get; set; }
 
@@ -30,7 +30,7 @@
 
         public long DownVotes { get; set; }
 
-        public Guid PostedBy { get; set; }
+        public string PostedBy { get; set; }
 
         public DateTime Version { get; set; }
         #endregion
