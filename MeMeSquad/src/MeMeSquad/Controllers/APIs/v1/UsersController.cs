@@ -1,4 +1,8 @@
 ﻿ // ReSharper disable once StyleCop.SA1300
+
+using MeMeSquad.Identity;
+using Microsoft.AspNetCore.Identity;
+
 namespace MeMeSquad.Controllers.APIs.v1
 {
     using System.Linq;
@@ -20,7 +24,9 @@ namespace MeMeSquad.Controllers.APIs.v1
 
         private readonly IMapper mapper;
 
-        private readonly IUserService userService;
+        private readonly UserManager<MongoIdentityUser> userManager;
+
+        private readonly SignInManager<MongoIdentityUser> signInManager;
 
         private ICreateUserValidationService createUserValidationService;
 
@@ -28,9 +34,15 @@ namespace MeMeSquad.Controllers.APIs.v1
 
         #region Constructor
 
-        public UsersController(IUserService userService, ICreateUserValidationService createUserValidationService, IMapper mapper)
+        public UsersController(
+            UserManager<MongoIdentityUser> userManager,
+            SignInManager<MongoIdentityUser> signInManager,
+            ICreateUserValidationService createUserValidationService, 
+            IMapper mapper)
         {
-            this.userService = userService;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+
             this.createUserValidationService = createUserValidationService;
             this.mapper = mapper;
         }
@@ -40,24 +52,20 @@ namespace MeMeSquad.Controllers.APIs.v1
         #region Public Method
 
         [HttpPost]
-        [Route("api/v1/[controller]/createuser")]
+        [Route("api/v1/[controller]")]
         public async Task<IActionResult> SaveUserAsync([FromBody] SaveUserRequestDto saveUserRequestDto)
         {
-            if (!this.ModelState.IsValid)
-            {
-                return new BadRequestObjectResult(this.ModelState.Values);
-            }
-
-            var createUserValidationErrors = this.createUserValidationService.Validate(saveUserRequestDto);
-            if (createUserValidationErrors.Any())
-            {
-                return new BadRequestObjectResult(createUserValidationErrors);
-            }
-
             var userModel = this.mapper.Map<UserEntity>(saveUserRequestDto);
-            await this.userService.CreateUserAsync(userModel);
-
-            return new CreatedResult(string.Empty, null);
+            var user = new MongoIdentityUser(userModel.UserName, userModel.EMail);
+            var result = await this.userManager.CreateAsync(user, userModel.Password);
+            if (result.Succeeded)
+            {
+                
+            }
+            else
+            {
+                return new BadRequestObjectResult();
+            }
         }
 
         [HttpPost]

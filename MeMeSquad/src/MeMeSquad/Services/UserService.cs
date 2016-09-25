@@ -1,4 +1,7 @@
-﻿namespace MeMeSquad.Services
+﻿using MeMeSquad.Identity;
+using Microsoft.AspNetCore.Identity;
+
+namespace MeMeSquad.Services
 {
     using System;
     using System.Linq;
@@ -14,12 +17,6 @@
 
     public class UserService : IUserService
     {
-        #region Fields
-
-        private IDocumentClient documentClient;
-
-        #endregion
-
         #region Constructor
 
         public UserService()
