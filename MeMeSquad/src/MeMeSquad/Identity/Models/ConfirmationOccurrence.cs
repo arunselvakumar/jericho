@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AspNetCore.Identity.MongoDB.Models
+namespace MeMeSquad.Identity.Models
 {
     public class ConfirmationOccurrence : Occurrence
     {

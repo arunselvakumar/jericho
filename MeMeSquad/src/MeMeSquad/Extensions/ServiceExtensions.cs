@@ -1,5 +1,11 @@
 ﻿using Jericho.Helpers;
 using Jericho.Helpers.Interfaces;
+using MeMeSquad.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 
 namespace MeMeSquad.Extensions
 {
@@ -44,6 +50,24 @@ namespace MeMeSquad.Extensions
             }
 
             service.AddSingleton<ICreateUserValidationService, CreateUserValidationService>();
+        }
+
+        public static void AddIdentity(this IServiceCollection service, IConfigurationRoot configuration)
+        {
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            service.AddSingleton<IUserStore<MongoIdentityUser>>(provider =>
+            {
+                var options = provider.GetService<IOptions<MongoDbConfig>>();
+                var client = new MongoClient(options.Value.ConnectionString);
+                var database = client.GetDatabase(options.Value.DatabaseName);
+                var loggerFactory = provider.GetService<ILoggerFactory>();
+
+                return new MongoUserStore<MongoIdentityUser>(database, loggerFactory);
+            });
         }
 
         public static void AddAutoMapper(this IServiceCollection service, MapperConfiguration mapperConfiguration)

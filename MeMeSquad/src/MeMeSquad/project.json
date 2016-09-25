@@ -21,7 +21,9 @@
     "System.IO": "4.1.0",
     "AutoMapper": "5.1.1",
     "Swashbuckle": "6.0.0-beta902",
-    "MongoDB.Driver": "2.2.4"
+    "MongoDB.Driver": "2.2.4",
+    "Microsoft.AspNetCore.Identity": "1.0.0",
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0"
   },
 
   "tools": {

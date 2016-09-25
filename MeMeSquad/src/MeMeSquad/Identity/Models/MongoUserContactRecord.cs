@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AspNetCore.Identity.MongoDB.Models
+namespace MeMeSquad.Identity.Models
 {
     public abstract class MongoUserContactRecord : IEquatable<MongoUserEmail>
 

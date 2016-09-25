@@ -12,10 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MeMeSquad", "src\MeMeSquad\MeMeSquad.xproj", "{E0054A7D-4649-4539-9F74-10A3173147BE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Portable", "Portable", "{8AC353C3-E05B-4748-8F88-C3B7E309E757}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore.Identity.MongoDB", "AspNetCore.Identity.MongoDB\AspNetCore.Identity.MongoDB.csproj", "{21591E9C-046E-4935-A5BD-B1DCCD99CFDD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,17 +22,11 @@ Global
 		{E0054A7D-4649-4539-9F74-10A3173147BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0054A7D-4649-4539-9F74-10A3173147BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0054A7D-4649-4539-9F74-10A3173147BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{21591E9C-046E-4935-A5BD-B1DCCD99CFDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21591E9C-046E-4935-A5BD-B1DCCD99CFDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21591E9C-046E-4935-A5BD-B1DCCD99CFDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21591E9C-046E-4935-A5BD-B1DCCD99CFDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E0054A7D-4649-4539-9F74-10A3173147BE} = {3C978EEA-7686-41F0-9591-98C0EE49260A}
-		{8AC353C3-E05B-4748-8F88-C3B7E309E757} = {3C978EEA-7686-41F0-9591-98C0EE49260A}
-		{21591E9C-046E-4935-A5BD-B1DCCD99CFDD} = {8AC353C3-E05B-4748-8F88-C3B7E309E757}
 	EndGlobalSection
 EndGlobal

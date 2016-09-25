@@ -73,7 +73,7 @@
                 ConnectionProtocol = Protocol.Tcp
             };
 
-            // this.documentClient = new DocumentClient(new Uri(this.documentDbConfig.EndPointUri), this.documentDbConfig.PrimaryKey, connectionPolicy);
+            // this.documentClient = new DocumentClient(new Uri(this.documentDbConfig.ConnectionString), this.documentDbConfig.PrimaryKey, connectionPolicy);
         }
 
         #endregion

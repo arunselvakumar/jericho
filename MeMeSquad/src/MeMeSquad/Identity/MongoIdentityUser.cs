@@ -1,11 +1,12 @@
-﻿namespace AspNetCore.Identity.MongoDB
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Security.Claims;
-    using AspNetCore.Identity.MongoDB.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using MeMeSquad.Identity.Models;
+using Microsoft.AspNet.Identity;
 
-    public class MongoIdentityUser
+namespace MeMeSquad.Identity
+{
+    public class MongoIdentityUser : IUser
     {
         #region Fields
 
@@ -53,7 +54,7 @@
 
         public string Id { get; }
 
-        public string UserName { get; private set; }
+        public string UserName { get; set; }
 
         public string NormalizedUserName { get; private set; }
 

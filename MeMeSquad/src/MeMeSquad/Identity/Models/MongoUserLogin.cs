@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNet.Identity;
 
-namespace AspNetCore.Identity.MongoDB.Models
+namespace MeMeSquad.Identity.Models
 {
     public class MongoUserLogin : IEquatable<MongoUserLogin>, IEquatable<UserLoginInfo>
     {

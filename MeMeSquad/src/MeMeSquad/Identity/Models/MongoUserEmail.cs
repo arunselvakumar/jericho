@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AspNetCore.Identity.MongoDB.Models
+namespace MeMeSquad.Identity.Models
 {
     public class MongoUserEmail : MongoUserContactRecord
 
@@ -19,7 +19,7 @@ namespace AspNetCore.Identity.MongoDB.Models
             {
                 throw new ArgumentNullException(nameof(normalizedEmail));
             }
-            
+
             NormalizedValue = normalizedEmail;
         }
     }

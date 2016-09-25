@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading;
-using AspNetCore.Identity.MongoDB.Models;
+using MeMeSquad.Identity.Models;
 using Microsoft.AspNet.Identity;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 
-namespace AspNetCore.Identity.MongoDB
+namespace MeMeSquad.Identity
 {
     internal static class MongoConfig
     {
@@ -53,7 +53,7 @@ namespace AspNetCore.Identity.MongoDB
             BsonClassMap.RegisterClassMap<MongoUserLogin>(cm =>
             {
                 cm.AutoMap();
-                cm.MapCreator(l => new MongoUserLogin(new UserLoginInfo(l.LoginProvider, l.ProviderKey, l.ProviderDisplayName)));
+                cm.MapCreator(l => new MongoUserLogin(new UserLoginInfo(l.LoginProvider, l.ProviderKey)));
             });
         }
 

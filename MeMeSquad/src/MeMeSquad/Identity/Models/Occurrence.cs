@@ -1,7 +1,7 @@
-﻿namespace AspNetCore.Identity.MongoDB.Models
-{
-    using System;
+﻿using System;
 
+namespace MeMeSquad.Identity.Models
+{
     public class Occurrence
     {
         #region Constructor

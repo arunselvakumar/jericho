@@ -1,4 +1,7 @@
-﻿namespace MeMeSquad
+﻿using MeMeSquad.Identity;
+using Microsoft.Extensions.Options;
+
+namespace MeMeSquad
 {
     using System.IO;
     using System.Text;
@@ -16,6 +19,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Tokens;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
     public class Startup
     {
@@ -56,6 +60,7 @@
 
             services.AddMongoDbInstance();
             services.AddAutoMapper(this.MapperConfiguration);
+            services.AddIdentity(this.Configuration);
             services.AddCreateUserValidationService();
             services.AddUserService();
             services.AddPostService();

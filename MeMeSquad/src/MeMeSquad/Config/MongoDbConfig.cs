@@ -8,7 +8,7 @@
         /// <summary>
         /// 
         /// </summary>
-        public string EndPointUri { get; set; }
+        public string ConnectionString { get; set; }
 
         /// <summary>
         /// 

@@ -41,7 +41,7 @@ namespace Jericho.Helpers
 
         private IMongoDatabase CreateMongoDbInstance()
         {
-            MongoClient client = new MongoClient(mongoDbConfig.EndPointUri);
+            MongoClient client = new MongoClient(mongoDbConfig.ConnectionString);
             return client.GetDatabase(mongoDbConfig.DatabaseName);
         }
     }

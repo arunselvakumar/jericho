@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
-using AspNetCore.Identity.MongoDB.Models;
-using Microsoft.AspNet.Identity;
-using Microsoft.Extensions.Logging;
-using MongoDB.Bson.Serialization.Conventions;
-using MongoDB.Driver;
-using Microsoft.AspNet.Identity;
+﻿using MeMeSquad.Identity.Models;
 
-namespace AspNetCore.Identity.MongoDB
+namespace MeMeSquad.Identity
 {
-    public class MongoUserStore<TUser> : 
-        IUserStore<TUser>,
+    using System;
+    using System.Collections.Generic;
+    using System.Security.Claims;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.Logging;
+    using MongoDB.Bson.Serialization.Conventions;
+    using MongoDB.Driver;
+    using System.Linq;
+
+    public class MongoUserStore<TUser> : IUserStore<TUser>,
         IUserLoginStore<TUser>,
         IUserClaimStore<TUser>,
         IUserPasswordStore<TUser>,
@@ -22,11 +21,17 @@ namespace AspNetCore.Identity.MongoDB
         IUserEmailStore<TUser>
         where TUser : MongoIdentityUser
     {
+        #region Fields
+
         private static bool _initialized = false;
         private static object _initializationLock = new object();
         private static object _initializationTarget;
         private readonly IMongoCollection<TUser> _usersCollection;
         private readonly ILogger _logger;
+
+        #endregion
+
+        #region Constructor
 
         static MongoUserStore()
         {
@@ -51,6 +56,35 @@ namespace AspNetCore.Identity.MongoDB
             EnsureIndicesCreatedAsync().GetAwaiter().GetResult();
         }
 
+        #endregion
+
+        #region Public Methods
+
+        public Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetUserNameAsync(TUser user, string userName, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)
         {
             if (user == null)
@@ -65,23 +99,14 @@ namespace AspNetCore.Identity.MongoDB
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken)
+        public Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            throw new NotImplementedException();
+        }
 
-            cancellationToken.ThrowIfCancellationRequested();
-
-            user.Delete();
-
-            var query = Builders<TUser>.Filter.Eq(u => u.Id, user.Id);
-            var update = Builders<TUser>.Update.Set(u => u.DeletedOn, user.DeletedOn);
-
-            await _usersCollection.UpdateOneAsync(query, update, cancellationToken: cancellationToken).ConfigureAwait(false);
-
-            return IdentityResult.Success;
+        public Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
@@ -118,98 +143,9 @@ namespace AspNetCore.Identity.MongoDB
             return _usersCollection.Find(query).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            return Task.FromResult(user.NormalizedUserName);
-        }
-
-        public Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            return Task.FromResult(user.Id);
-        }
-
-        public Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            return Task.FromResult(user.UserName);
-        }
-
-        public Task SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (normalizedName == null)
-            {
-                throw new ArgumentNullException(nameof(normalizedName));
-            }
-
-            user.SetNormalizedUserName(normalizedName);
-
-            return Task.FromResult(0);
-        }
-
-        public Task SetUserNameAsync(TUser user, string userName, CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException("Changing the username is not supported.");
-        }
-
-        public async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            var query = Builders<TUser>.Filter.And(
-                Builders<TUser>.Filter.Eq(u => u.Id, user.Id),
-                Builders<TUser>.Filter.Eq(u => u.DeletedOn, null)
-            );
-
-            var replaceResult = await _usersCollection.ReplaceOneAsync(query, user, new UpdateOptions { IsUpsert = false }).ConfigureAwait(false);
-
-            return replaceResult.IsModifiedCountAvailable && replaceResult.ModifiedCount == 1
-                ? IdentityResult.Success
-                : IdentityResult.Failed();
-        }
-
         public Task AddLoginAsync(TUser user, UserLoginInfo login, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (login == null)
-            {
-                throw new ArgumentNullException(nameof(login));
-            }
-
-            // NOTE: Not the best way to ensure uniquness.
-            if (user.Logins.Any(x => x.Equals(login)))
-            {
-                throw new InvalidOperationException("Login already exists.");
-            }
-
-            user.AddLogin(new MongoUserLogin(login));
-
-            return Task.FromResult(0);
+            throw new NotImplementedException();
         }
 
         public Task RemoveLoginAsync(TUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
@@ -229,7 +165,7 @@ namespace AspNetCore.Identity.MongoDB
                 throw new ArgumentNullException(nameof(providerKey));
             }
 
-            var login = new UserLoginInfo(loginProvider, providerKey);
+            var login = new UserLoginInfo(loginProvider, providerKey, string.Empty);
             var loginToRemove = user.Logins.FirstOrDefault(x => x.Equals(login));
 
             if (loginToRemove != null)
@@ -242,15 +178,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            var logins = user.Logins.Select(login =>
-                new UserLoginInfo(login.LoginProvider, login.ProviderKey));
-
-            return Task.FromResult<IList<UserLoginInfo>>(logins.ToList());
+            throw new NotImplementedException();
         }
 
         public Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
@@ -433,35 +361,6 @@ namespace AspNetCore.Identity.MongoDB
             return Task.FromResult(user.SecurityStamp);
         }
 
-        public Task SetTwoFactorEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (enabled)
-            {
-                user.EnableTwoFactorAuthentication();
-            }
-            else
-            {
-                user.DisableTwoFactorAuthentication();
-            }
-
-            return Task.FromResult(0);
-        }
-
-        public Task<bool> GetTwoFactorEnabledAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            return Task.FromResult(user.IsTwoFactorEnabled);
-        }
-
         public Task SetEmailAsync(TUser user, string email, CancellationToken cancellationToken)
         {
             if (user == null)
@@ -486,7 +385,7 @@ namespace AspNetCore.Identity.MongoDB
                 throw new ArgumentNullException(nameof(user));
             }
 
-            var email = (user.Email != null) ? user.Email.Value : null;
+            var email = user.Email?.Value;
 
             return Task.FromResult(email);
         }
@@ -576,113 +475,18 @@ namespace AspNetCore.Identity.MongoDB
             return Task.FromResult(0);
         }
 
-        public Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+        #endregion
 
-            var lockoutEndDate = user.LockoutEndDate != null
-                ? new DateTimeOffset(user.LockoutEndDate.Instant)
-                : default(DateTimeOffset?);
-
-            return Task.FromResult(lockoutEndDate);
-        }
-
-        public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (lockoutEnd != null)
-            {
-                user.LockUntil(lockoutEnd.Value.UtcDateTime);
-            }
-
-            return Task.FromResult(0);
-        }
-
-        public async Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            var filter = Builders<TUser>.Filter.Eq(u => u.Id, user.Id);
-            var update = Builders<TUser>.Update.Inc(usr => usr.AccessFailedCount, 1);
-            var findOneAndUpdateOptions = new FindOneAndUpdateOptions<TUser, int>
-            {
-                ReturnDocument = ReturnDocument.After,
-                Projection = Builders<TUser>.Projection.Expression(usr => usr.AccessFailedCount)
-            };
-
-            var newCount = await _usersCollection
-                .FindOneAndUpdateAsync<int>(filter, update, findOneAndUpdateOptions)
-                .ConfigureAwait(false);
-
-            user.SetAccessFailedCount(newCount);
-
-            return newCount;
-        }
-
-        public Task ResetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            user.ResetAccessFailedCount();
-
-            return Task.FromResult(0);
-        }
-
-        public Task<int> GetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            return Task.FromResult(user.AccessFailedCount);
-        }
-
-        public Task<bool> GetLockoutEnabledAsync(TUser user, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            return Task.FromResult(user.IsLockoutEnabled);
-        }
-
-        public Task SetLockoutEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
-        {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (enabled)
-            {
-                user.EnableLockout();
-            }
-            else
-            {
-                user.DisableLockout();
-            }
-
-            return Task.FromResult(0);
-        }
+        #region IDipose
 
         public void Dispose()
         {
+            throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region Private Methods
 
         private async Task EnsureIndicesCreatedAsync()
         {
@@ -720,99 +524,7 @@ namespace AspNetCore.Identity.MongoDB
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
-        public Task CreateAsync(TUser user)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
-        public Task UpdateAsync(TUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(TUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TUser> FindByIdAsync(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TUser> FindByNameAsync(string userName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task AddLoginAsync(TUser user, UserLoginInfo login)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RemoveLoginAsync(TUser user, UserLoginInfo login)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TUser> FindAsync(UserLoginInfo login)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetPasswordHashAsync(TUser user, string passwordHash)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> GetPasswordHashAsync(TUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> HasPasswordAsync(TUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetSecurityStampAsync(TUser user, string stamp)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> GetSecurityStampAsync(TUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetEmailAsync(TUser user, string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> GetEmailAsync(TUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> GetEmailConfirmedAsync(TUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SetEmailConfirmedAsync(TUser user, bool confirmed)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<TUser> FindByEmailAsync(string email)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

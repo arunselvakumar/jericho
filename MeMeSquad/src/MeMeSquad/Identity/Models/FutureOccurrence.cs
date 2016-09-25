@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AspNetCore.Identity.MongoDB.Models
+namespace MeMeSquad.Identity.Models
 {
     public class FutureOccurrence : Occurrence
     {
@@ -10,7 +10,7 @@ namespace AspNetCore.Identity.MongoDB.Models
         {
 
         }
-        
+
         public FutureOccurrence(DateTime willOccurOn) : base(willOccurOn)
         {
 
