@@ -10,11 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Jericho", "src\MeMeSquad\Jericho.xproj", "{E0054A7D-4649-4539-9F74-10A3173147BE}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FC777EF6-5887-42CD-BAD2-097FB645F1BE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jericho.Tests", "tests\Jericho.Tests.csproj", "{A286D117-2F51-4C7F-AC99-E80E3F7E0085}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Jericho", "src\Jericho\Jericho.xproj", "{E0054A7D-4649-4539-9F74-10A3173147BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,16 +22,11 @@ Global
 		{E0054A7D-4649-4539-9F74-10A3173147BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0054A7D-4649-4539-9F74-10A3173147BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0054A7D-4649-4539-9F74-10A3173147BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A286D117-2F51-4C7F-AC99-E80E3F7E0085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A286D117-2F51-4C7F-AC99-E80E3F7E0085}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A286D117-2F51-4C7F-AC99-E80E3F7E0085}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A286D117-2F51-4C7F-AC99-E80E3F7E0085}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E0054A7D-4649-4539-9F74-10A3173147BE} = {3C978EEA-7686-41F0-9591-98C0EE49260A}
-		{A286D117-2F51-4C7F-AC99-E80E3F7E0085} = {FC777EF6-5887-42CD-BAD2-097FB645F1BE}
 	EndGlobalSection
 EndGlobal
