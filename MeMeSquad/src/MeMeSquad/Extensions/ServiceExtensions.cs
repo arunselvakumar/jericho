@@ -52,7 +52,7 @@ namespace MeMeSquad.Extensions
             service.AddSingleton<ICreateUserValidationService, CreateUserValidationService>();
         }
 
-        public static void AddIdentity(this IServiceCollection service, IConfigurationRoot configuration)
+        public static void AddIdentityService(this IServiceCollection service, IConfigurationRoot configuration)
         {
             if (service == null)
             {
@@ -68,6 +68,20 @@ namespace MeMeSquad.Extensions
 
                 return new MongoUserStore<MongoIdentityUser>(database, loggerFactory);
             });
+        }
+
+        public static void AddMongoIdentityService(this IServiceCollection service)
+        {
+            service.AddSingleton<IdentityMarkerService>();
+            service.AddSingleton<IUserValidator<MongoIdentityUser>, UserValidator<MongoIdentityUser>>();
+            service.AddSingleton<IPasswordValidator<MongoIdentityUser>, PasswordValidator<MongoIdentityUser>>();
+            service.AddSingleton<IPasswordHasher<MongoIdentityUser>, PasswordHasher<MongoIdentityUser>>();
+            service.AddSingleton<ILookupNormalizer, UpperInvariantLookupNormalizer>();
+            service.AddSingleton<IdentityErrorDescriber>();
+            service.AddSingleton<ISecurityStampValidator, SecurityStampValidator<MongoIdentityUser>>();
+            service.AddSingleton<IUserClaimsPrincipalFactory<MongoIdentityUser>, UserClaimsPrincipalFactory<MongoIdentityUser>>();
+            service.AddSingleton<UserManager<MongoIdentityUser>, UserManager<MongoIdentityUser>>();
+            service.AddScoped<SignInManager<MongoIdentityUser>, SignInManager<MongoIdentityUser>>();
         }
 
         public static void AddAutoMapper(this IServiceCollection service, MapperConfiguration mapperConfiguration)

@@ -35,7 +35,7 @@ namespace MeMeSquad.Identity
 
         static MongoUserStore()
         {
-            MongoConfig.EnsureConfigured();
+            // MongoConfig.EnsureConfigured();
         }
 
         public MongoUserStore(IMongoDatabase database, ILoggerFactory loggerFactory)
@@ -53,7 +53,7 @@ namespace MeMeSquad.Identity
             _usersCollection = database.GetCollection<TUser>("users");
             _logger = loggerFactory.CreateLogger(GetType().Name);
 
-            EnsureIndicesCreatedAsync().GetAwaiter().GetResult();
+            // EnsureIndicesCreatedAsync().GetAwaiter().GetResult();
         }
 
         #endregion
@@ -62,12 +62,22 @@ namespace MeMeSquad.Identity
 
         public Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            return Task.FromResult(user.Id);
         }
 
         public Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            return Task.FromResult(user.UserName);
         }
 
         public Task SetUserNameAsync(TUser user, string userName, CancellationToken cancellationToken)
@@ -77,12 +87,29 @@ namespace MeMeSquad.Identity
 
         public Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            return Task.FromResult(user.NormalizedUserName);
         }
 
         public Task SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            if (normalizedName == null)
+            {
+                throw new ArgumentNullException(nameof(normalizedName));
+            }
+
+            user.SetNormalizedUserName(normalizedName);
+
+            return Task.FromResult(0);
         }
 
         public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)

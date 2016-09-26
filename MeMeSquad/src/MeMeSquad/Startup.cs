@@ -60,7 +60,8 @@ namespace MeMeSquad
 
             services.AddMongoDbInstance();
             services.AddAutoMapper(this.MapperConfiguration);
-            services.AddIdentity(this.Configuration);
+            services.AddIdentityService(this.Configuration);
+            services.AddMongoIdentityService();
             services.AddCreateUserValidationService();
             services.AddUserService();
             services.AddPostService();

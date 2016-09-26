@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using MeMeSquad.Identity.Models;
+using MongoDB.Bson.Serialization.Attributes;
 using Microsoft.AspNet.Identity;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace MeMeSquad.Identity
 {
@@ -41,7 +44,6 @@ namespace MeMeSquad.Identity
                 throw new ArgumentNullException(nameof(userName));
             }
 
-            Id = GenerateId(userName);
             UserName = userName;
             CreatedOn = new Occurrence();
             _claims = new List<MongoUserClaim>();
@@ -52,7 +54,9 @@ namespace MeMeSquad.Identity
 
         #region Properties
 
-        public string Id { get; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
         public string UserName { get; set; }
 
@@ -66,6 +70,7 @@ namespace MeMeSquad.Identity
 
         public bool IsTwoFactorEnabled { get; private set; }
 
+        [BsonIgnoreIfNull]
         public IEnumerable<MongoUserClaim> Claims
         {
             get { return _claims; }

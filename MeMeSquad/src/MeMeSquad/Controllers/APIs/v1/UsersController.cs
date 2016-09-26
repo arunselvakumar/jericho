@@ -60,11 +60,11 @@ namespace MeMeSquad.Controllers.APIs.v1
             var result = await this.userManager.CreateAsync(user, userModel.Password);
             if (result.Succeeded)
             {
-                
+                return new OkResult();
             }
             else
             {
-                return new BadRequestObjectResult();
+                return new BadRequestObjectResult(null);
             }
         }
 
@@ -78,13 +78,6 @@ namespace MeMeSquad.Controllers.APIs.v1
             }
 
             var userModel = this.mapper.Map<UserEntity>(loginUserRequestDto);
-
-            var isLoginSuccessful = this.userService.LoginUserAsync(userModel);
-
-            if (isLoginSuccessful)
-            {
-                return new OkResult();
-            }
 
             return new BadRequestResult();
         }
