@@ -1,4 +1,4 @@
-﻿namespace MeMeSquad.Models.Entities
+﻿namespace MeMeSquad.Models.v1.Entities
 {
     using System;
     using Newtonsoft.Json;

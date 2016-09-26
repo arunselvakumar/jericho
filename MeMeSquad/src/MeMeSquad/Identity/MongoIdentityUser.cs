@@ -9,6 +9,8 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace MeMeSquad.Identity
 {
+    using System.Linq;
+
     public class MongoIdentityUser : IUser
     {
         #region Fields
@@ -73,10 +75,14 @@ namespace MeMeSquad.Identity
         [BsonIgnoreIfNull]
         public IEnumerable<MongoUserClaim> Claims
         {
-            get { return _claims; }
+            get
+            {
+                return _claims;
+            }
+
             private set
             {
-                if (value != null)
+                if (value != null && value.Any())
                 {
                     _claims.AddRange(value);
                 }
@@ -92,7 +98,7 @@ namespace MeMeSquad.Identity
 
             private set
             {
-                if (value != null)
+                if (value != null && value.Any())
                 {
                     _logins.AddRange(value);
                 }

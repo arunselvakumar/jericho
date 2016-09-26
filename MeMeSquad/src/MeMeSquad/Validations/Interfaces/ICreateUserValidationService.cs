@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    using MeMeSquad.Models.DTOs.User;
+    using MeMeSquad.Models.v1.DTOs.User;
 
     public interface ICreateUserValidationService
     {

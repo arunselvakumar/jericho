@@ -1,12 +1,10 @@
-﻿using System;
-using System.Security.Claims;
-
-namespace MeMeSquad.Identity.Models
+﻿namespace MeMeSquad.Identity.Models
 {
+    using System;
+    using System.Security.Claims;
+
     public class MongoUserClaim : IEquatable<MongoUserClaim>, IEquatable<Claim>
     {
-        #region Constructor
-
         public MongoUserClaim(Claim claim)
         {
             if (claim == null)
@@ -34,17 +32,9 @@ namespace MeMeSquad.Identity.Models
             ClaimValue = claimValue;
         }
 
-        #endregion
-
-        #region Public Properties
-
         public string ClaimType { get; private set; }
 
         public string ClaimValue { get; private set; }
-
-        #endregion
-
-        #region Public Methods
 
         public bool Equals(MongoUserClaim other)
         {
@@ -55,7 +45,5 @@ namespace MeMeSquad.Identity.Models
         {
             return other.Type.Equals(ClaimType) && other.Value.Equals(ClaimValue);
         }
-
-        #endregion
     }
 }

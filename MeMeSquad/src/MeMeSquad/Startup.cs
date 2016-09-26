@@ -1,12 +1,7 @@
-﻿using MeMeSquad.Identity;
-using Microsoft.Extensions.Options;
-
-namespace MeMeSquad
+﻿namespace MeMeSquad
 {
     using System.IO;
     using System.Text;
-
-    using Swashbuckle.Swagger;
 
     using AutoMapper;
 
@@ -19,19 +14,12 @@ namespace MeMeSquad
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Tokens;
-    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
     public class Startup
     {
-        #region Fields
-
         public IConfigurationRoot Configuration { get; }
 
         private MapperConfiguration MapperConfiguration { get; set; }
-
-        #endregion
-
-        #region Public Methods
 
         public Startup(IHostingEnvironment env)
         {
@@ -41,7 +29,6 @@ namespace MeMeSquad
             
             if (env.IsEnvironment("Development"))
             {
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
 
@@ -49,7 +36,6 @@ namespace MeMeSquad
             this.Configuration = builder.Build();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MongoDbConfig>(this.Configuration.GetSection("MongoDb"));
@@ -67,7 +53,6 @@ namespace MeMeSquad
             services.AddPostService();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             this.ConfigureJwtAuthentication(app);
@@ -83,11 +68,9 @@ namespace MeMeSquad
             app.UseMvc();
 
             app.UseSwagger();
+
             app.UseSwaggerUi();
         }
-        #endregion
-
-        #region Private Methods
 
         private void ConfigureJwtAuthentication(IApplicationBuilder app)
         {
@@ -105,6 +88,5 @@ namespace MeMeSquad
                 TokenValidationParameters = tokenValidationParameters
             });
         }
-        #endregion
     }
 }

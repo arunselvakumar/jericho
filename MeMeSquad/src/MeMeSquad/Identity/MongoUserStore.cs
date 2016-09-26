@@ -240,9 +240,13 @@ namespace MeMeSquad.Identity
                 throw new ArgumentNullException(nameof(user));
             }
 
-            var claims = user.Claims.Select(clm => new Claim(clm.ClaimType, clm.ClaimValue)).ToList();
+            if (user.Claims != null)
+            {
+                var claims = user.Claims.Select(clm => new Claim(clm.ClaimType, clm.ClaimValue)).ToList();
+                return Task.FromResult<IList<Claim>>(claims);
+            }
 
-            return Task.FromResult<IList<Claim>>(claims);
+            return Task.FromResult<IList<Claim>>(new List<Claim>());
         }
 
         public Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)

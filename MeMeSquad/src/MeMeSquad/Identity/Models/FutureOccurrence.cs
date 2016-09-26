@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace MeMeSquad.Identity.Models
+﻿namespace MeMeSquad.Identity.Models
 {
+    using System;
+
     public class FutureOccurrence : Occurrence
     {
-        #region Constructor
-
         public FutureOccurrence() : base()
         {
 
@@ -15,7 +13,5 @@ namespace MeMeSquad.Identity.Models
         {
 
         }
-
-        #endregion
     }
 }

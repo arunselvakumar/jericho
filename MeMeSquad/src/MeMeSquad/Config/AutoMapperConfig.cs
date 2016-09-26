@@ -4,22 +4,17 @@
 
     using AutoMapper;
 
-    using MeMeSquad.Models.DTOs;
-    using MeMeSquad.Models.DTOs.User;
-    using MeMeSquad.Models.Entities;
+    using MeMeSquad.Models.v1.DTOs;
+    using MeMeSquad.Models.v1.DTOs.User;
+    using MeMeSquad.Models.v1.Entities;
 
     public class AutoMapperConfig : Profile
     {
-        #region Constructor
-
         public AutoMapperConfig()
         {
             this.ConfigurePostMappers();
             this.ConfigureUserMappers();
         }
-        #endregion
-
-        #region Private Methods
 
         private void ConfigurePostMappers()
         {
@@ -39,6 +34,5 @@
 
             this.CreateMap<LoginUserRequestDto, UserEntity>();
         }
-        #endregion
     }
 }

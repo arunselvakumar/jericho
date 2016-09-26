@@ -1,19 +1,12 @@
-﻿using MeMeSquad.Identity;
-using Microsoft.AspNetCore.Identity;
-
-namespace MeMeSquad.Services
+﻿namespace MeMeSquad.Services
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
 
-    using MeMeSquad.Config;
-    using MeMeSquad.Models.Entities;
+    using MeMeSquad.Models.v1.Entities;
     using MeMeSquad.Services.Interfaces;
 
-    using Microsoft.Azure.Documents;
     using Microsoft.Azure.Documents.Client;
-    using Microsoft.Extensions.Options;
 
     public class UserService : IUserService
     {

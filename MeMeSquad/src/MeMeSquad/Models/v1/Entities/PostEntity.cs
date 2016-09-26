@@ -1,9 +1,9 @@
-﻿namespace MeMeSquad.Models.Entities
+﻿namespace MeMeSquad.Models.v1.Entities
 {
     using System;
     using System.Collections.Generic;
 
-    using MeMeSquad.Models.Entities.Enums;
+    using MeMeSquad.Models.v1.Entities.Enums;
 
     using Newtonsoft.Json;
     using MongoDB.Bson.Serialization.Attributes;

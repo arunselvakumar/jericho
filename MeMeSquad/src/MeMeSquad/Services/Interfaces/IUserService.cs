@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    using MeMeSquad.Models.Entities;
+    using MeMeSquad.Models.v1.Entities;
 
     public interface IUserService
     {

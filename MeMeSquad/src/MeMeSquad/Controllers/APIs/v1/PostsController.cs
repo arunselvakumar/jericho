@@ -5,8 +5,8 @@ namespace MeMeSquad.Controllers.APIs.v1
 
     using AutoMapper;
 
-    using MeMeSquad.Models.DTOs;
-    using MeMeSquad.Models.Entities;
+    using MeMeSquad.Models.v1.DTOs;
+    using MeMeSquad.Models.v1.Entities;
     using MeMeSquad.Services.Interfaces;
 
     using Microsoft.AspNetCore.Mvc;
@@ -39,8 +39,6 @@ namespace MeMeSquad.Controllers.APIs.v1
         }
         #endregion
 
-        #region Public Methods
-
         /// <summary>
         /// Validates the Model States and Adds new posts to the Data Store.
         /// </summary>
@@ -49,11 +47,6 @@ namespace MeMeSquad.Controllers.APIs.v1
         [HttpPost]
         public async Task<IActionResult> SavePostAsync([FromBody]PostDto postDto)
         {
-            //if (!this.ModelState.IsValid)
-            //{
-            //    return new BadRequestObjectResult(this.ModelState.Values);
-            //}
-
             var postEntity = this.mapper.Map<PostEntity>(postDto);
             var result = await this.postService.CreatePostAsync(postEntity);
 
@@ -98,6 +91,5 @@ namespace MeMeSquad.Controllers.APIs.v1
 
             return contentResult;
         }
-        #endregion
     }
 }

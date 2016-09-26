@@ -1,20 +1,19 @@
 ﻿namespace MeMeSquad.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
     using AutoMapper;
 
+    using Jericho.Helpers.Interfaces;
+
     using MeMeSquad.Config;
-    using MeMeSquad.Models.Entities;
+    using MeMeSquad.Models.v1.Entities;
     using MeMeSquad.Services.Interfaces;
 
-    using Microsoft.Azure.Documents;
-    using Microsoft.Azure.Documents.Client;
     using Microsoft.Extensions.Options;
-    using Jericho.Helpers.Interfaces;
+
     using MongoDB.Driver;
 
     public class PostService : IPostService

@@ -1,4 +1,4 @@
-﻿namespace MeMeSquad.Models.DTOs
+﻿namespace MeMeSquad.Models.v1.DTOs
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;

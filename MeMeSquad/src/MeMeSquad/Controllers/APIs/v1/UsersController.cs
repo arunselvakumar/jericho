@@ -1,21 +1,19 @@
-﻿ // ReSharper disable once StyleCop.SA1300
-
-using MeMeSquad.Identity;
-using Microsoft.AspNetCore.Identity;
-
-namespace MeMeSquad.Controllers.APIs.v1
+﻿namespace MeMeSquad.Controllers.APIs.v1
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
     using AutoMapper;
 
-    using MeMeSquad.Models.DTOs;
-    using MeMeSquad.Models.DTOs.User;
-    using MeMeSquad.Models.Entities;
+    using MeMeSquad.Identity;
+    using MeMeSquad.Models.v1.DTOs.User;
+    using MeMeSquad.Models.v1.Entities;
     using MeMeSquad.Services.Interfaces;
     using MeMeSquad.Validations.Interfaces;
 
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
     public class UsersController : Controller
@@ -49,38 +47,54 @@ namespace MeMeSquad.Controllers.APIs.v1
 
         #endregion
 
-        #region Public Method
-
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> SaveUserAsync([FromBody] SaveUserRequestDto saveUserRequestDto)
         {
-            var userModel = this.mapper.Map<UserEntity>(saveUserRequestDto);
-            var user = new MongoIdentityUser(userModel.UserName, userModel.EMail);
-            var result = await this.userManager.CreateAsync(user, userModel.Password);
-            if (result.Succeeded)
+            var user = this.mapper.Map<UserEntity>(saveUserRequestDto);
+            var userIdentity = new MongoIdentityUser(user.UserName, user.EMail);
+
+            var userManagerResult = await this.userManager.CreateAsync(userIdentity, user.Password);
+
+            if (userManagerResult.Succeeded)
             {
                 return new OkResult();
             }
-            else
-            {
-                return new BadRequestObjectResult(null);
-            }
+
+            return new BadRequestObjectResult(userManagerResult.Errors);
         }
 
-        [HttpPost]
-        [Route("api/v1/[controller]/loginuser")]
-        public IActionResult LoginUserAsync([FromBody] LoginUserRequestDto loginUserRequestDto)
+        [HttpPatch]
+        [Route("api/v1/[controller]")]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] SaveUserRequestDto updateUserRequestDto)
         {
-            if (!this.ModelState.IsValid)
+            var user = this.mapper.Map<UserEntity>(updateUserRequestDto);
+            var userIdentity = new MongoIdentityUser(user.UserName, user.EMail);
+
+            var userManagerResult = await this.userManager.UpdateAsync(userIdentity);
+
+            if (userManagerResult.Succeeded)
             {
-                return new BadRequestObjectResult(this.ModelState.Values);
+                return new OkResult();
             }
 
-            var userModel = this.mapper.Map<UserEntity>(loginUserRequestDto);
+            return new BadRequestObjectResult(userManagerResult.Errors);
+        }
+
+        [HttpPost, AllowAnonymous]
+        [Route("api/v1/[controller]/authorize")]
+        public async Task<IActionResult> AuthorizeUserAsync([FromBody] LoginUserRequestDto loginUserRequestDto)
+        {
+            var user = this.mapper.Map<UserEntity>(loginUserRequestDto);
+            
+            var signInManagerResult = await this.signInManager.PasswordSignInAsync(user.UserName, user.Password, isPersistent: false, lockoutOnFailure: false);
+
+            if (signInManagerResult.Succeeded)
+            {
+                return new OkResult();
+            }
 
             return new BadRequestResult();
         }
-        #endregion
     }
 }

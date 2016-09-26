@@ -1,4 +1,4 @@
-﻿namespace MeMeSquad.Models.Entities.Enums
+﻿namespace MeMeSquad.Models.v1.Entities.Enums
 {
     /// <summary>
     /// Post Type

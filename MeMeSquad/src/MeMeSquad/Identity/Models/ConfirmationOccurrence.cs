@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace MeMeSquad.Identity.Models
+﻿namespace MeMeSquad.Identity.Models
 {
+    using System;
+
     public class ConfirmationOccurrence : Occurrence
     {
         #region Constructor

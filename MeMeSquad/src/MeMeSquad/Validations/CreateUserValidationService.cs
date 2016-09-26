@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Text.RegularExpressions;
 
-    using MeMeSquad.Models.DTOs.User;
+    using MeMeSquad.Models.v1.DTOs.User;
     using MeMeSquad.Services.Interfaces;
     using MeMeSquad.Validations.Interfaces;
 

@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     using MeMeSquad.Models;
-    using MeMeSquad.Models.Entities;
+    using MeMeSquad.Models.v1.Entities;
 
     using Microsoft.Azure.Documents;
 
