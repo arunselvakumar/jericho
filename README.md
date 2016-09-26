@@ -4,8 +4,8 @@ This is a 9gag inspired <b> memes distribution platform </b> written in <i>ASPNe
 
 <b> Contributers <br /> </b>
 <ul>
-    <li> <a href="https://github.com/arunselvakumar">Arun Selva Kumar </a> </li>
-    <li> Prakash Selvaraj </li>
+    <li> <a href="https://github.com/arunselvakumar">Arun Selva Kumar </a></li>
+    <li> <a href="https://github.com/Prakash-Selvaraj-Ash">Prakash Selvaraj </a></li>
     <li> <a href="https://github.com/SanthoshAthimoolam">Santhosh A </a></li>
 </ul>
 
