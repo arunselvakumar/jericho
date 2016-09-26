@@ -1,0 +1,6 @@
+{
+  "name": "Jericho",
+  "tagline": "Meme Distribution Platform",
+  "body": "# Jericho\r\n\r\nThis is a 9gag inspired <b> memes distribution platform </b> written in <i>ASPNet Core, MongoDb, Angular 2 </i> with <i>Bootstrap 3</i>.  Any contributions to this project is welcome - You can fork this repo, implement any feature and send us pull request.\r\n\r\n<b> Contributers <br /> </b>\r\n<ul>\r\n    <li> <a href=\"https://github.com/arunselvakumar\">Arun Selva Kumar </a> </li>\r\n    <li> Prakash Selvaraj </li>\r\n    <li> <a href=\"https://github.com/SanthoshAthimoolam\">Santhosh A </a></li>\r\n</ul>\r\n\r\n<b> How to Configure Jericho </b>\r\n<ol>\r\n    <li> Install <i>MongoDb, AspNet Core </i>in your machine </li>\r\n    <li> Clone the repository, and use <i>dotnet restore, dotnet build</i> and <i>dotnet</i> run to restore nuget packages, build and run the application </li>\r\n    <li> The API is documented in Swagger UI </li>\r\n</ol>\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
