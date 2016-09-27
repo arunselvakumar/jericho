@@ -50,7 +50,7 @@ namespace Jericho.Controllers.APIs.v1
             var postEntity = this.mapper.Map<PostEntity>(postDto);
             var result = await this.postService.CreatePostAsync(postEntity);
 
-            return new OkObjectResult(result);
+            return new CreatedResult(string.Empty, result);
         }
 
         /// <summary>

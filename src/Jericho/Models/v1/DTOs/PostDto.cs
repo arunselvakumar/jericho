@@ -14,7 +14,13 @@
         [Display(Name = "Post Type")]
         public string Type { get; set; }
 
-        public Dictionary<char, string> Content { get; set; }
+        [Required]
+        [DataType(DataType.Text)]
+        public string Title { get; set; }
+            
+        [Required]
+        [DataType(DataType.Text)]
+        public string Content { get; set; }
 
         [Required]
         [DataType(DataType.Text)]

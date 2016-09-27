@@ -16,9 +16,13 @@
         [BsonId]
         public ObjectId Id { get; set; }
 
-        public PostTypeEnum Type { get; set; }
+        public string Url { get; set; }
 
-        public Dictionary<char, string> Content { get; set; }
+        public string Title { get; set; }
+            
+        public PostTypeEnum Type { get; set; }
+            
+        public string Content { get; set; }
 
         public string CategoryId { get; set; }
 
@@ -32,6 +36,8 @@
 
         public string PostedBy { get; set; }
 
+        public bool IsDeleted { get; set; }
+            
         public DateTime Version { get; set; }
         #endregion
 
