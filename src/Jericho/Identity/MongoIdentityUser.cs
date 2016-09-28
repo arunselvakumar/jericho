@@ -66,6 +66,8 @@ namespace Jericho.Identity
 
         public MongoUserEmail Email { get; private set; }
 
+        public int Age { get; set; }
+
         public string PasswordHash { get; private set; }
 
         public string SecurityStamp { get; private set; }

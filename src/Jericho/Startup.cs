@@ -7,6 +7,7 @@
 
     using Jericho.Config;
     using Jericho.Extensions;
+    using Jericho.Options;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -38,7 +39,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<MongoDbConfig>(this.Configuration.GetSection("MongoDb"));
+            services.Configure<MongoDbOptions>(this.Configuration.GetSection("MongoDb"));
 
             services.AddApplicationInsightsTelemetry(this.Configuration);
             services.AddMvc();
@@ -64,6 +65,8 @@
             app.UseApplicationInsightsRequestTelemetry();
 
             app.UseApplicationInsightsExceptionTelemetry();
+
+            app.UseIdentity();
 
             app.UseMvc();
 

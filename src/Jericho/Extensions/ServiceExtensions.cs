@@ -13,6 +13,7 @@ namespace Jericho.Extensions
     using AutoMapper;
 
     using Jericho.Config;
+    using Jericho.Options;
     using Jericho.Services;
     using Jericho.Services.Interfaces;
     using Jericho.Validations;
@@ -61,7 +62,7 @@ namespace Jericho.Extensions
 
             service.AddSingleton<IUserStore<MongoIdentityUser>>(provider =>
             {
-                var options = provider.GetService<IOptions<MongoDbConfig>>();
+                var options = provider.GetService<IOptions<MongoDbOptions>>();
                 var client = new MongoClient(options.Value.ConnectionString);
                 var database = client.GetDatabase(options.Value.DatabaseName);
                 var loggerFactory = provider.GetService<ILoggerFactory>();

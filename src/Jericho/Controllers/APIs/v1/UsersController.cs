@@ -1,7 +1,9 @@
 ﻿namespace Jericho.Controllers.APIs.v1
 {
     using System;
+    using System.IdentityModel.Tokens.Jwt;
     using System.Linq;
+    using System.Security.Claims;
     using System.Threading.Tasks;
 
     using AutoMapper;
@@ -53,22 +55,34 @@
         {
             var user = this.mapper.Map<UserEntity>(saveUserRequestDto);
             var userIdentity = new MongoIdentityUser(user.UserName, user.EMail);
+            userIdentity.Age = 26;
 
             var userManagerResult = await this.userManager.CreateAsync(userIdentity, user.Password);
 
             if (userManagerResult.Succeeded)
             {
-                return new OkResult();
+                var claims = new Claim[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToLongDateString(), ClaimValueTypes.Integer64)
+                };
+
+                var jwt = new JwtSecurityToken(claims: claims);
+
+                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+                return new OkObjectResult(encodedJwt);
             }
 
             return new BadRequestObjectResult(userManagerResult.Errors);
         }
 
-        [HttpGet, AllowAnonymous]
+        [HttpGet, Authorize]
         [Route("api/v1/[controller]")]
-        public IActionResult GetUserAsync([FromQuery] string id=null, [FromQuery] string username = null)
+        public async Task<IActionResult> GetUserAsync([FromQuery] string id = null, [FromQuery] string username = null)
         {
-            var userIdentity = this.userManager.Users.FirstOrDefault(user => user.Id == id || user.UserName.Equals(username));
+            var userIdentity = id != null ? await this.userManager.FindByIdAsync(id) : await this.userManager.FindByNameAsync(username);
 
             if(userIdentity != null)
             {
@@ -105,10 +119,21 @@
 
             if (signInManagerResult.Succeeded)
             {
-                return new OkResult();
+                var claims = new Claim[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToLongDateString(), ClaimValueTypes.Integer64)
+                };
+
+                var jwt = new JwtSecurityToken(claims: claims);
+
+                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+                return new OkObjectResult(encodedJwt);
             }
 
-            return new BadRequestResult();
+            return new UnauthorizedResult();
         }
     }
 }

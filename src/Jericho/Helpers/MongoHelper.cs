@@ -9,13 +9,15 @@ using System.Threading.Tasks;
 
 namespace Jericho.Helpers
 {
+    using Jericho.Options;
+
     /// <summary>
     /// 
     /// </summary>
     public class MongoHelper : IMongoHelper
     {
         private readonly IMongoDatabase mongoDBInstance;
-        private readonly MongoDbConfig mongoDbConfig;
+        private readonly MongoDbOptions mongoDbOptions;
 
         /// <summary>
         /// 
@@ -32,17 +34,17 @@ namespace Jericho.Helpers
         /// 
         /// </summary>
         /// <param name="mongoDbConfig"></param>
-        public MongoHelper(IOptions<MongoDbConfig> mongoDbConfig)
+        public MongoHelper(IOptions<MongoDbOptions> mongoDbConfig)
         {
-            this.mongoDbConfig = mongoDbConfig.Value;
+            this.mongoDbOptions = mongoDbConfig.Value;
             this.mongoDBInstance = CreateMongoDbInstance();
         }
 
 
         private IMongoDatabase CreateMongoDbInstance()
         {
-            MongoClient client = new MongoClient(mongoDbConfig.ConnectionString);
-            return client.GetDatabase(mongoDbConfig.DatabaseName);
+            MongoClient client = new MongoClient(this.mongoDbOptions.ConnectionString);
+            return client.GetDatabase(this.mongoDbOptions.DatabaseName);
         }
     }
 }
