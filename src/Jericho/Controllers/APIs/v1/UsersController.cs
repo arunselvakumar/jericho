@@ -64,6 +64,20 @@
             return new BadRequestObjectResult(userManagerResult.Errors);
         }
 
+        [HttpGet, AllowAnonymous]
+        [Route("api/v1/[controller]")]
+        public IActionResult GetUserAsync([FromQuery] string id=null, [FromQuery] string username = null)
+        {
+            var userIdentity = this.userManager.Users.FirstOrDefault(user => user.Id == id || user.UserName.Equals(username));
+
+            if(userIdentity != null)
+            {
+                return new OkObjectResult(userIdentity);
+            }
+
+            return new NotFoundResult();
+        }
+
         [HttpPatch]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> UpdateUserAsync([FromBody] SaveUserRequestDto updateUserRequestDto)
