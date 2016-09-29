@@ -21,14 +21,14 @@
         public string Title { get; set; }
             
         public PostTypeEnum Type { get; set; }
-            
+
+        public PostStatusEnum Status { get; set; }
+
         public string Content { get; set; }
 
         public string CategoryId { get; set; }
 
-        public IEnumerable<string> Tags { get; set; }
-
-        public bool IsActive { get; set; }
+        public IEnumerable<string> Tags { get; set; }        
 
         public long UpVotes { get; set; }
 
