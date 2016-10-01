@@ -14,6 +14,9 @@
         [Display(Name = "Post Type")]
         public string Type { get; set; }
 
+        [Display(Name ="Post Status")]
+        public string Status { get; set; }
+            
         [Required]
         [DataType(DataType.Text)]
         public string Title { get; set; }

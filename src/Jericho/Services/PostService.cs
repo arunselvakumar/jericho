@@ -15,6 +15,7 @@
     using Microsoft.Extensions.Options;
 
     using MongoDB.Driver;
+    using Models.v1.Entities.Enums;
 
     public class PostService : IPostService
     {
@@ -57,7 +58,7 @@
         {
             var postEntities = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
                 .AsQueryable()
-                .Where(postEntity=>postEntity.IsActive)
+                .Where(postEntity=>postEntity.Status == PostStatusEnum.Approved && !postEntity.IsDeleted)                
                 .OrderByDescending(postEntity=>postEntity.Version);
 
             return postEntities;

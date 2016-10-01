@@ -10,6 +10,8 @@ namespace Jericho.Controllers.APIs.v1
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Mvc;
+    using System.Collections;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Posts Controller.
@@ -65,13 +67,21 @@ namespace Jericho.Controllers.APIs.v1
             var postEntity = await this.postService.GetPostAsync(postId);
             var postDto = this.mapper.Map<PostDto>(postEntity);
 
-            var contentResult = new ContentResult
+            if(postDto!=null)
             {
-                Content = postDto.ToString(),
-                StatusCode = 200
-            };
+                return new OkObjectResult(postDto);
+            }
 
-            return contentResult;
+            return new NotFoundObjectResult(null);
+        }
+
+        [HttpGet]
+        public IActionResult GetAllPosts()
+        {
+            var postEntities = this.postService.GetAllPosts();
+            var postDtos = this.mapper.Map<IList<PostDto>>(postEntities);
+
+            return new OkObjectResult(postDtos);
         }
 
         /// <summary>
