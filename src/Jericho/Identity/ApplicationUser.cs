@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using Jericho.Identity.Models;
-using MongoDB.Bson.Serialization.Attributes;
-using Microsoft.AspNet.Identity;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.IdGenerators;
-
-namespace Jericho.Identity
+﻿namespace Jericho.Identity
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Security.Claims;
 
-    public class MongoIdentityUser : IUser
+    using Jericho.Identity.Models;
+
+    using Microsoft.AspNet.Identity;
+
+    using MongoDB.Bson;
+    using MongoDB.Bson.Serialization.Attributes;
+
+    public class ApplicationUser : IUser
     {
         #region Fields
 
@@ -23,7 +24,7 @@ namespace Jericho.Identity
 
         #region Constructor
 
-        public MongoIdentityUser(string userName, string email) : this(userName)
+        public ApplicationUser(string userName, string email) : this(userName)
         {
             if (email != null)
             {
@@ -31,7 +32,7 @@ namespace Jericho.Identity
             }
         }
 
-        public MongoIdentityUser(string userName, MongoUserEmail email) : this(userName)
+        public ApplicationUser(string userName, MongoUserEmail email) : this(userName)
         {
             if (email != null)
             {
@@ -39,7 +40,7 @@ namespace Jericho.Identity
             }
         }
 
-        public MongoIdentityUser(string userName)
+        public ApplicationUser(string userName)
         {
             if (userName == null)
             {
@@ -62,11 +63,13 @@ namespace Jericho.Identity
 
         public string UserName { get; set; }
 
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
         public string NormalizedUserName { get; private set; }
 
         public MongoUserEmail Email { get; private set; }
-
-        public int Age { get; set; }
 
         public string PasswordHash { get; private set; }
 

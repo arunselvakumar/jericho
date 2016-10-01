@@ -19,7 +19,7 @@ namespace Jericho.Identity
         IUserPasswordStore<TUser>,
         IUserSecurityStampStore<TUser>,
         IUserEmailStore<TUser>
-        where TUser : MongoIdentityUser
+        where TUser : ApplicationUser
     {
         #region Fields
 

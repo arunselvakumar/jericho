@@ -2,16 +2,20 @@
 {
     using System.Threading.Tasks;
 
+    using Jericho.Identity;
+    using Jericho.Models.v1.DTOs.User;
     using Jericho.Models.v1.Entities;
 
     public interface IUserService
     {
-        Task CreateUserAsync(UserEntity user);
+        Task<string> SaveUserAsync(SaveUserRequestDto user);
 
-        bool LoginUserAsync(UserEntity user);
+        Task<bool> UpdateUserAsync(SaveUserRequestDto user);
 
-        bool IsUserNameExists(string userName);
+        Task<ApplicationUser> GetUserById(string id);
 
-        bool IsEmailAddressExists(string email);
+        Task<ApplicationUser> GetUserByUserName(string username);
+
+        Task<string> LoginUserAsync(LoginUserRequestDto user);
     }
 }

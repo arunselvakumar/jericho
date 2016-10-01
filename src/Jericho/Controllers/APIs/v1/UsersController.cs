@@ -1,21 +1,13 @@
 ﻿namespace Jericho.Controllers.APIs.v1
 {
-    using System;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Linq;
-    using System.Security.Claims;
     using System.Threading.Tasks;
 
     using AutoMapper;
 
-    using Jericho.Identity;
     using Jericho.Models.v1.DTOs.User;
-    using Jericho.Models.v1.Entities;
     using Jericho.Services.Interfaces;
-    using Jericho.Validations.Interfaces;
 
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
     public class UsersController : Controller
@@ -24,26 +16,16 @@
 
         private readonly IMapper mapper;
 
-        private readonly UserManager<MongoIdentityUser> userManager;
-
-        private readonly SignInManager<MongoIdentityUser> signInManager;
-
-        private ICreateUserValidationService createUserValidationService;
+        private readonly IUserService userService;
 
         #endregion
 
         #region Constructor
 
-        public UsersController(
-            UserManager<MongoIdentityUser> userManager,
-            SignInManager<MongoIdentityUser> signInManager,
-            ICreateUserValidationService createUserValidationService, 
-            IMapper mapper)
+        public UsersController(IUserService userService, IMapper mapper)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            this.userService = userService;
 
-            this.createUserValidationService = createUserValidationService;
             this.mapper = mapper;
         }
 
@@ -53,87 +35,51 @@
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> SaveUserAsync([FromBody] SaveUserRequestDto saveUserRequestDto)
         {
-            var user = this.mapper.Map<UserEntity>(saveUserRequestDto);
-            var userIdentity = new MongoIdentityUser(user.UserName, user.EMail);
-            userIdentity.Age = 26;
+            var jwtToken = await this.userService.SaveUserAsync(saveUserRequestDto);
 
-            var userManagerResult = await this.userManager.CreateAsync(userIdentity, user.Password);
-
-            if (userManagerResult.Succeeded)
+            if (jwtToken != null)
             {
-                var claims = new Claim[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToLongDateString(), ClaimValueTypes.Integer64)
-                };
-
-                var jwt = new JwtSecurityToken(claims: claims);
-
-                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-                return new OkObjectResult(encodedJwt);
+                return new CreatedResult(string.Empty, jwtToken);
             }
 
-            return new BadRequestObjectResult(userManagerResult.Errors);
+            return new BadRequestResult();
         }
 
-        [HttpGet, Authorize]
+        [HttpGet]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> GetUserAsync([FromQuery] string id = null, [FromQuery] string username = null)
         {
-            var userIdentity = id != null ? await this.userManager.FindByIdAsync(id) : await this.userManager.FindByNameAsync(username);
+            var applicationUser = id != null ? await this.userService.GetUserById(id) : await this.userService.GetUserByUserName(username);
 
-            if(userIdentity != null)
+            if (applicationUser == null)
             {
-                return new OkObjectResult(userIdentity);
+                return new NotFoundResult();
             }
 
-            return new NotFoundResult();
+            var user = this.mapper.Map<UserDto>(applicationUser);
+            return new OkObjectResult(user);
         }
 
         [HttpPatch]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> UpdateUserAsync([FromBody] SaveUserRequestDto updateUserRequestDto)
         {
-            var user = this.mapper.Map<UserEntity>(updateUserRequestDto);
-            var userIdentity = new MongoIdentityUser(user.UserName, user.EMail);
-
-            var userManagerResult = await this.userManager.UpdateAsync(userIdentity);
-
-            if (userManagerResult.Succeeded)
-            {
-                return new OkResult();
-            }
-
-            return new BadRequestObjectResult(userManagerResult.Errors);
+            var isUpdated = await this.userService.UpdateUserAsync(updateUserRequestDto);
+            return isUpdated ? new StatusCodeResult(204) : new BadRequestResult();
         }
 
         [HttpPost, AllowAnonymous]
         [Route("api/v1/[controller]/authorize")]
         public async Task<IActionResult> AuthorizeUserAsync([FromBody] LoginUserRequestDto loginUserRequestDto)
         {
-            var user = this.mapper.Map<UserEntity>(loginUserRequestDto);
-            
-            var signInManagerResult = await this.signInManager.PasswordSignInAsync(user.UserName, user.Password, isPersistent: false, lockoutOnFailure: false);
+            var user = await this.userService.LoginUserAsync(loginUserRequestDto);
 
-            if (signInManagerResult.Succeeded)
+            if (string.IsNullOrEmpty(user))
             {
-                var claims = new Claim[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToLongDateString(), ClaimValueTypes.Integer64)
-                };
-
-                var jwt = new JwtSecurityToken(claims: claims);
-
-                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-                return new OkObjectResult(encodedJwt);
+                return new UnauthorizedResult();
             }
 
-            return new UnauthorizedResult();
+            return new OkObjectResult(user);
         }
     }
 }

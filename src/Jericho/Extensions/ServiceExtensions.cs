@@ -60,29 +60,29 @@ namespace Jericho.Extensions
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<IUserStore<MongoIdentityUser>>(provider =>
+            service.AddSingleton<IUserStore<ApplicationUser>>(provider =>
             {
                 var options = provider.GetService<IOptions<MongoDbOptions>>();
                 var client = new MongoClient(options.Value.ConnectionString);
                 var database = client.GetDatabase(options.Value.DatabaseName);
                 var loggerFactory = provider.GetService<ILoggerFactory>();
 
-                return new MongoUserStore<MongoIdentityUser>(database, loggerFactory);
+                return new MongoUserStore<ApplicationUser>(database, loggerFactory);
             });
         }
 
         public static void AddMongoIdentityService(this IServiceCollection service)
         {
             service.AddSingleton<IdentityMarkerService>();
-            service.AddSingleton<IUserValidator<MongoIdentityUser>, UserValidator<MongoIdentityUser>>();
-            service.AddSingleton<IPasswordValidator<MongoIdentityUser>, PasswordValidator<MongoIdentityUser>>();
-            service.AddSingleton<IPasswordHasher<MongoIdentityUser>, PasswordHasher<MongoIdentityUser>>();
+            service.AddSingleton<IUserValidator<ApplicationUser>, UserValidator<ApplicationUser>>();
+            service.AddSingleton<IPasswordValidator<ApplicationUser>, PasswordValidator<ApplicationUser>>();
+            service.AddSingleton<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
             service.AddSingleton<ILookupNormalizer, UpperInvariantLookupNormalizer>();
             service.AddSingleton<IdentityErrorDescriber>();
-            service.AddSingleton<ISecurityStampValidator, SecurityStampValidator<MongoIdentityUser>>();
-            service.AddSingleton<IUserClaimsPrincipalFactory<MongoIdentityUser>, UserClaimsPrincipalFactory<MongoIdentityUser>>();
-            service.AddSingleton<UserManager<MongoIdentityUser>, UserManager<MongoIdentityUser>>();
-            service.AddScoped<SignInManager<MongoIdentityUser>, SignInManager<MongoIdentityUser>>();
+            service.AddSingleton<ISecurityStampValidator, SecurityStampValidator<ApplicationUser>>();
+            service.AddSingleton<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsPrincipalFactory<ApplicationUser>>();
+            service.AddSingleton<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
+            service.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
         }
 
         public static void AddAutoMapper(this IServiceCollection service, MapperConfiguration mapperConfiguration)
