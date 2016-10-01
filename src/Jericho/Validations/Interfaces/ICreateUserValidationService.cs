@@ -6,6 +6,6 @@
 
     public interface ICreateUserValidationService
     {
-        IEnumerable<string> Validate(SaveUserRequestDto userRequestDtoToValidate);
+        // IEnumerable<string> Validate(SaveUserRequestDto userRequestDtoToValidate);
     }
 }

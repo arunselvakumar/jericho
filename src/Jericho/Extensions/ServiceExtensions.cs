@@ -50,7 +50,7 @@ namespace Jericho.Extensions
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<ICreateUserValidationService, CreateUserValidationService>();
+            // service.AddSingleton<ICreateUserValidationService, CreateUserValidationService>();
         }
 
         public static void AddIdentityService(this IServiceCollection service, IConfigurationRoot configuration)

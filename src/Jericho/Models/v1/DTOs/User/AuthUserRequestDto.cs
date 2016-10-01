@@ -4,7 +4,7 @@
 
     using Newtonsoft.Json;
 
-    public class LoginUserRequestDto
+    public class AuthUserRequestDto
     {
         #region Public Properties
 

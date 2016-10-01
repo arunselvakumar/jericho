@@ -8,7 +8,7 @@
     using Jericho.Services.Interfaces;
     using Jericho.Validations.Interfaces;
 
-    public class CreateUserValidationService : ICreateUserValidationService
+    public class CreateUserValidationServices
     {
         #region Fields
 
@@ -18,21 +18,21 @@
 
         #region Constructor
 
-        public CreateUserValidationService(IUserService userService)
+        public CreateUserValidationServices(IUserService userService)
         {
-            this.userService = userService;
+            //this.userService = userService;
         }
 
         #endregion
 
         #region Public Methods
 
-        public IEnumerable<string> Validate(SaveUserRequestDto userRequestDtoToValidate)
+        public IEnumerable<string> Validate(SaveApplicationUserDto applicationUserDtoToValidate)
         {
             var errors = new List<string>();
 
-            errors.AddRange(this.IsUserNameValid(userRequestDtoToValidate.UserName));
-            errors.Add(this.IsEmailAddressValid(userRequestDtoToValidate.EMail));
+            errors.AddRange(this.IsUserNameValid(applicationUserDtoToValidate.UserName));
+            errors.Add(this.IsEmailAddressValid(applicationUserDtoToValidate.EMail));
             errors.RemoveAll(string.IsNullOrEmpty);
 
             return errors;

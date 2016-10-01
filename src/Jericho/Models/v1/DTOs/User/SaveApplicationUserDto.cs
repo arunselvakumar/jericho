@@ -4,7 +4,7 @@
 
     using Newtonsoft.Json;
 
-    public class SaveUserRequestDto
+    public class SaveApplicationUserDto
     {
         [Required, DataType(DataType.Text)]
         [JsonProperty(PropertyName = "username")]

@@ -9,7 +9,6 @@
 
     using Jericho.Identity;
     using Jericho.Models.v1.DTOs.User;
-    using Jericho.Models.v1.Entities;
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Identity;
@@ -40,7 +39,7 @@
 
         #endregion
 
-        public async Task<string> SaveUserAsync(SaveUserRequestDto user)
+        public async Task<string> SaveUserAsync(SaveApplicationUserDto user)
         {
             var applicationUser = new ApplicationUser(user.UserName, user.EMail)
             {
@@ -69,7 +68,7 @@
             return encodedJwt;
         }
 
-        public async Task<string> LoginUserAsync(LoginUserRequestDto user)
+        public async Task<string> LoginUserAsync(AuthUserRequestDto user)
         {
             var isLoginSucceeded = await this.signInManager.PasswordSignInAsync(user.UserName, user.Password, isPersistent: false, lockoutOnFailure: false);
 
@@ -92,7 +91,7 @@
             return null;
         }
 
-        public async Task<bool> UpdateUserAsync(SaveUserRequestDto user)
+        public async Task<bool> UpdateUserAsync(SaveApplicationUserDto user)
         {
             var applicationUser = new ApplicationUser(user.UserName, user.EMail)
             {

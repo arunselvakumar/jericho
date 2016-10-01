@@ -8,14 +8,14 @@
 
     public interface IUserService
     {
-        Task<string> SaveUserAsync(SaveUserRequestDto user);
+        Task<string> SaveUserAsync(SaveApplicationUserDto applicationUser);
 
-        Task<bool> UpdateUserAsync(SaveUserRequestDto user);
+        Task<bool> UpdateUserAsync(SaveApplicationUserDto applicationUser);
 
         Task<ApplicationUser> GetUserById(string id);
 
         Task<ApplicationUser> GetUserByUserName(string username);
 
-        Task<string> LoginUserAsync(LoginUserRequestDto user);
+        Task<string> LoginUserAsync(AuthUserRequestDto user);
     }
 }

@@ -33,9 +33,9 @@
 
         [HttpPost, AllowAnonymous]
         [Route("api/v1/[controller]")]
-        public async Task<IActionResult> SaveUserAsync([FromBody] SaveUserRequestDto saveUserRequestDto)
+        public async Task<IActionResult> SaveUserAsync([FromBody] SaveApplicationUserDto saveApplicationUserDto)
         {
-            var jwtToken = await this.userService.SaveUserAsync(saveUserRequestDto);
+            var jwtToken = await this.userService.SaveUserAsync(saveApplicationUserDto);
 
             if (jwtToken != null)
             {
@@ -62,17 +62,17 @@
 
         [HttpPatch]
         [Route("api/v1/[controller]")]
-        public async Task<IActionResult> UpdateUserAsync([FromBody] SaveUserRequestDto updateUserRequestDto)
+        public async Task<IActionResult> UpdateUserAsync([FromBody] SaveApplicationUserDto updateApplicationUserDto)
         {
-            var isUpdated = await this.userService.UpdateUserAsync(updateUserRequestDto);
+            var isUpdated = await this.userService.UpdateUserAsync(updateApplicationUserDto);
             return isUpdated ? new StatusCodeResult(204) : new BadRequestResult();
         }
 
         [HttpPost, AllowAnonymous]
         [Route("api/v1/[controller]/authorize")]
-        public async Task<IActionResult> AuthorizeUserAsync([FromBody] LoginUserRequestDto loginUserRequestDto)
+        public async Task<IActionResult> AuthorizeUserAsync([FromBody] AuthUserRequestDto authUserRequestDto)
         {
-            var user = await this.userService.LoginUserAsync(loginUserRequestDto);
+            var user = await this.userService.LoginUserAsync(authUserRequestDto);
 
             if (string.IsNullOrEmpty(user))
             {
