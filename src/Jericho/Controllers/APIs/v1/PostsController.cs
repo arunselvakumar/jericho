@@ -1,4 +1,4 @@
-﻿ // ReSharper disable once StyleCop.SA1300
+﻿// ReSharper disable once StyleCop.SA1300
 namespace Jericho.Controllers.APIs.v1
 {
     using System.Threading.Tasks;
@@ -10,7 +10,6 @@ namespace Jericho.Controllers.APIs.v1
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections;
     using System.Collections.Generic;
 
     /// <summary>
@@ -75,12 +74,20 @@ namespace Jericho.Controllers.APIs.v1
             return new NotFoundObjectResult(null);
         }
 
-        [HttpGet]
-        public IActionResult GetAllPosts()
-        {
-            var postEntities = this.postService.GetAllPosts();
-            var postDtos = this.mapper.Map<IList<PostDto>>(postEntities);
+        [HttpGet]        
+        public async Task<IActionResult> GetAllPosts()
+        {            
+            IEnumerable<PostEntity> postEntities = null;
+            if (this.Request.Query.Count>0)
+            {
+                postEntities = await this.postService.GetFilteredPosts(this.Request.Query);
+            }
+            else
+            {
+                postEntities = this.postService.GetAllPosts();
+            }
 
+            var postDtos = this.mapper.Map<IList<PostDto>>(postEntities);
             return new OkObjectResult(postDtos);
         }
 

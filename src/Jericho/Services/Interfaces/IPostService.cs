@@ -7,6 +7,7 @@
     using Jericho.Models.v1.Entities;
 
     using Microsoft.Azure.Documents;
+    using Microsoft.AspNetCore.Http;
 
     public interface IPostService
     {
@@ -15,5 +16,7 @@
         Task<PostEntity> GetPostAsync(string id);
         
         IEnumerable<PostEntity> GetAllPosts();
+
+        Task<IEnumerable<PostEntity>> GetFilteredPosts(IQueryCollection query);
     }
 }
