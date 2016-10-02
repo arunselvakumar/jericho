@@ -5,10 +5,12 @@
     using Jericho.Identity;
     using Jericho.Models.v1.DTOs.User;
     using Jericho.Models.v1.Entities;
+    using Microsoft.Extensions.Configuration;
+    using Models.v1;
 
     public interface IUserService
-    {
-        Task<string> SaveUserAsync(SaveApplicationUserDto applicationUser);
+    { 
+        Task<AuthTokenModel> SaveUserAsync(SaveApplicationUserDto applicationUser);
 
         Task<bool> UpdateUserAsync(SaveApplicationUserDto applicationUser);
 
@@ -16,6 +18,6 @@
 
         Task<ApplicationUser> GetUserByUserName(string username);
 
-        Task<string> LoginUserAsync(AuthUserRequestDto user);
+        Task<AuthTokenModel> LoginUserAsync(AuthUserRequestDto user);
     }
 }

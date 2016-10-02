@@ -9,6 +9,7 @@
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
 
     public class UsersController : Controller
     {
@@ -45,7 +46,7 @@
             return new BadRequestResult();
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> GetUserAsync([FromQuery] string id = null, [FromQuery] string username = null)
         {
@@ -61,6 +62,7 @@
         }
 
         [HttpPatch]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> UpdateUserAsync([FromBody] SaveApplicationUserDto updateApplicationUserDto)
         {
@@ -74,7 +76,7 @@
         {
             var user = await this.userService.LoginUserAsync(authUserRequestDto);
 
-            if (string.IsNullOrEmpty(user))
+            if (user == null)
             {
                 return new UnauthorizedResult();
             }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Jericho.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {

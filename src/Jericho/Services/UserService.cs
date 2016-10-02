@@ -12,6 +12,12 @@
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.IdentityModel.Tokens;
+    using System.Text;
+    using Options;
+    using Microsoft.Extensions.Options;
+    using Models.v1;
 
     public class UserService : IUserService
     {
@@ -25,21 +31,24 @@
 
         private readonly SignInManager<ApplicationUser> signInManager;
 
+        private readonly AuthenticationOptions authenticationOptions;
+
         #endregion
 
         #region Constructor
 
-        public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IMapper mapper)
+        public UserService(IOptions<AuthenticationOptions> authenticationOptions, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IMapper mapper)
         {
             this.mapper = mapper;
 
+            this.authenticationOptions = authenticationOptions.Value;
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
 
         #endregion
 
-        public async Task<string> SaveUserAsync(SaveApplicationUserDto user)
+        public async Task<AuthTokenModel> SaveUserAsync(SaveApplicationUserDto user)
         {
             var applicationUser = new ApplicationUser(user.UserName, user.EMail)
             {
@@ -54,41 +63,19 @@
                 return null;
             }
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToLongDateString(), ClaimValueTypes.Integer64)
-            };
-
-            var jwt = new JwtSecurityToken(claims: claims, issuer: Issuer, notBefore: DateTime.UtcNow, expires: DateTime.UtcNow.AddDays(7));
-
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            return encodedJwt;
+            return await this.GenerateToken();
         }
 
-        public async Task<string> LoginUserAsync(AuthUserRequestDto user)
+        public async Task<AuthTokenModel> LoginUserAsync(AuthUserRequestDto user)
         {
             var isLoginSucceeded = await this.signInManager.PasswordSignInAsync(user.UserName, user.Password, isPersistent: false, lockoutOnFailure: false);
 
-            if (isLoginSucceeded.Succeeded)
+            if (!isLoginSucceeded.Succeeded)
             {
-                var claims = new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToLongDateString(), ClaimValueTypes.Integer64)
-                };
-
-                var jwt = new JwtSecurityToken(claims: claims, issuer: Issuer, notBefore: DateTime.UtcNow, expires: DateTime.UtcNow.AddDays(7));
-
-                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-                return encodedJwt;
+                return null;
             }
 
-            return null;
+            return await this.GenerateToken();
         }
 
         public async Task<bool> UpdateUserAsync(SaveApplicationUserDto user)
@@ -112,6 +99,17 @@
         public async Task<ApplicationUser> GetUserByUserName(string username)
         {
             return await this.userManager.FindByNameAsync(username);
+        }
+
+        private async Task<AuthTokenModel> GenerateToken()
+        {
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.authenticationOptions.SecretKey));
+
+            var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
+            var jwt = new JwtSecurityToken(issuer: Issuer, notBefore: DateTime.UtcNow, expires: DateTime.UtcNow.AddDays(7), signingCredentials: signingCredentials);
+
+            return await Task.FromResult(new AuthTokenModel(jwt));
         }
     }
 }
