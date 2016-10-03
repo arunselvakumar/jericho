@@ -18,5 +18,10 @@
         IEnumerable<PostEntity> GetAllPosts();
 
         Task<IEnumerable<PostEntity>> GetFilteredPosts(IQueryCollection query);
+
+        Task<bool> UpdatePostAsync(PostEntity postEntity);
+
+        Task<bool> DeletePostAsync(string id);
+        
     }
 }

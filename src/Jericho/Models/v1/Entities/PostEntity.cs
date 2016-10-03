@@ -38,7 +38,8 @@
 
         public bool IsDeleted { get; set; }
             
-        public DateTime Version { get; set; }
+        public DateTime CreatedOn { get; set; }
+
         #endregion
 
         #region Methods

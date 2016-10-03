@@ -11,6 +11,7 @@ namespace Jericho.Controllers.APIs.v1
 
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Posts Controller.
@@ -66,7 +67,7 @@ namespace Jericho.Controllers.APIs.v1
             var postEntity = await this.postService.GetPostAsync(postId);
             var postDto = this.mapper.Map<PostDto>(postEntity);
 
-            if(postDto!=null)
+            if (postDto != null)
             {
                 return new OkObjectResult(postDto);
             }
@@ -74,17 +75,22 @@ namespace Jericho.Controllers.APIs.v1
             return new NotFoundObjectResult(null);
         }
 
-        [HttpGet]        
+        [HttpGet]
         public async Task<IActionResult> GetAllPosts()
-        {            
+        {
             IEnumerable<PostEntity> postEntities = null;
-            if (this.Request.Query.Count>0)
+            if (this.Request.Query.Count > 0)
             {
                 postEntities = await this.postService.GetFilteredPosts(this.Request.Query);
             }
             else
             {
                 postEntities = this.postService.GetAllPosts();
+            }
+
+            if (!postEntities.Any())
+            {
+                return new OkResult();
             }
 
             var postDtos = this.mapper.Map<IList<PostDto>>(postEntities);
@@ -96,17 +102,34 @@ namespace Jericho.Controllers.APIs.v1
         /// </summary>
         /// <param name="id">Post ID</param>
         /// <returns>Post Document</returns>
-        [HttpPatch("{postId}")]
-        [Produces("application/json")]
-        public async Task<IActionResult> UpdatePostByIdAsync(string id)
+        [HttpPut]
+        public async Task<IActionResult> UpdatePostByIdAsync([FromBody]PostDto postDto)
         {
-            var contentResult = new ContentResult
+            var postEntity = this.mapper.Map<PostEntity>(postDto);
+            var isUpdated = await this.postService.UpdatePostAsync(postEntity);
+            if (isUpdated)
             {
-                Content = string.Empty,
-                StatusCode = 200
-            };
-
-            return contentResult;
+                return new OkResult();
+            }
+            else
+            {
+                return new NotFoundResult();
+            }
         }
+
+        [HttpDelete("{postId}")]
+        public async Task<IActionResult> DeletePostByIdAsync(string id)
+        {
+            var isDeleted =await this.postService.DeletePostAsync(id);
+            if(isDeleted)
+            {
+                return new OkResult();
+            }
+            else
+            {
+                return new NotFoundResult();
+            }
+        }
+
     }
 }

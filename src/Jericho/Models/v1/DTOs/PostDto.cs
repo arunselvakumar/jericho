@@ -4,11 +4,15 @@
     using System.ComponentModel.DataAnnotations;
 
     using Newtonsoft.Json;
+    using System;
 
     public class PostDto
     {
         #region Public Properties
 
+
+        public string Id { get; set; }
+            
         [Required]
         [DataType(DataType.Text)]
         [Display(Name = "Post Type")]
@@ -42,6 +46,10 @@
 
         [Display(Name = "Down Votes")]
         public long DownVotes { get; set; }
+
+        public string Url { get; set; }
+            
+        public DateTime CreatedOn { get; set; }
 
         #endregion
 

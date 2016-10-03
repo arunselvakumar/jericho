@@ -10,6 +10,7 @@
     using Jericho.Models.v1.DTOs;
     using Jericho.Models.v1.DTOs.User;
     using Jericho.Models.v1.Entities;
+    using MongoDB.Bson;
 
     public class AutoMapperConfig : Profile
     {
@@ -22,15 +23,10 @@
         private void ConfigurePostMappers()
         {
             this.CreateMap<PostDto, PostEntity>()
-                .ForMember(postEntity => postEntity.UpVotes, opt => opt.UseValue(0))
-                .ForMember(postEntity => postEntity.DownVotes, opt => opt.UseValue(0))
-                .ForMember(postEntity => postEntity.Version, opt => opt.UseValue(DateTime.Now))
-                .ForMember(
-                    postEntity => postEntity.Url,
-                    opt => opt.MapFrom(
-                    postDto => $"{postDto.Title.Trim().Replace(' ', '_').ToLower()}_{DateTime.UtcNow.ToTimeStamp()}"));
+                .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => ObjectId.Parse(postDto.Id)));
 
-            this.CreateMap<PostEntity, PostDto>();
+            this.CreateMap<PostEntity, PostDto>()
+                .ForMember(postDto => postDto.Id, opt => opt.MapFrom(postEntity => postEntity.Id.ToString()));
         }
 
         private void ConfigureUserMappers()
