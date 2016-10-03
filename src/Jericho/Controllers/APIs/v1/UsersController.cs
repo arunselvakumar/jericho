@@ -36,29 +36,28 @@
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> SaveUserAsync([FromBody] SaveApplicationUserDto saveApplicationUserDto)
         {
-            var jwtToken = await this.userService.SaveUserAsync(saveApplicationUserDto);
+            var serviceResult = await this.userService.SaveUserAsync(saveApplicationUserDto);
 
-            if (jwtToken != null)
+            if (!serviceResult.Succeeded)
             {
-                return new CreatedResult(string.Empty, jwtToken);
+                return new BadRequestObjectResult(serviceResult.Errors);
             }
 
-            return new BadRequestResult();
+            return new OkObjectResult(serviceResult.Value);
         }
 
         [HttpGet, AllowAnonymous]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> GetUserAsync([FromQuery] string id = null, [FromQuery] string username = null)
         {
-            var applicationUser = id != null ? await this.userService.GetUserById(id) : await this.userService.GetUserByUserName(username);
+            var serviceResult = id != null ? await this.userService.GetUserById(id) : await this.userService.GetUserByUserName(username);
 
-            if (applicationUser == null)
+            if (!serviceResult.Succeeded)
             {
                 return new NotFoundResult();
             }
 
-            var user = this.mapper.Map<UserDto>(applicationUser);
-            return new OkObjectResult(user);
+            return new OkObjectResult(this.mapper.Map<UserDto>(serviceResult.Value));
         }
 
         [HttpPatch]
@@ -74,14 +73,14 @@
         [Route("api/v1/[controller]/authorize")]
         public async Task<IActionResult> AuthorizeUserAsync([FromBody] AuthUserRequestDto authUserRequestDto)
         {
-            var user = await this.userService.LoginUserAsync(authUserRequestDto);
+            var serviceResult = await this.userService.LoginUserAsync(authUserRequestDto);
 
-            if (user == null)
+            if (!serviceResult.Succeeded)
             {
                 return new UnauthorizedResult();
             }
 
-            return new OkObjectResult(user);
+            return new OkObjectResult(serviceResult.Value);
         }
     }
 }
