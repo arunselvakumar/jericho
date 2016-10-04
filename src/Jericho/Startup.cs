@@ -56,9 +56,10 @@
 
             services.AddMongoDbInstance();
             services.AddAutoMapper(this.MapperConfiguration);
+
             services.AddIdentityService(this.Configuration);
             services.AddMongoIdentityService();
-            services.AddCreateUserValidationService();
+            services.AddHttpContextAccessorService();
             services.AddUserService();
             services.AddPostService();
         }

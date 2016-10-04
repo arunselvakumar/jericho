@@ -18,6 +18,7 @@
     using Models.v1;
     using Providers;
     using System.Security.Claims;
+    using Microsoft.AspNetCore.Http;
 
     public class UserService : IUserService
     {
@@ -33,17 +34,21 @@
 
         private readonly AuthenticationOptions authenticationOptions;
 
+        private readonly IHttpContextAccessor httpContextAccessor;
+
         #endregion
 
         #region Constructor
 
         public UserService(
             IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
             IOptions<AuthenticationOptions> authenticationOptions, 
             UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signInManager)
         {
             this.mapper = mapper;
+            this.httpContextAccessor = httpContextAccessor;
             this.authenticationOptions = authenticationOptions.Value;
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -79,6 +84,34 @@
             }
 
             return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(user.UserName));
+        }
+        
+        public async Task<ServiceResult<object>> ChangePasswordAsync(string oldPassword, string newPassword)
+        {
+            var userId = this.httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
+            var applicationUser = await this.userManager.FindByIdAsync(userId);
+            var changePasswordResult = await this.userManager.ChangePasswordAsync(applicationUser, oldPassword, newPassword);
+
+            if (!changePasswordResult.Succeeded)
+            {
+                return new ServiceResult<object>(false, null, changePasswordResult.Errors);
+            }
+
+            return new ServiceResult<object>(true);
+        }
+
+        public async Task<ServiceResult<object>> ChangeEmailAddressAsync(string newEmailAddress)
+        {
+            var userId = this.httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
+            var applicationUser = await this.userManager.FindByIdAsync(userId);
+            var changePasswordResult = await this.userManager.ChangeEmailAsync(applicationUser, newEmailAddress, null);
+
+            if (!changePasswordResult.Succeeded)
+            {
+                return new ServiceResult<object>(false, null, changePasswordResult.Errors);
+            }
+
+            return new ServiceResult<object>(true);
         }
 
         public async Task<bool> UpdateUserAsync(SaveApplicationUserDto user)
@@ -123,7 +156,7 @@
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, loggedInUser.UserName),
-                new Claim(JwtRegisteredClaimNames.NameId, loggedInUser.Id)
+                new Claim(JwtRegisteredClaimNames.Sid, loggedInUser.Id)
             };
 
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(this.authenticationOptions.SecretKey));

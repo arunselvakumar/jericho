@@ -20,6 +20,7 @@ namespace Jericho.Extensions
     using Jericho.Validations.Interfaces;
 
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.AspNetCore.Http;
 
     public static class ServiceExtensions
     {
@@ -43,14 +44,14 @@ namespace Jericho.Extensions
             service.AddSingleton<IPostService, PostService>();
         }
 
-        public static void AddCreateUserValidationService(this IServiceCollection service)
+        public static void AddHttpContextAccessorService(this IServiceCollection service)
         {
             if (service == null)
             {
                 throw new ArgumentNullException(nameof(service));
             }
 
-            // service.AddSingleton<ICreateUserValidationService, CreateUserValidationService>();
+            service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public static void AddIdentityService(this IServiceCollection service, IConfigurationRoot configuration)

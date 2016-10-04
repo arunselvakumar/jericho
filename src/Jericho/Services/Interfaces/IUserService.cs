@@ -4,8 +4,6 @@
 
     using Jericho.Identity;
     using Jericho.Models.v1.DTOs.User;
-    using Jericho.Models.v1.Entities;
-    using Microsoft.Extensions.Configuration;
     using Models.v1;
     using Providers;
 
@@ -14,6 +12,10 @@
         Task<ServiceResult<AuthTokenModel>> SaveUserAsync(SaveApplicationUserDto applicationUser);
 
         Task<bool> UpdateUserAsync(SaveApplicationUserDto applicationUser);
+
+        Task<ServiceResult<object>> ChangePasswordAsync(string oldPassword, string newPassword);
+
+        Task<ServiceResult<object>> ChangeEmailAddressAsync(string newEmailAddress);
 
         Task<ServiceResult<ApplicationUser>> GetUserById(string id);
 

@@ -23,7 +23,7 @@
 
         #region Constructor
 
-        public UsersController(IUserService userService, IMapper mapper)
+        public UsersController(IMapper mapper, IUserService userService)
         {
             this.userService = userService;
 
@@ -58,6 +58,36 @@
             }
 
             return new OkObjectResult(this.mapper.Map<UserDto>(serviceResult.Value));
+        }
+
+        [HttpPatch]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("api/v1/[controller]/password")]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody]ChangePasswordRequestDto changePasswordRequest)
+        {
+            var serviceResult = await this.userService.ChangePasswordAsync(changePasswordRequest.OldPassword, changePasswordRequest.NewPassword);
+
+            if (!serviceResult.Succeeded)
+            {
+                return new BadRequestObjectResult(serviceResult.Errors);
+            }
+
+            return new StatusCodeResult(204);
+        }
+
+        [HttpPatch]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("api/v1/[controller]/email")]
+        public async Task<IActionResult> ChangeEmailAddressAsync([FromBody]string newEmailAddress)
+        {
+            var serviceResult = await this.userService.ChangeEmailAddressAsync(newEmailAddress);
+
+            if (!serviceResult.Succeeded)
+            {
+                return new BadRequestObjectResult(serviceResult.Errors);
+            }
+
+            return new StatusCodeResult(204);
         }
 
         [HttpPatch]
