@@ -9,18 +9,19 @@
 
     public interface IUserService
     { 
-        Task<ServiceResult<AuthTokenModel>> SaveUserAsync(SaveApplicationUserDto applicationUser);
+        Task<ServiceResult<AuthTokenModel>> SaveUserAsync(ApplicationUser user, string password);
 
-        Task<bool> UpdateUserAsync(SaveApplicationUserDto applicationUser);
+        Task<ServiceResult<AuthTokenModel>> AuthorizeUserAsync(string username, string password);
 
-        Task<ServiceResult<object>> ChangePasswordAsync(string oldPassword, string newPassword);
+        Task<ServiceResult<ApplicationUser>> GetUserByIdAsync(string id);
+
+        Task<ServiceResult<ApplicationUser>> GetUserByUserNameAsync(string username);
+
+        Task<ServiceResult<object>> ChangePasswordAsync(string userId, string oldPassword, string newPassword);
 
         Task<ServiceResult<object>> ChangeEmailAddressAsync(string newEmailAddress);
 
-        Task<ServiceResult<ApplicationUser>> GetUserById(string id);
+        Task<bool> UpdateUserAsync(SaveUserRequestDto applicationUser);
 
-        Task<ServiceResult<ApplicationUser>> GetUserByUserName(string username);
-
-        Task<ServiceResult<AuthTokenModel>> LoginUserAsync(AuthUserRequestDto user);
     }
 }

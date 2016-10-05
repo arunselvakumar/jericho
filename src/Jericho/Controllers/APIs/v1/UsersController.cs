@@ -10,6 +10,8 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Identity;
+    using System.IdentityModel.Tokens.Jwt;
 
     public class UsersController : Controller
     {
@@ -34,9 +36,10 @@
 
         [HttpPost, AllowAnonymous]
         [Route("api/v1/[controller]")]
-        public async Task<IActionResult> SaveUserAsync([FromBody] SaveApplicationUserDto saveApplicationUserDto)
+        public async Task<IActionResult> SaveUserAsync([FromBody] SaveUserRequestDto saveUser)
         {
-            var serviceResult = await this.userService.SaveUserAsync(saveApplicationUserDto);
+            var user = this.mapper.Map<ApplicationUser>(saveUser);
+            var serviceResult = await this.userService.SaveUserAsync(user, saveUser.Password);
 
             if (!serviceResult.Succeeded)
             {
@@ -46,26 +49,41 @@
             return new OkObjectResult(serviceResult.Value);
         }
 
+        [HttpPost, AllowAnonymous]
+        [Route("api/v1/[controller]/authorize")]
+        public async Task<IActionResult> AuthorizeUserAsync([FromBody] AuthUserRequestDto user)
+        {
+            var serviceResult = await this.userService.AuthorizeUserAsync(user.UserName, user.Password);
+
+            if (!serviceResult.Succeeded)
+            {
+                return new UnauthorizedResult();
+            }
+
+            return new OkObjectResult(serviceResult.Value);
+        }
+
         [HttpGet, AllowAnonymous]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> GetUserAsync([FromQuery] string id = null, [FromQuery] string username = null)
         {
-            var serviceResult = id != null ? await this.userService.GetUserById(id) : await this.userService.GetUserByUserName(username);
+            var serviceResult = id != null ? await this.userService.GetUserByIdAsync(id) : await this.userService.GetUserByUserNameAsync(username);
 
             if (!serviceResult.Succeeded)
             {
                 return new NotFoundResult();
             }
 
-            return new OkObjectResult(this.mapper.Map<UserDto>(serviceResult.Value));
+            return new OkObjectResult(this.mapper.Map<GetUserResponseDto>(serviceResult.Value));
         }
 
         [HttpPatch]
         [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Route("api/v1/[controller]/password")]
-        public async Task<IActionResult> ChangePasswordAsync([FromBody]ChangePasswordRequestDto changePasswordRequest)
+        [Route("api/v1/[controller]/resetpassword")]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody]ChangePasswordRequestDto password)
         {
-            var serviceResult = await this.userService.ChangePasswordAsync(changePasswordRequest.OldPassword, changePasswordRequest.NewPassword);
+            var userId = this.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
+            var serviceResult = await this.userService.ChangePasswordAsync(userId, password.OldPassword, password.NewPassword);
 
             if (!serviceResult.Succeeded)
             {
@@ -93,24 +111,11 @@
         [HttpPatch]
         [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]")]
-        public async Task<IActionResult> UpdateUserAsync([FromBody] SaveApplicationUserDto updateApplicationUserDto)
+        public async Task<IActionResult> UpdateUserAsync([FromBody] SaveUserRequestDto updateApplicationUserDto)
         {
+            var userId = this.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
             var isUpdated = await this.userService.UpdateUserAsync(updateApplicationUserDto);
             return isUpdated ? new StatusCodeResult(204) : new BadRequestResult();
-        }
-
-        [HttpPost, AllowAnonymous]
-        [Route("api/v1/[controller]/authorize")]
-        public async Task<IActionResult> AuthorizeUserAsync([FromBody] AuthUserRequestDto authUserRequestDto)
-        {
-            var serviceResult = await this.userService.LoginUserAsync(authUserRequestDto);
-
-            if (!serviceResult.Succeeded)
-            {
-                return new UnauthorizedResult();
-            }
-
-            return new OkObjectResult(serviceResult.Value);
         }
     }
 }

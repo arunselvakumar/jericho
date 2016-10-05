@@ -27,7 +27,7 @@
 
         #region Public Methods
 
-        public IEnumerable<string> Validate(SaveApplicationUserDto applicationUserDtoToValidate)
+        public IEnumerable<string> Validate(SaveUserRequestDto applicationUserDtoToValidate)
         {
             var errors = new List<string>();
 

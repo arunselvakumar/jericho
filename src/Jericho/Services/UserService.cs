@@ -56,15 +56,9 @@
 
         #endregion
 
-        public async Task<ServiceResult<AuthTokenModel>> SaveUserAsync(SaveApplicationUserDto user)
+        public async Task<ServiceResult<AuthTokenModel>> SaveUserAsync(ApplicationUser user, string password)
         {
-            var applicationUser = new ApplicationUser(user.UserName, user.EMail)
-            {
-                FirstName = user.FirstName,
-                LastName = user.LastName, 
-            };
-
-            var saveUserResult = await this.userManager.CreateAsync(applicationUser, user.Password);
+            var saveUserResult = await this.userManager.CreateAsync(user, password);
 
             if (!saveUserResult.Succeeded)
             {
@@ -74,22 +68,43 @@
             return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(user.UserName));
         }
 
-        public async Task<ServiceResult<AuthTokenModel>> LoginUserAsync(AuthUserRequestDto user)
+        public async Task<ServiceResult<AuthTokenModel>> AuthorizeUserAsync(string username, string password)
         {
-            var loginUserResult = await this.signInManager.PasswordSignInAsync(user.UserName, user.Password, isPersistent: false, lockoutOnFailure: false);
+            var loginUserResult = await this.signInManager.PasswordSignInAsync(username, password, isPersistent: false, lockoutOnFailure: false);
 
             if (!loginUserResult.Succeeded)
             {
                 return new ServiceResult<AuthTokenModel>(false, null, "Invalid Username or Password");
             }
 
-            return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(user.UserName));
+            return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(username));
         }
-        
-        public async Task<ServiceResult<object>> ChangePasswordAsync(string oldPassword, string newPassword)
+
+        public async Task<ServiceResult<ApplicationUser>> GetUserByIdAsync(string id)
         {
-            var userId = this.httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
-            var applicationUser = await this.userManager.FindByIdAsync(userId);
+            var applicationUser = await this.FindByIdAsync(id);
+            if (applicationUser == null)
+            {
+                return new ServiceResult<ApplicationUser>(false, null);
+            }
+
+            return new ServiceResult<ApplicationUser>(true, applicationUser);
+        }
+
+        public async Task<ServiceResult<ApplicationUser>> GetUserByUserNameAsync(string username)
+        {
+            var applicationUser = await this.FindByNameAsync(username);
+            if (applicationUser == null)
+            {
+                return new ServiceResult<ApplicationUser>(false, null);
+            }
+
+            return new ServiceResult<ApplicationUser>(true, applicationUser);
+        }
+
+        public async Task<ServiceResult<object>> ChangePasswordAsync(string userId, string oldPassword, string newPassword)
+        {
+            var applicationUser = await this.FindByIdAsync(userId);
             var changePasswordResult = await this.userManager.ChangePasswordAsync(applicationUser, oldPassword, newPassword);
 
             if (!changePasswordResult.Succeeded)
@@ -103,7 +118,7 @@
         public async Task<ServiceResult<object>> ChangeEmailAddressAsync(string newEmailAddress)
         {
             var userId = this.httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
-            var applicationUser = await this.userManager.FindByIdAsync(userId);
+            var applicationUser = await this.FindByIdAsync(userId);
             var changePasswordResult = await this.userManager.ChangeEmailAsync(applicationUser, newEmailAddress, null);
 
             if (!changePasswordResult.Succeeded)
@@ -114,7 +129,7 @@
             return new ServiceResult<object>(true);
         }
 
-        public async Task<bool> UpdateUserAsync(SaveApplicationUserDto user)
+        public async Task<bool> UpdateUserAsync(SaveUserRequestDto user)
         {
             var applicationUser = new ApplicationUser(user.UserName, user.EMail)
             {
@@ -127,31 +142,41 @@
             return updateUserResult.Succeeded;
         }
 
-        public async Task<ServiceResult<ApplicationUser>> GetUserById(string id)
+        private async Task<ApplicationUser> FindByIdAsync(string userId)
         {
-            var applicationUser = await this.userManager.FindByIdAsync(id);
-            if (applicationUser == null)
-            {
-                return new ServiceResult<ApplicationUser>(false, null);
-            }
-
-            return new ServiceResult<ApplicationUser>(true, applicationUser);
+            return await this.userManager.FindByIdAsync(userId);
         }
 
-        public async Task<ServiceResult<ApplicationUser>> GetUserByUserName(string username)
+        private async Task<ApplicationUser> FindByNameAsync(string username)
         {
-            var applicationUser = await this.userManager.FindByNameAsync(username);
-            if (applicationUser == null)
+            return await this.userManager.FindByNameAsync(username);
+        }
+
+        private async Task<bool> IsEmailConfirmedAsync(string userId)
+        {
+            var user = await this.FindByIdAsync(userId);
+            if (user != null)
             {
-                return new ServiceResult<ApplicationUser>(false, null);
+                return await this.userManager.IsEmailConfirmedAsync(user);
             }
 
-            return new ServiceResult<ApplicationUser>(true, applicationUser);
+            return false;
+        }
+
+        private async Task<string> GenerateResetPasswordToken(string userId)
+        {
+            var user = await this.FindByIdAsync(userId);
+            if (user != null)
+            {
+                return await this.userManager.GeneratePasswordResetTokenAsync(user);
+            }
+
+            return null;
         }
 
         private async Task<AuthTokenModel> GenerateJwtSecurityToken(string username)
         {
-            var loggedInUser = await this.userManager.FindByNameAsync(username);
+            var loggedInUser = await this.FindByNameAsync(username);
 
             var claims = new[]
             {

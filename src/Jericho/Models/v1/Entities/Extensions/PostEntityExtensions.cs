@@ -1,11 +1,8 @@
-﻿using Jericho.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Jericho.Models.v1.Entities.Extensions
+﻿namespace Jericho.Models.v1.Entities.Extensions
 {
+    using Jericho.Extensions;
+    using System;
+
     public static class PostEntityExtensions
     {
         public static void ApplyPresets(this PostEntity postEntity)
