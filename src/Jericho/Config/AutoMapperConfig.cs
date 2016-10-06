@@ -23,7 +23,7 @@
         private void ConfigurePostMappers()
         {
             this.CreateMap<PostDto, PostEntity>()
-                .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => ObjectId.Parse(postDto.Id)));
+                .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => string.IsNullOrEmpty(postDto.Id) ? ObjectId.Empty : ObjectId.Parse(postDto.Id)));
 
             this.CreateMap<PostEntity, PostDto>()
                 .ForMember(postDto => postDto.Id, opt => opt.MapFrom(postEntity => postEntity.Id.ToString()));

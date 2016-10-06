@@ -76,16 +76,16 @@ namespace Jericho.Controllers.APIs.v1
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPosts()
+        public async Task<IActionResult> GetAllPosts([FromQuery]int page=0, [FromQuery]int limit=10)
         {
             IEnumerable<PostEntity> postEntities = null;
             if (this.Request.Query.Count > 0)
             {
-                postEntities = await this.postService.GetFilteredPosts(this.Request.Query);
+                postEntities = await this.postService.GetFilteredPosts(this.Request.Query, page, limit);
             }
             else
             {
-                postEntities = this.postService.GetAllPosts();
+                postEntities = await this.postService.GetAllPosts(page, limit);
             }
 
             if (!postEntities.Any())

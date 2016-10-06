@@ -56,19 +56,27 @@
             return await postEntity.FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<PostEntity>> GetFilteredPosts(IQueryCollection query)
-        {                       
-            var filter = new BsonDocument(query.ToDictionary(kvp=>kvp.Key,kvp=>kvp.Value[0]));
+        public async Task<IEnumerable<PostEntity>> GetFilteredPosts(IQueryCollection query, int page, int limit)
+        {            
+            var filter = new BsonDocument(query.ToDictionary(kvp => kvp.Key, kvp => kvp.Value[0]));
+            filter.Remove("page");
+            filter.Remove("limit");
+            filter.Remove("status");
+            filter.Remove("isdeleted");
+            filter.Add(new BsonElement("status", "Approved"));
+            //filter.Add(new BsonElement("isdeleted", false));
+
             return await mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
-                .Find<PostEntity>(filter).ToListAsync();
+                .Find(filter).Skip(page*limit).Limit(limit).ToListAsync();
         }
 
-        public IEnumerable<PostEntity> GetAllPosts()
+        public async Task<IEnumerable<PostEntity>> GetAllPosts(int page, int limit)
         {
-            var postEntities = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
-                .AsQueryable()
-                .Where(postEntity=>postEntity.Status == PostStatusEnum.Approved && !postEntity.IsDeleted)                
-                .OrderBy(postEntity=>postEntity.CreatedOn);
+            var filter = new BsonDocument();
+            filter.Add(new BsonElement("Status", 1));
+            filter.Add(new BsonElement("IsDeleted", false));
+            var postEntities = await mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
+                .Find(filter).Skip(page * limit).Limit(limit).ToListAsync();
            
             return postEntities;
         }

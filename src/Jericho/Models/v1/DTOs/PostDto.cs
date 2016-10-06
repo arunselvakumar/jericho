@@ -10,15 +10,12 @@
     {
         #region Public Properties
 
-
         public string Id { get; set; }
             
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Post Type")]
         public string Type { get; set; }
 
-        [Display(Name ="Post Status")]
         public string Status { get; set; }
             
         [Required]
@@ -31,20 +28,16 @@
 
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Category Id")]
         public string CategoryId { get; set; }
 
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Posted By")]
         public string PostedBy { get; set; }
 
         public IEnumerable<string> Tags { get; set; }
 
-        [Display(Name = "Up Votes")]
         public long UpVotes { get; set; }
 
-        [Display(Name = "Down Votes")]
         public long DownVotes { get; set; }
 
         public string Url { get; set; }
