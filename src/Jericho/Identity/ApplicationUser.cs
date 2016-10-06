@@ -32,14 +32,6 @@
             }
         }
 
-        public ApplicationUser(string userName, MongoUserEmail email) : this(userName)
-        {
-            if (email != null)
-            {
-                Email = email;
-            }
-        }
-
         public ApplicationUser(string userName)
         {
             if (userName == null)

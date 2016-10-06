@@ -32,7 +32,8 @@
         private void ConfigureUserMappers()
         {
             this.CreateMap<SaveUserRequestDto, ApplicationUser>()
-                .ConstructUsing(dto => new ApplicationUser(dto.UserName, dto.EMail));
+                .ConstructUsing(dto => new ApplicationUser(dto.UserName, dto.EMail))
+                .ForMember(user => user.Email, opt => opt.Ignore());
 
             this.CreateMap<ApplicationUser, GetUserResponseDto>()
                 .ForMember(userDto => userDto.EMail, opt => opt.MapFrom(appUser => appUser.Email.NormalizedValue.ToLower()));

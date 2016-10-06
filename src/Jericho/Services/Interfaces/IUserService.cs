@@ -13,6 +13,8 @@
 
         Task<ServiceResult<AuthTokenModel>> AuthorizeUserAsync(string username, string password);
 
+        Task<ServiceResult<object>> ConfirmEmailAsync(string id, string token);
+
         Task<ServiceResult<ApplicationUser>> GetUserByIdAsync(string id);
 
         Task<ServiceResult<ApplicationUser>> GetUserByUserNameAsync(string username);

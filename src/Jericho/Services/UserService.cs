@@ -28,13 +28,13 @@
 
         private readonly IMapper mapper;
 
+        private readonly IEmailService EmailService;
+
         private readonly UserManager<ApplicationUser> userManager;
 
         private readonly SignInManager<ApplicationUser> signInManager;
 
         private readonly AuthenticationOptions authenticationOptions;
-
-        private readonly IHttpContextAccessor httpContextAccessor;
 
         #endregion
 
@@ -42,16 +42,18 @@
 
         public UserService(
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor,
+            IEmailService emailService,
             IOptions<AuthenticationOptions> authenticationOptions, 
-            UserManager<ApplicationUser> userManager, 
+            UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager)
         {
             this.mapper = mapper;
-            this.httpContextAccessor = httpContextAccessor;
+            this.EmailService = emailService;
             this.authenticationOptions = authenticationOptions.Value;
             this.userManager = userManager;
             this.signInManager = signInManager;
+
+            this.ApplyUserManagerPresets();
         }
 
         #endregion
@@ -64,6 +66,8 @@
             {
                 return new ServiceResult<AuthTokenModel>(false, null, saveUserResult.Errors);
             }
+
+            this.SendConfirmationEmail(await this.FindUserByNameAsync(user.UserName));
 
             return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(user.UserName));
         }
@@ -80,9 +84,22 @@
             return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(username));
         }
 
+        public async Task<ServiceResult<object>> ConfirmEmailAsync(string id, string token)
+        {
+            var user = await this.FindUserByIdAsync(id);
+            var confirmEmailResult = await this.userManager.ConfirmEmailAsync(user, token);
+
+            if(!confirmEmailResult.Succeeded)
+            {
+                return new ServiceResult<object>(false, null, confirmEmailResult.Errors);
+            }
+
+            return new ServiceResult<object>(true);
+        }
+
         public async Task<ServiceResult<ApplicationUser>> GetUserByIdAsync(string id)
         {
-            var applicationUser = await this.FindByIdAsync(id);
+            var applicationUser = await this.FindUserByIdAsync(id);
             if (applicationUser == null)
             {
                 return new ServiceResult<ApplicationUser>(false, null);
@@ -93,7 +110,7 @@
 
         public async Task<ServiceResult<ApplicationUser>> GetUserByUserNameAsync(string username)
         {
-            var applicationUser = await this.FindByNameAsync(username);
+            var applicationUser = await this.FindUserByNameAsync(username);
             if (applicationUser == null)
             {
                 return new ServiceResult<ApplicationUser>(false, null);
@@ -104,7 +121,7 @@
 
         public async Task<ServiceResult<object>> ChangePasswordAsync(string userId, string oldPassword, string newPassword)
         {
-            var applicationUser = await this.FindByIdAsync(userId);
+            var applicationUser = await this.FindUserByIdAsync(userId);
             var changePasswordResult = await this.userManager.ChangePasswordAsync(applicationUser, oldPassword, newPassword);
 
             if (!changePasswordResult.Succeeded)
@@ -117,8 +134,7 @@
 
         public async Task<ServiceResult<object>> ChangeEmailAddressAsync(string newEmailAddress)
         {
-            var userId = this.httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
-            var applicationUser = await this.FindByIdAsync(userId);
+            var applicationUser = await this.FindUserByIdAsync(string.Empty);
             var changePasswordResult = await this.userManager.ChangeEmailAsync(applicationUser, newEmailAddress, null);
 
             if (!changePasswordResult.Succeeded)
@@ -142,30 +158,25 @@
             return updateUserResult.Succeeded;
         }
 
-        private async Task<ApplicationUser> FindByIdAsync(string userId)
+        private async Task<ApplicationUser> FindUserByIdAsync(string userId)
         {
             return await this.userManager.FindByIdAsync(userId);
         }
 
-        private async Task<ApplicationUser> FindByNameAsync(string username)
+        private async Task<ApplicationUser> FindUserByNameAsync(string username)
         {
             return await this.userManager.FindByNameAsync(username);
         }
 
-        private async Task<bool> IsEmailConfirmedAsync(string userId)
+        private async void SendConfirmationEmail(ApplicationUser user)
         {
-            var user = await this.FindByIdAsync(userId);
-            if (user != null)
-            {
-                return await this.userManager.IsEmailConfirmedAsync(user);
-            }
-
-            return false;
+            var token = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+            await this.EmailService.SendEmailAsync(user.Email.NormalizedValue, "Activate Account", token);
         }
 
         private async Task<string> GenerateResetPasswordToken(string userId)
         {
-            var user = await this.FindByIdAsync(userId);
+            var user = await this.FindUserByIdAsync(userId);
             if (user != null)
             {
                 return await this.userManager.GeneratePasswordResetTokenAsync(user);
@@ -176,7 +187,7 @@
 
         private async Task<AuthTokenModel> GenerateJwtSecurityToken(string username)
         {
-            var loggedInUser = await this.FindByNameAsync(username);
+            var loggedInUser = await this.FindUserByNameAsync(username);
 
             var claims = new[]
             {
@@ -191,6 +202,11 @@
             var jwt = new JwtSecurityToken(claims: claims, issuer: Issuer, notBefore: DateTime.UtcNow, expires: DateTime.UtcNow.AddDays(7), signingCredentials: signingCredentials);
 
             return await Task.FromResult(new AuthTokenModel(jwt));
+        }
+
+        private void ApplyUserManagerPresets()
+        {
+            this.userManager.RegisterTokenProvider("Default", new EmailTokenProvider<ApplicationUser>());
         }
     }
 }

@@ -48,6 +48,7 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MongoDbOptions>(this.Configuration.GetSection("MongoDb"));
+            services.Configure<SendGridOptions>(this.Configuration.GetSection("SendGrid"));
             services.Configure<Options.AuthenticationOptions>(this.Configuration.GetSection("Authentication"));
 
             services.AddApplicationInsightsTelemetry(this.Configuration);
@@ -60,6 +61,7 @@
             services.AddIdentityService(this.Configuration);
             services.AddMongoIdentityService();
             services.AddHttpContextAccessorService();
+            services.AddEmailService();
             services.AddUserService();
             services.AddPostService();
         }

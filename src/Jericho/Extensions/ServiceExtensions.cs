@@ -54,6 +54,16 @@ namespace Jericho.Extensions
             service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
+        public static void AddEmailService(this IServiceCollection service)
+        {
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            service.AddSingleton<IEmailService, EmailService>();
+        }
+
         public static void AddIdentityService(this IServiceCollection service, IConfigurationRoot configuration)
         {
             if (service == null)

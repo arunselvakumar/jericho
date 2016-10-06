@@ -63,6 +63,22 @@
             return new OkObjectResult(serviceResult.Value);
         }
 
+        [HttpPost, AllowAnonymous]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("api/v1/[controller]/confirmemail")]
+        public async Task<IActionResult> ConfirmEmailAsync([FromBody] string token)
+        {
+            var userId = this.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
+            var serviceResult = await this.userService.ConfirmEmailAsync(userId, token);
+
+            if(!serviceResult.Succeeded)
+            {
+                return new BadRequestObjectResult(serviceResult.Errors);
+            }
+
+            return new StatusCodeResult(204);
+        }
+
         [HttpGet, AllowAnonymous]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> GetUserAsync([FromQuery] string id = null, [FromQuery] string username = null)
