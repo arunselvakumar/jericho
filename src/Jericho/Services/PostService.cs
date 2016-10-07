@@ -13,7 +13,6 @@
     using Microsoft.Extensions.Options;
 
     using MongoDB.Driver;
-    using Models.v1.Entities.Enums;
     using MongoDB.Bson;
     using Microsoft.AspNetCore.Http;
     using Models.v1.Entities.Extensions;
@@ -29,7 +28,7 @@
         #endregion
 
         #region Constructor
-        
+
         public PostService(IOptions<MongoDbOptions> MongoDbConfig, IMapper mapper, IMongoHelper mongoHelper)
         {
             this.mongoDbInstance = mongoHelper.MongoDbInstance;
@@ -51,20 +50,20 @@
 
         public async Task<PostEntity> GetPostAsync(string id)
         {
-            var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);            
+            var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
             var postEntity = await postCollection.FindAsync(Builders<PostEntity>.Filter.Eq("_id", ObjectId.Parse(id)));
 
             return await postEntity.FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<PostEntity>> GetPosts(IQueryCollection query, int page, int limit)
-        {            
-            var filter = new BsonDocument(query.ToDictionary(kvp => kvp.Key.ToLower(), kvp => kvp.Value[0]));
+        {
+            var filter = new BsonDocument(query.ToDictionary(kvp => kvp.Key.ToLower(), kvp => kvp.Value[0].ToString().ToCaseInsensitiveRegex()));
             filter.RemoveDefaultPostFilterPresets();
             filter.ApplyDefaultPostFilterPresets();
 
             return await mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
-                .Find(filter).Skip(page*limit).Limit(limit).ToListAsync();
+                .Find(filter).Skip(page * limit).Limit(limit).ToListAsync();
         }
 
         public async Task<bool> UpdatePostAsync(PostEntity postEntity)
@@ -77,7 +76,7 @@
         public async Task<bool> DeletePostAsync(string id)
         {
             var postEntity = await GetPostAsync(id);
-            if(postEntity == null)
+            if (postEntity == null)
             {
                 return false;
             }
@@ -85,10 +84,9 @@
             {
                 postEntity.IsDeleted = true;
                 return await UpdatePostAsync(postEntity);
-            }            
+            }
         }
 
         #endregion
-
     }
 }
