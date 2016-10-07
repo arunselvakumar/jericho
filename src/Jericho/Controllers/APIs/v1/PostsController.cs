@@ -76,18 +76,10 @@ namespace Jericho.Controllers.APIs.v1
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllPosts([FromQuery]int page=0, [FromQuery]int limit=10)
-        {
-            IEnumerable<PostEntity> postEntities = null;
-            if (this.Request.Query.Count > 0)
-            {
-                postEntities = await this.postService.GetFilteredPosts(this.Request.Query, page, limit);
-            }
-            else
-            {
-                postEntities = await this.postService.GetAllPosts(page, limit);
-            }
-
+        public async Task<IActionResult> GetPosts([FromQuery]int page=0, [FromQuery]int limit=10)
+        {           
+            var postEntities = await this.postService.GetPosts(this.Request.Query, page, limit);
+           
             if (!postEntities.Any())
             {
                 return new OkResult();
@@ -118,9 +110,9 @@ namespace Jericho.Controllers.APIs.v1
         }
 
         [HttpDelete("{postId}")]
-        public async Task<IActionResult> DeletePostByIdAsync(string id)
+        public async Task<IActionResult> DeletePostByIdAsync(string postId)
         {
-            var isDeleted =await this.postService.DeletePostAsync(id);
+            var isDeleted =await this.postService.DeletePostAsync(postId);
             if(isDeleted)
             {
                 return new OkResult();

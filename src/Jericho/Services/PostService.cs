@@ -17,6 +17,7 @@
     using MongoDB.Bson;
     using Microsoft.AspNetCore.Http;
     using Models.v1.Entities.Extensions;
+    using Extensions;
 
     public class PostService : IPostService
     {
@@ -51,34 +52,19 @@
         public async Task<PostEntity> GetPostAsync(string id)
         {
             var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);            
-            var postEntity = await postCollection.FindAsync(Builders<PostEntity>.Filter.Eq("_id", id));
+            var postEntity = await postCollection.FindAsync(Builders<PostEntity>.Filter.Eq("_id", ObjectId.Parse(id)));
 
             return await postEntity.FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<PostEntity>> GetFilteredPosts(IQueryCollection query, int page, int limit)
+        public async Task<IEnumerable<PostEntity>> GetPosts(IQueryCollection query, int page, int limit)
         {            
-            var filter = new BsonDocument(query.ToDictionary(kvp => kvp.Key, kvp => kvp.Value[0]));
-            filter.Remove("page");
-            filter.Remove("limit");
-            filter.Remove("status");
-            filter.Remove("isdeleted");
-            filter.Add(new BsonElement("status", "Approved"));
-            //filter.Add(new BsonElement("isdeleted", false));
+            var filter = new BsonDocument(query.ToDictionary(kvp => kvp.Key.ToLower(), kvp => kvp.Value[0]));
+            filter.RemoveDefaultPostFilterPresets();
+            filter.ApplyDefaultPostFilterPresets();
 
             return await mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
                 .Find(filter).Skip(page*limit).Limit(limit).ToListAsync();
-        }
-
-        public async Task<IEnumerable<PostEntity>> GetAllPosts(int page, int limit)
-        {
-            var filter = new BsonDocument();
-            filter.Add(new BsonElement("Status", 1));
-            filter.Add(new BsonElement("IsDeleted", false));
-            var postEntities = await mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
-                .Find(filter).Skip(page * limit).Limit(limit).ToListAsync();
-           
-            return postEntities;
         }
 
         public async Task<bool> UpdatePostAsync(PostEntity postEntity)
@@ -91,8 +77,15 @@
         public async Task<bool> DeletePostAsync(string id)
         {
             var postEntity = await GetPostAsync(id);
-            postEntity.IsDeleted = true;
-            return await UpdatePostAsync(postEntity);
+            if(postEntity == null)
+            {
+                return false;
+            }
+            else
+            {
+                postEntity.IsDeleted = true;
+                return await UpdatePostAsync(postEntity);
+            }            
         }
 
         #endregion

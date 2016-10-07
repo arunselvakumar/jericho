@@ -15,9 +15,7 @@
 
         Task<PostEntity> GetPostAsync(string id);
         
-        Task<IEnumerable<PostEntity>> GetAllPosts(int page, int limit);
-
-        Task<IEnumerable<PostEntity>> GetFilteredPosts(IQueryCollection query, int page, int limit);
+        Task<IEnumerable<PostEntity>> GetPosts(IQueryCollection query, int page, int limit);
 
         Task<bool> UpdatePostAsync(PostEntity postEntity);
 
