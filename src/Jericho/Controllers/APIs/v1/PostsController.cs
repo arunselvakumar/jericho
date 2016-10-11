@@ -1,4 +1,8 @@
 ﻿// ReSharper disable once StyleCop.SA1300
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+
 namespace Jericho.Controllers.APIs.v1
 {
     using System.Threading.Tasks;
@@ -39,6 +43,7 @@ namespace Jericho.Controllers.APIs.v1
             this.postService = postService;
             this.mapper = mapper;
         }
+
         #endregion
 
         /// <summary>
@@ -47,6 +52,7 @@ namespace Jericho.Controllers.APIs.v1
         /// <param name="postDto">Post DTO</param>
         /// <returns>Service Response</returns>
         [HttpPost]
+        //[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> SavePostAsync([FromBody]PostDto postDto)
         {
             var postEntity = this.mapper.Map<PostEntity>(postDto);
@@ -78,7 +84,7 @@ namespace Jericho.Controllers.APIs.v1
         [HttpGet]
         public async Task<IActionResult> GetPosts([FromQuery]int page=0, [FromQuery]int limit=10)
         {           
-            var postEntities = await this.postService.GetPosts(this.Request.Query, page, limit);
+            var postEntities = await this.postService.GetPostsAsync(this.Request.Query, page, limit);
            
             if (!postEntities.Any())
             {
@@ -91,9 +97,7 @@ namespace Jericho.Controllers.APIs.v1
 
         /// <summary>
         /// Updates the post from Data Store.
-        /// </summary>
-        /// <param name="id">Post ID</param>
-        /// <returns>Post Document</returns>
+        /// </summary>        
         [HttpPut]
         public async Task<IActionResult> UpdatePostByIdAsync([FromBody]PostDto postDto)
         {

@@ -1,4 +1,6 @@
-﻿namespace Jericho.Services.Interfaces
+﻿using Jericho.Providers;
+
+namespace Jericho.Services.Interfaces
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -11,11 +13,11 @@
 
     public interface IPostService
     {
-        Task<PostEntity> CreatePostAsync(PostEntity post);
+        Task<ServiceResult<PostEntity>> CreatePostAsync(PostEntity post);
 
         Task<PostEntity> GetPostAsync(string id);
         
-        Task<IEnumerable<PostEntity>> GetPosts(IQueryCollection query, int page, int limit);
+        Task<IEnumerable<PostEntity>> GetPostsAsync(IQueryCollection query, int page, int limit);
 
         Task<bool> UpdatePostAsync(PostEntity postEntity);
 

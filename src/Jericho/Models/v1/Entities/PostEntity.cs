@@ -1,4 +1,8 @@
-﻿namespace Jericho.Models.v1.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using Jericho.Validations;
+using Jericho.Validations.Interfaces;
+
+namespace Jericho.Models.v1.Entities
 {
     using System;
     using System.Collections.Generic;
@@ -10,7 +14,7 @@
     using MongoDB.Bson;
     using Newtonsoft.Json.Converters;
 
-    public class PostEntity
+    public class PostEntity : IValidatableEntity
     {
         #region Properties
 
@@ -78,6 +82,17 @@
         {
             return this.Id.ToString();
         }
+
+        public Dictionary<string, string> Validate()
+        {
+            var validationResults = new Dictionary<string, string>();
+
+            this.RequiredValidationRule(nameof(Title), validationResults);
+            this.RequiredValidationRule(nameof(Content), validationResults);
+
+            return validationResults;
+        }
+
         #endregion
     }
 }

@@ -1,10 +1,11 @@
-﻿namespace Jericho.Services
+﻿using System.ComponentModel.DataAnnotations;
+using Jericho.Providers;
+
+namespace Jericho.Services
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using AutoMapper;
     using Jericho.Helpers.Interfaces;
     using Jericho.Models.v1.Entities;
     using Jericho.Options;
@@ -29,7 +30,7 @@
 
         #region Constructor
 
-        public PostService(IOptions<MongoDbOptions> MongoDbConfig, IMapper mapper, IMongoHelper mongoHelper)
+        public PostService(IOptions<MongoDbOptions> MongoDbConfig, IMongoHelper mongoHelper)
         {
             this.mongoDbInstance = mongoHelper.MongoDbInstance;
             this.mongoDbOptions = MongoDbConfig.Value;
@@ -39,13 +40,22 @@
 
         #region Public Methods
 
-        public async Task<PostEntity> CreatePostAsync(PostEntity postEntity)
-        {
+        public async Task<ServiceResult<PostEntity>> CreatePostAsync(PostEntity postEntity)
+        {               
+            var validationResults = postEntity.Validate();
+
+            if (validationResults.Any())
+            {
+                return new ServiceResult<PostEntity>(false, validationResults);
+            }
+
             postEntity.ApplyPresets();
             var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
             await postCollection.InsertOneAsync(postEntity);
 
-            return await GetPostAsync(postEntity.Id.ToString());
+            var insertedEntity = await GetPostAsync(postEntity.Id.ToString());
+
+            return new ServiceResult<PostEntity>(true, insertedEntity);
         }
 
         public async Task<PostEntity> GetPostAsync(string id)
@@ -56,7 +66,7 @@
             return await postEntity.FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<PostEntity>> GetPosts(IQueryCollection query, int page, int limit)
+        public async Task<IEnumerable<PostEntity>> GetPostsAsync(IQueryCollection query, int page, int limit)
         {
             var filter = new BsonDocument(query.ToDictionary(kvp => kvp.Key.ToLower(), kvp => kvp.Value[0].ToString().ToCaseInsensitiveRegex()));
             filter.RemoveDefaultPostFilterPresets();

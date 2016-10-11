@@ -1,4 +1,6 @@
-﻿namespace Jericho.Providers.Interfaces
+﻿using System.Collections.Generic;
+
+namespace Jericho.Providers.Interfaces
 {
     interface IServiceResult<T>
     {
@@ -6,6 +8,6 @@
 
         T Value { get; set; }
 
-        object Errors { get; set; }
+        Dictionary<string, string> Errors { get; set; }
     }
 }

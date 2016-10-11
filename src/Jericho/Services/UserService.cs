@@ -64,7 +64,7 @@
 
             if (!saveUserResult.Succeeded)
             {
-                return new ServiceResult<AuthTokenModel>(false, null, saveUserResult.Errors);
+                return new ServiceResult<AuthTokenModel>(false, saveUserResult.Errors);
             }
 
             this.SendConfirmationEmail(await this.FindUserByNameAsync(user.UserName));
@@ -78,7 +78,7 @@
 
             if (!loginUserResult.Succeeded)
             {
-                return new ServiceResult<AuthTokenModel>(false, null, "Invalid Username or Password");
+                return new ServiceResult<AuthTokenModel>(false, "Invalid Username or Password");
             }
 
             return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(username));
@@ -91,7 +91,7 @@
 
             if(!confirmEmailResult.Succeeded)
             {
-                return new ServiceResult<object>(false, null, confirmEmailResult.Errors);
+                return new ServiceResult<object>(false, confirmEmailResult.Errors);
             }
 
             return new ServiceResult<object>(true);
@@ -126,7 +126,7 @@
 
             if (!changePasswordResult.Succeeded)
             {
-                return new ServiceResult<object>(false, null, changePasswordResult.Errors);
+                return new ServiceResult<object>(false, changePasswordResult.Errors);
             }
 
             return new ServiceResult<object>(true);
@@ -139,7 +139,7 @@
 
             if (!changePasswordResult.Succeeded)
             {
-                return new ServiceResult<object>(false, null, changePasswordResult.Errors);
+                return new ServiceResult<object>(false, changePasswordResult.Errors);
             }
 
             return new ServiceResult<object>(true);
