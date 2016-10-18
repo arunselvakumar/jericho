@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Jericho.Providers;
-
-namespace Jericho.Services
+﻿namespace Jericho.Services
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -10,6 +7,9 @@ namespace Jericho.Services
     using Jericho.Models.v1.Entities;
     using Jericho.Options;
     using Jericho.Services.Interfaces;
+
+    using System.ComponentModel.DataAnnotations;
+    using Jericho.Providers.ServiceResultProvider;
 
     using Microsoft.Extensions.Options;
 
@@ -46,7 +46,9 @@ namespace Jericho.Services
 
             if (validationResults.Any())
             {
-                return new ServiceResult<PostEntity>(false, validationResults);
+                // ToDo : Convert validationResults to error.
+                // I have hard-coded to null here, for build fix.
+                return new ServiceResult<PostEntity>(false, (IEnumerable<Error>)null);
             }
 
             postEntity.ApplyPresets();

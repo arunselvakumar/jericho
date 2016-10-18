@@ -1,10 +1,9 @@
-﻿using Jericho.Providers;
-
-namespace Jericho.Services.Interfaces
+﻿namespace Jericho.Services.Interfaces
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Jericho.Providers.ServiceResultProvider;
     using Jericho.Models;
     using Jericho.Models.v1.Entities;
 

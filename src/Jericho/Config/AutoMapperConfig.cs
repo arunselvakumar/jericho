@@ -10,6 +10,8 @@
     using Jericho.Models.v1.DTOs;
     using Jericho.Models.v1.DTOs.User;
     using Jericho.Models.v1.Entities;
+    using Jericho.Providers.ServiceResultProvider;
+    using Microsoft.AspNetCore.Identity;
     using MongoDB.Bson;
 
     public class AutoMapperConfig : Profile
@@ -31,6 +33,8 @@
 
         private void ConfigureUserMappers()
         {
+            this.CreateMap<IdentityError, Error>();
+
             this.CreateMap<SaveUserRequestDto, ApplicationUser>()
                 .ConstructUsing(dto => new ApplicationUser(dto.UserName, dto.EMail))
                 .ForMember(user => user.Email, opt => opt.Ignore());

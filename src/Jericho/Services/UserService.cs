@@ -2,6 +2,7 @@
 {
     using System;
     using System.IdentityModel.Tokens.Jwt;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using AutoMapper;
@@ -9,6 +10,7 @@
     using Jericho.Identity;
     using Jericho.Models.v1.DTOs.User;
     using Jericho.Services.Interfaces;
+    using Jericho.Providers.ServiceResultProvider;
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.IdentityModel.Tokens;
@@ -22,8 +24,6 @@
 
     public class UserService : IUserService
     {
-        #region Fields
-
         private const string Issuer = "Jericho";
 
         private readonly IMapper mapper;
@@ -35,10 +35,6 @@
         private readonly SignInManager<ApplicationUser> signInManager;
 
         private readonly AuthenticationOptions authenticationOptions;
-
-        #endregion
-
-        #region Constructor
 
         public UserService(
             IMapper mapper,
@@ -56,15 +52,14 @@
             this.ApplyUserManagerPresets();
         }
 
-        #endregion
-
         public async Task<ServiceResult<AuthTokenModel>> SaveUserAsync(ApplicationUser user, string password)
         {
             var saveUserResult = await this.userManager.CreateAsync(user, password);
 
             if (!saveUserResult.Succeeded)
             {
-                return new ServiceResult<AuthTokenModel>(false, saveUserResult.Errors);
+                var errors = this.mapper.Map<IEnumerable<Error>>(saveUserResult.Errors);
+                return new ServiceResult<AuthTokenModel>(false, errors);
             }
 
             this.SendConfirmationEmail(await this.FindUserByNameAsync(user.UserName));
@@ -78,7 +73,8 @@
 
             if (!loginUserResult.Succeeded)
             {
-                return new ServiceResult<AuthTokenModel>(false, "Invalid Username or Password");
+                var error = new Error("unauthorized", "Invalid Username or Password");
+                return new ServiceResult<AuthTokenModel>(false, new List<Error> { error });
             }
 
             return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(username));
@@ -91,7 +87,8 @@
 
             if(!confirmEmailResult.Succeeded)
             {
-                return new ServiceResult<object>(false, confirmEmailResult.Errors);
+                var errors = this.mapper.Map<IEnumerable<Error>>(confirmEmailResult.Errors);
+                return new ServiceResult<object>(false, errors);
             }
 
             return new ServiceResult<object>(true);
@@ -102,7 +99,8 @@
             var applicationUser = await this.FindUserByIdAsync(id);
             if (applicationUser == null)
             {
-                return new ServiceResult<ApplicationUser>(false, null);
+                var error = new Error("notfound", "User Not Found");
+                return new ServiceResult<ApplicationUser>(false, new List<Error> { error });
             }
 
             return new ServiceResult<ApplicationUser>(true, applicationUser);
@@ -113,7 +111,8 @@
             var applicationUser = await this.FindUserByNameAsync(username);
             if (applicationUser == null)
             {
-                return new ServiceResult<ApplicationUser>(false, null);
+                var error = new Error("notfound", "User Not Found");
+                return new ServiceResult<ApplicationUser>(false, new List<Error> { error });
             }
 
             return new ServiceResult<ApplicationUser>(true, applicationUser);
@@ -126,7 +125,8 @@
 
             if (!changePasswordResult.Succeeded)
             {
-                return new ServiceResult<object>(false, changePasswordResult.Errors);
+                var errors = this.mapper.Map<IEnumerable<Error>>(changePasswordResult.Errors);
+                return new ServiceResult<object>(false, errors);
             }
 
             return new ServiceResult<object>(true);
@@ -139,7 +139,8 @@
 
             if (!changePasswordResult.Succeeded)
             {
-                return new ServiceResult<object>(false, changePasswordResult.Errors);
+                var errors = this.mapper.Map<IEnumerable<Error>>(changePasswordResult.Errors);
+                return new ServiceResult<object>(false, errors);
             }
 
             return new ServiceResult<object>(true);
