@@ -23,15 +23,9 @@ namespace Jericho.Controllers.APIs.v1
     [Route("api/v1/[controller]")]
     public class PostsController : Controller
     {
-        #region Fields
-
         private readonly IPostService postService;
 
         private readonly IMapper mapper;
-
-        #endregion
-
-        #region Constructor
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostsController"/> class. 
@@ -43,8 +37,6 @@ namespace Jericho.Controllers.APIs.v1
             this.postService = postService;
             this.mapper = mapper;
         }
-
-        #endregion
 
         /// <summary>
         /// Validates the Model States and Adds new posts to the Data Store.

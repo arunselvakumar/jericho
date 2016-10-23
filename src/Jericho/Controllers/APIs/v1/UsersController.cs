@@ -15,15 +15,9 @@
 
     public class UsersController : Controller
     {
-        #region Fields
-
         private readonly IMapper mapper;
 
         private readonly IUserService userService;
-
-        #endregion
-
-        #region Constructor
 
         public UsersController(IMapper mapper, IUserService userService)
         {
@@ -31,8 +25,6 @@
 
             this.mapper = mapper;
         }
-
-        #endregion
 
         [HttpPost, AllowAnonymous]
         [Route("api/v1/[controller]")]
