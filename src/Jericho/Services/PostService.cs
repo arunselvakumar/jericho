@@ -21,24 +21,14 @@
 
     public class PostService : IPostService
     {
-        #region Fields
-
         private readonly MongoDbOptions mongoDbOptions;
         private readonly IMongoDatabase mongoDbInstance;
-
-        #endregion
-
-        #region Constructor
 
         public PostService(IOptions<MongoDbOptions> MongoDbConfig, IMongoHelper mongoHelper)
         {
             this.mongoDbInstance = mongoHelper.MongoDbInstance;
             this.mongoDbOptions = MongoDbConfig.Value;
         }
-
-        #endregion
-
-        #region Public Methods
 
         public async Task<ServiceResult<PostEntity>> CreatePostAsync(PostEntity postEntity)
         {               
@@ -98,7 +88,5 @@
                 return await UpdatePostAsync(postEntity);
             }
         }
-
-        #endregion
     }
 }

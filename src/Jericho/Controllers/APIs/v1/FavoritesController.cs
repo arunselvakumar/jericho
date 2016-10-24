@@ -1,7 +1,8 @@
 namespace Jericho.Controllers.APIs.v1
 {
     using AutoMapper;
-    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc;    
+    using System.Threading.Tasks;
 
     public class FavoritesController : Controller
     {
@@ -16,42 +17,42 @@ namespace Jericho.Controllers.APIs.v1
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> GetAllFavoritesDirectoryAsync()
         {
-            return null;
+            return new StatusCodeResult(200);
         }
 
         [HttpPost]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> SaveFavoritesDirectoryAsync()
         {
-            return null;
+            return new StatusCodeResult(200);
         }
 
         [HttpDelete]
         [Route("api/v1/[controller]")]
-        public async Task<IActionResult> DeleteavoritesDirectoryAsync()
+        public async Task<IActionResult> DeleteFavoritesDirectoryAsync()
         {
-            return null;
+            return new StatusCodeResult(200);
         }
 
         [HttpGet]
         [Route("api/v1/[controller]/{id}")]
         public async Task<IActionResult> GetPostsFromFavoritesDirectoryAsync()
         {
-            return null;
+            return new StatusCodeResult(200);
         }
 
         [HttpPost]
         [Route("api/v1/[controller]/{id}")]
         public async Task<IActionResult> AddPostToFavoritesDirectoryAsync()
         {
-            return null;
+            return new StatusCodeResult(200);
         }
 
         [HttpDelete]
         [Route("api/v1/[controller]/{id}")]
         public async Task<IActionResult> DeletePostFromFavoritesDirectoryAsync()
         {
-
+            return new StatusCodeResult(200);
         }
     }
 }
