@@ -1,16 +1,23 @@
 namespace Jericho.Controllers.APIs.v1
 {
-    using AutoMapper;
-    using Microsoft.AspNetCore.Mvc;    
     using System.Threading.Tasks;
+
+    using AutoMapper;
+
+    using Jericho.Services.Interfaces;
+
+    using Microsoft.AspNetCore.Mvc;
 
     public class FavoritesController : Controller
     {
         private readonly IMapper mapper;
 
-        public FavoritesController (IMapper mapper)
+        private readonly IFavoritesService favoritesService;
+
+        public FavoritesController (IMapper mapper, IFavoritesService favoritesService)
         {
             this.mapper = mapper;
+            this.favoritesService = favoritesService;
         }
 
         [HttpGet]

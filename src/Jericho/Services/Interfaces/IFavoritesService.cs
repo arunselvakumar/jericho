@@ -2,7 +2,7 @@ namespace Jericho.Services.Interfaces
 {
     using System.Threading.Tasks;
 
-    interface IFavoritesService
+    public interface IFavoritesService
     {
         Task GetAllFavoritesDirectoryAsync();
 

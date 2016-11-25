@@ -1,7 +1,7 @@
-﻿using MongoDB.Bson;
-
-namespace Jericho.Extensions
+﻿namespace Jericho.Extensions
 {
+    using MongoDB.Bson;
+
     public static class BsonDocumentExtensions
     {
         public static BsonDocument RemoveDefaultPostFilterPresets(this BsonDocument filter)

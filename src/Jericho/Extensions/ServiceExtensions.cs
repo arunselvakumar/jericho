@@ -1,32 +1,31 @@
-﻿using Jericho.Helpers;
-using Jericho.Helpers.Interfaces;
-using Jericho.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
-
-namespace Jericho.Extensions
+﻿namespace Jericho.Extensions
 {
     using System;
+
     using AutoMapper;
 
     using Jericho.Config;
+    using Jericho.Helpers;
+    using Jericho.Helpers.Interfaces;
+    using Jericho.Identity;
     using Jericho.Options;
     using Jericho.Services;
     using Jericho.Services.Interfaces;
-    using Jericho.Validations;
-    using Jericho.Validations.Interfaces;
 
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+
+    using MongoDB.Driver;
 
     public static class ServiceExtensions
     {
         public static void AddUserService(this IServiceCollection service)
         {
-            if(service == null)
+            if (service == null)
             {
                 throw new ArgumentNullException(nameof(service));
             }
@@ -42,6 +41,16 @@ namespace Jericho.Extensions
             }
 
             service.AddSingleton<IPostService, PostService>();
+        }
+
+        public static void AddFavoriteService(this IServiceCollection service)
+        {
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            service.AddSingleton<IFavoritesService, FavoritesService>();
         }
 
         public static void AddHttpContextAccessorService(this IServiceCollection service)
@@ -112,7 +121,7 @@ namespace Jericho.Extensions
         /// <param name="service"></param>
         public static void AddMongoDbInstance(this IServiceCollection service)
         {
-            if(service == null)
+            if (service == null)
             {
                 throw new ArgumentNullException(nameof(service));
             }

@@ -1,32 +1,27 @@
 ﻿namespace Jericho
 {
+    using System;
     using System.IO;
     using System.Text;
 
     using AutoMapper;
+
     using Jericho.Extensions;
     using Jericho.Options;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.IdentityModel.Tokens;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using System;
 
     public class Startup
     {
-        #region Properties
-
         public IConfigurationRoot Configuration { get; }
 
         private MapperConfiguration MapperConfiguration { get; set; }
-
-        #endregion
-
-        #region Constructor
 
         public Startup(IHostingEnvironment env)
         {
@@ -42,8 +37,6 @@
             builder.AddEnvironmentVariables();
             this.Configuration = builder.Build();
         }
-
-        #endregion
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -64,6 +57,7 @@
             services.AddEmailService();
             services.AddUserService();
             services.AddPostService();
+            services.AddFavoriteService();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

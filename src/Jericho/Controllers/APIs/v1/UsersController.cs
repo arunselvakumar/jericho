@@ -1,17 +1,18 @@
 ﻿namespace Jericho.Controllers.APIs.v1
 {
+    using System.IdentityModel.Tokens.Jwt;
     using System.Threading.Tasks;
 
     using AutoMapper;
 
+    using Identity;
+
     using Jericho.Models.v1.DTOs.User;
     using Jericho.Services.Interfaces;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Identity;
-    using System.IdentityModel.Tokens.Jwt;
 
     public class UsersController : Controller
     {
@@ -21,9 +22,8 @@
 
         public UsersController(IMapper mapper, IUserService userService)
         {
-            this.userService = userService;
-
             this.mapper = mapper;
+            this.userService = userService;
         }
 
         [HttpPost, AllowAnonymous]
