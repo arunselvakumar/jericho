@@ -132,6 +132,13 @@
             return new ServiceResult<object>(true);
         }
 
+        public async Task<ServiceResult<object>> ResetPasswordAsync(string username)
+        {
+            this.SendPasswordResetTokenEmail(username);
+            
+            return new ServiceResult<object>(true);
+        }
+
         public async Task<ServiceResult<object>> ChangeEmailAddressAsync(string newEmailAddress)
         {
             var applicationUser = await this.FindUserByIdAsync(string.Empty);
@@ -159,6 +166,11 @@
             return updateUserResult.Succeeded;
         }
 
+        private void ApplyUserManagerPresets()
+        {
+            this.userManager.RegisterTokenProvider("Default", new EmailTokenProvider<ApplicationUser>());
+        }
+
         private async Task<ApplicationUser> FindUserByIdAsync(string userId)
         {
             return await this.userManager.FindByIdAsync(userId);
@@ -166,24 +178,18 @@
 
         private async Task<ApplicationUser> FindUserByNameAsync(string username)
         {
-            return await this.userManager.FindByNameAsync(username);
-        }
-
-        private async void SendConfirmationEmail(ApplicationUser user)
-        {
-            var token = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-            await this.EmailService.SendEmailAsync(user.Email.NormalizedValue, "Activate Account", token);
-        }
-
-        private async Task<string> GenerateResetPasswordToken(string userId)
-        {
-            var user = await this.FindUserByIdAsync(userId);
-            if (user != null)
+            var user = await this.userManager.FindByNameAsync(username);
+            if (user == null)
             {
-                return await this.userManager.GeneratePasswordResetTokenAsync(user);
+                return await this.userManager.FindByEmailAsync(username);    
             }
 
-            return null;
+            return user;
+        }
+
+        private async Task<string> GenerateResetPasswordToken(ApplicationUser user)
+        {
+            return await this.userManager.GeneratePasswordResetTokenAsync(user);
         }
 
         private async Task<AuthTokenModel> GenerateJwtSecurityToken(string username)
@@ -205,9 +211,17 @@
             return await Task.FromResult(new AuthTokenModel(jwt));
         }
 
-        private void ApplyUserManagerPresets()
+        private async void SendConfirmationEmail(ApplicationUser user)
         {
-            this.userManager.RegisterTokenProvider("Default", new EmailTokenProvider<ApplicationUser>());
+            var token = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
+            await this.EmailService.SendEmailAsync(user.Email.NormalizedValue, "Activate Account", token);
+        }
+
+        private async void SendPasswordResetTokenEmail(string username)
+        {
+            var user = await this.FindUserByNameAsync(username);
+            var token = await this.GenerateResetPasswordToken(user);
+            await this.EmailService.SendEmailAsync(user.Email.NormalizedValue, "Reset Password Account", token);
         }
     }
 }

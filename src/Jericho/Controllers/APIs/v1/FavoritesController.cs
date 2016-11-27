@@ -29,8 +29,9 @@ namespace Jericho.Controllers.APIs.v1
 
         [HttpPost]
         [Route("api/v1/[controller]")]
-        public async Task<IActionResult> SaveFavoritesDirectoryAsync()
+        public async Task<IActionResult> SaveFavoritesDirectoryAsync([FromBody]SaveFavoriteDirectoryDto favoriteDto)
         {
+            var serviceResult = await this.favoritesService.SaveFavoritesDirectoryAsync(this.mapper.Map<FavoriteEntity>(favoriteDto));
             return new StatusCodeResult(200);
         }
 

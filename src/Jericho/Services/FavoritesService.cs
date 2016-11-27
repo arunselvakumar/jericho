@@ -5,6 +5,7 @@ namespace Jericho.Services
     using Jericho.Helpers.Interfaces;
     using Jericho.Options;
     using Jericho.Services.Interfaces;
+    using Jericho.Models.v1.Entities;
 
     using Microsoft.Extensions.Options;
 
@@ -27,7 +28,7 @@ namespace Jericho.Services
             throw new System.NotImplementedException();
         }
 
-        public Task SaveFavoritesDirectoryAsync()
+        public Task SaveFavoritesDirectoryAsync(FavoriteEntity entity)
         {
             throw new System.NotImplementedException();
         }
