@@ -2,14 +2,15 @@ namespace Jericho.Services.Interfaces
 {
     using System.Threading.Tasks;
     using Jericho.Models.v1.Entities;
+    using Jericho.Providers.ServiceResultProvider;
 
     public interface IFavoritesService
     {
         Task GetAllFavoritesDirectoryAsync();
 
-        Task SaveFavoritesDirectoryAsync(FavoriteEntity entity);
+        Task<ServiceResult<FavoriteEntity>> SaveFavoritesDirectoryAsync(FavoriteEntity entity);
 
-        Task DeleteFavoritesDirectoryAsync();
+        Task<ServiceResult<object>> DeleteFavoritesDirectoryAsync(string id);
 
         Task GetPostsFromFavoritesDirectoryAsync(string directoryId);
 

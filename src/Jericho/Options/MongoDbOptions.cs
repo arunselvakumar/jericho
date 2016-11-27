@@ -10,6 +10,8 @@
 
         public string UsersCollectionName { get; set; }
 
+        public string FavoritesCollectionName { get; set; }
+
         public string TagCollectionName { get; set; }
     }
 }

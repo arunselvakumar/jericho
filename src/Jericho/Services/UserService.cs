@@ -1,26 +1,26 @@
 ﻿namespace Jericho.Services
 {
     using System;
-    using System.IdentityModel.Tokens.Jwt;
     using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using System.Text;
     using System.Threading.Tasks;
 
     using AutoMapper;
 
     using Jericho.Identity;
     using Jericho.Models.v1.DTOs.User;
-    using Jericho.Services.Interfaces;
     using Jericho.Providers.ServiceResultProvider;
+    using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.IdentityModel.Tokens;
-    using System.Text;
-    using Options;
     using Microsoft.Extensions.Options;
+    using Microsoft.IdentityModel.Tokens;
+
     using Models.v1;
-    using Providers;
-    using System.Security.Claims;
-    using Microsoft.AspNetCore.Http;
+
+    using Options;
 
     public class UserService : IUserService
     {
@@ -28,7 +28,7 @@
 
         private readonly IMapper mapper;
 
-        private readonly IEmailService EmailService;
+        private readonly IEmailService emailService;
 
         private readonly UserManager<ApplicationUser> userManager;
 
@@ -44,7 +44,7 @@
             SignInManager<ApplicationUser> signInManager)
         {
             this.mapper = mapper;
-            this.EmailService = emailService;
+            this.emailService = emailService;
             this.authenticationOptions = authenticationOptions.Value;
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -214,14 +214,14 @@
         private async void SendConfirmationEmail(ApplicationUser user)
         {
             var token = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-            await this.EmailService.SendEmailAsync(user.Email.NormalizedValue, "Activate Account", token);
+            await this.emailService.SendEmailAsync(user.Email.NormalizedValue, "Activate Account", token);
         }
 
         private async void SendPasswordResetTokenEmail(string username)
         {
             var user = await this.FindUserByNameAsync(username);
             var token = await this.GenerateResetPasswordToken(user);
-            await this.EmailService.SendEmailAsync(user.Email.NormalizedValue, "Reset Password Account", token);
+            await this.emailService.SendEmailAsync(user.Email.NormalizedValue, "Reset Password Account", token);
         }
     }
 }

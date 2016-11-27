@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Jericho.Models.v1.Entities.Enums
+﻿namespace Jericho.Models.v1.Entities.Enums
 {
-    /// <summary>
-    /// Post Status
-    /// </summary>
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public enum PostStatusEnum
     {
         Pending,

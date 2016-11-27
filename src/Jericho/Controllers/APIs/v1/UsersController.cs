@@ -63,7 +63,7 @@
             var userId = this.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
             var serviceResult = await this.userService.ConfirmEmailAsync(userId, token);
 
-            if(!serviceResult.Succeeded)
+            if (!serviceResult.Succeeded)
             {
                 return new BadRequestObjectResult(serviceResult.Errors);
             }

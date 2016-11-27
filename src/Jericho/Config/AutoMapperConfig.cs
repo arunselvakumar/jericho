@@ -4,16 +4,16 @@
 
     using AutoMapper;
 
-    using Extensions;
-
     using Jericho.Identity;
     using Jericho.Models.v1.DTOs;
+    using Jericho.Models.v1.DTOs.Favorite;
     using Jericho.Models.v1.DTOs.User;
     using Jericho.Models.v1.Entities;
+    using Jericho.Models.v1.Entities.Enums;
     using Jericho.Providers.ServiceResultProvider;
-    using Jericho.Models.v1.DTOs.Favorite;
-    using Jericho.Models.v1.Entities;
+
     using Microsoft.AspNetCore.Identity;
+
     using MongoDB.Bson;
 
     public class AutoMapperConfig : Profile
@@ -49,7 +49,8 @@
         private void ConfigureFavoriteMappers()
         {
             this.CreateMap<SaveFavoriteDirectoryDto, FavoriteEntity>()
-                .ForMember(favoriteEntity => favoriteEntity.Id, opt => opt.MapFrom(Guid.NewGuid().ToString()));
+                .ForMember(favoriteEntity => favoriteEntity.CreatedOn, opt => opt.MapFrom(x => DateTime.UtcNow))
+                .ForMember(favoriteEntity => favoriteEntity.FavoriteType, opt => opt.MapFrom(x => FavoriteTypeEnum.Directory));
         }
     }
 }
