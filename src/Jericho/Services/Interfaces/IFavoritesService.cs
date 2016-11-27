@@ -14,7 +14,7 @@ namespace Jericho.Services.Interfaces
 
         Task GetPostsFromFavoritesDirectoryAsync(string directoryId);
 
-        Task AddPostToFavoritesDirectoryAsync();
+        Task<ServiceResult<FavoriteEntity>> AddPostToFavoritesDirectoryAsync(string id, FavoriteEntity entity);
 
         Task DeletePostFromFavoritesDirectoryAsync();
     }   

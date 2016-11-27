@@ -57,23 +57,22 @@ namespace Jericho.Controllers.APIs.v1
 
         [HttpGet]
         [Route("api/v1/[controller]/{id}")]
-        public async Task<IActionResult> GetPostsFromFavoritesDirectoryAsync()
+        public async Task<IActionResult> GetPostsFromFavoritesDirectoryAsync([FromRoute]string id)
         {
             return new StatusCodeResult(200);
         }
 
         [HttpPost]
         [Route("api/v1/[controller]/{id}")]
-        public async Task<IActionResult> AddPostToFavoritesDirectoryAsync()
+        public async Task<IActionResult> AddPostToFavoritesDirectoryAsync([FromRoute]string id, [FromBody] SaveFavoritePostDto favoritePostDto)
         {
-            return new StatusCodeResult(200);
-        }
+            var serviceResult = await this.favoritesService.AddPostToFavoritesDirectoryAsync(id, this.mapper.Map<FavoriteEntity>(favoritePostDto));
+            if (!serviceResult.Succeeded)
+            {
+                return new BadRequestObjectResult(serviceResult.Errors);
+            }
 
-        [HttpDelete]
-        [Route("api/v1/[controller]/{id}/{id2}")]
-        public async Task<IActionResult> DeletePostFromFavoritesDirectoryAsync()
-        {
-            return new StatusCodeResult(200);
+            return new CreatedResult(string.Empty, serviceResult.Value);
         }
     }
 }

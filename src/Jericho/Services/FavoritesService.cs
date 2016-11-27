@@ -52,9 +52,16 @@ namespace Jericho.Services
             throw new System.NotImplementedException();
         }
 
-        public Task AddPostToFavoritesDirectoryAsync()
+        public async Task<ServiceResult<FavoriteEntity>> AddPostToFavoritesDirectoryAsync(string id, FavoriteEntity entity)
         {
-            throw new System.NotImplementedException();
+            entity.ParentId = id;
+
+            var favoritesCollection = this.mongoDbInstance.GetCollection<FavoriteEntity>(this.mongoDbOptions.FavoritesCollectionName);
+            await favoritesCollection.InsertOneAsync(entity);
+
+            var insertedEntity = await this.GetFavoriteEntityById(entity.Id.ToString());
+
+            return new ServiceResult<FavoriteEntity>(true, insertedEntity);
         }
 
         public Task DeletePostFromFavoritesDirectoryAsync()
