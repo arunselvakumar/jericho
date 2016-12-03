@@ -32,13 +32,11 @@
 
         public async Task<ServiceResult<PostEntity>> CreatePostAsync(PostEntity postEntity)
         {               
-            var validationResults = postEntity.Validate();
+            var validationErrors = postEntity.Validate();
 
-            if (validationResults.Any())
+            if (validationErrors.Any())
             {
-                // ToDo : Convert validationResults to error.
-                // I have hard-coded to null here, for build fix.
-                return new ServiceResult<PostEntity>(false, (IEnumerable<Error>)null);
+                return new ServiceResult<PostEntity>(false, validationErrors);
             }
 
             postEntity.ApplyPresets();

@@ -13,6 +13,7 @@ namespace Jericho.Models.v1.Entities
     using MongoDB.Bson.Serialization.Attributes;
     using MongoDB.Bson;
     using Newtonsoft.Json.Converters;
+    using Providers.ServiceResultProvider;
 
     public class PostEntity : IValidatableEntity
     {
@@ -83,14 +84,14 @@ namespace Jericho.Models.v1.Entities
             return this.Id.ToString();
         }
 
-        public Dictionary<string, string> Validate()
+        public IEnumerable<Error> Validate()
         {
-            var validationResults = new Dictionary<string, string>();
+            var validationErrors = new List<Error>();
 
-            this.RequiredValidationRule(nameof(Title), validationResults);
-            this.RequiredValidationRule(nameof(Content), validationResults);
+            this.RequiredValidationRule(nameof(Title), validationErrors);
+            this.RequiredValidationRule(nameof(Content), validationErrors);
 
-            return validationResults;
+            return validationErrors;
         }
 
         #endregion
