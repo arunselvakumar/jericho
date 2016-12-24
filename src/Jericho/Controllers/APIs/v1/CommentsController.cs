@@ -1,0 +1,56 @@
+// ReSharper disable once StyleCop.SA1300
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+
+namespace Jericho.Controllers.APIs.v1
+{
+    using System.Threading.Tasks;
+
+    using AutoMapper;
+
+    using Jericho.Models.v1.DTOs;
+    using Jericho.Models.v1.Entities;
+    using Jericho.Services.Interfaces;
+
+    using Microsoft.AspNetCore.Mvc;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    /// <summary>
+    /// Comments Controller.
+    /// </summary>
+    [Route("api/v1/[controller]")]
+    public class CommentsController : Controller
+    {
+        private readonly ICommentService commentService;
+
+        private readonly IMapper mapper;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommentsController"/> class. 
+        /// </summary>
+        /// <param name="commentService">Comment Service </param>
+        /// <param name="mapper">Auto Mapper </param>
+        public CommentsController([FromServices]ICommentService commentService, IMapper mapper)
+        {
+            this.commentService = commentService;
+            this.mapper = mapper;
+        }
+
+        /// <summary>
+        /// Validates the Model States and Adds new comments to the Data Store.
+        /// </summary>
+        /// <param name="commentDto">Comment DTO</param>
+        /// <returns>Service Response</returns>
+        [HttpPost]
+        //[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> SaveCommentAsync([FromBody]CommentDto commentDto)
+        {
+            var commentEntity = this.mapper.Map<CommentEntity>(commentDto);
+            var result = await this.commentService.CreateCommentAsync(commentEntity);
+
+            return new CreatedResult(string.Empty, result);
+        }
+    }
+}

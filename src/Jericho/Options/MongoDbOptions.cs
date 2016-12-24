@@ -13,5 +13,7 @@
         public string FavoritesCollectionName { get; set; }
 
         public string TagCollectionName { get; set; }
+
+        public string CommentsCollectionName { get; set; }
     }
 }

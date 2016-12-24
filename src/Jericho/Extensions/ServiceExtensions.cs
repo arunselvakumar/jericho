@@ -53,6 +53,16 @@
             service.AddSingleton<IFavoritesService, FavoritesService>();
         }
 
+        public static void AddCommentService(this IServiceCollection service)
+        {
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            service.AddSingleton<ICommentService, CommentService>();
+        }
+
         public static void AddHttpContextAccessorService(this IServiceCollection service)
         {
             if (service == null)

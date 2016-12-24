@@ -57,6 +57,7 @@
             services.AddEmailService();
             services.AddUserService();
             services.AddPostService();
+            services.AddCommentService();
             services.AddFavoriteService();
         }
 
