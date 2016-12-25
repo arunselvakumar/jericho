@@ -80,14 +80,6 @@
 
             this.ConfigureJwtAuthentication(app);
 
-            app.UseFacebookAuthentication(new FacebookOptions()
-            {
-                AppId = "687562761405372",
-                AppSecret = "fc5413e7520549839cbf4bc885a81f2d",
-                CallbackPath = new PathString(@"/login"),
-                SignInScheme = "Cookie"
-            });
-
             app.UseMvc();
         }
 
