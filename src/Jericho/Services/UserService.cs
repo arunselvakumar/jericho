@@ -80,12 +80,12 @@
             return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(username));
         }
 
-        public async Task<ServiceResult<object>> ConfirmEmailAsync(string id, string token)
+        public async Task<ServiceResult<object>> ActivateEmailAsync(string id, string token)
         {
             var user = await this.FindUserByIdAsync(id);
             var confirmEmailResult = await this.userManager.ConfirmEmailAsync(user, token);
 
-            if(!confirmEmailResult.Succeeded)
+            if (!confirmEmailResult.Succeeded)
             {
                 var errors = this.mapper.Map<IEnumerable<Error>>(confirmEmailResult.Errors);
                 return new ServiceResult<object>(false, errors);
@@ -153,17 +153,34 @@
             return new ServiceResult<object>(true);
         }
 
-        public async Task<bool> UpdateUserAsync(SaveUserRequestDto user)
+        public async Task<ServiceResult<object>> ForgotPasswordAsync(string username)
         {
-            var applicationUser = new ApplicationUser(user.UserName, user.EMail)
+            var applicationUser = await this.FindUserByNameAsync(username);
+            if (applicationUser != null)
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName
-            };
+                this.SendResetPasswordEmail(applicationUser);
+                return new ServiceResult<object>(true);
+            }
 
-            var updateUserResult = await this.userManager.UpdateAsync(applicationUser);
+            return new ServiceResult<object>(false);
+        }
 
-            return updateUserResult.Succeeded;
+        public async Task<ServiceResult<object>> ResetPasswordAsync(string token, string username, string password)
+        {
+            var applicationUser = await this.FindUserByNameAsync(username);
+            if (applicationUser != null)
+            {
+                var resetPasswordResult = await this.userManager.ResetPasswordAsync(applicationUser, token, password);
+                if (!resetPasswordResult.Succeeded)
+                {
+                    var errors = this.mapper.Map<IEnumerable<Error>>(resetPasswordResult.Errors);
+                    return new ServiceResult<object>(false, errors);
+                }
+
+                return new ServiceResult<object>(true);
+            }
+
+            return new ServiceResult<object>(false);
         }
 
         private void ApplyUserManagerPresets()
@@ -214,7 +231,12 @@
         private async void SendConfirmationEmail(ApplicationUser user)
         {
             var token = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-            await this.emailService.SendEmailAsync(user.Email.NormalizedValue, "Activate Account", token);
+            // await this.emailService.SendEmailAsync(user.Email.NormalizedValue, "Activate Account", token);
+        }
+
+        private async void SendResetPasswordEmail(ApplicationUser user)
+        {
+            var token = await this.userManager.GeneratePasswordResetTokenAsync(user);
         }
 
         private async void SendPasswordResetTokenEmail(string username)

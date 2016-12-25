@@ -1,17 +1,19 @@
-﻿using Jericho.Identity.Models;
-
-namespace Jericho.Identity
+﻿namespace Jericho.Identity
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
+
+    using Jericho.Identity.Models;
+
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Logging;
+
     using MongoDB.Bson.Serialization.Conventions;
     using MongoDB.Driver;
-    using System.Linq;
 
     public class MongoUserStore<TUser> : IUserStore<TUser>,
         IUserLoginStore<TUser>,
@@ -126,9 +128,23 @@ namespace Jericho.Identity
             return IdentityResult.Success;
         }
 
-        public Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            var query = Builders<TUser>.Filter.And(
+                Builders<TUser>.Filter.Eq(u => u.Id, user.Id),
+                Builders<TUser>.Filter.Eq(u => u.DeletedOn, null)
+            );
+
+            var replaceResult = await _usersCollection.ReplaceOneAsync(query, user, new UpdateOptions { IsUpsert = false }).ConfigureAwait(false);
+
+            return replaceResult.IsModifiedCountAvailable && replaceResult.ModifiedCount == 1
+                ? IdentityResult.Success
+                : IdentityResult.Failed();
         }
 
         public Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken)
@@ -417,6 +433,11 @@ namespace Jericho.Identity
             }
 
             var email = user.Email?.Value;
+
+            if (string.IsNullOrEmpty(email) && user.Email != null)
+            {
+                email = user.Email.NormalizedValue.ToLower();
+            }
 
             return Task.FromResult(email);
         }

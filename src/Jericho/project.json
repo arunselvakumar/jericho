@@ -24,7 +24,8 @@
     "MongoDB.Driver": "2.2.4",
     "Microsoft.AspNetCore.Identity": "1.0.0",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
-    "SendGrid.NetCore": "1.0.0-rtm-00002"
+    "SendGrid.NetCore": "1.0.0-rtm-00002",
+    "Microsoft.AspNetCore.Authentication.Facebook": "1.0.0"
   },
 
   "tools": {

@@ -13,7 +13,7 @@
 
         Task<ServiceResult<AuthTokenModel>> AuthorizeUserAsync(string username, string password);
 
-        Task<ServiceResult<object>> ConfirmEmailAsync(string id, string token);
+        Task<ServiceResult<object>> ActivateEmailAsync(string id, string token);
 
         Task<ServiceResult<ApplicationUser>> GetUserByIdAsync(string id);
 
@@ -23,7 +23,8 @@
 
         Task<ServiceResult<object>> ChangeEmailAddressAsync(string newEmailAddress);
 
-        Task<bool> UpdateUserAsync(SaveUserRequestDto applicationUser);
+        Task<ServiceResult<object>> ForgotPasswordAsync(string username);
 
+        Task<ServiceResult<object>> ResetPasswordAsync(string token, string username, string password);
     }
 }

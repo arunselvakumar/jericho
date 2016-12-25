@@ -55,13 +55,13 @@
             return new OkObjectResult(serviceResult.Value);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Route("api/v1/[controller]/confirmemail")]
-        public async Task<IActionResult> ConfirmEmailAsync([FromBody] string token)
+        [Route("api/v1/[controller]/activate/{token}")]
+        public async Task<IActionResult> ActivateEmailAsync([FromRoute] string token)
         {
             var userId = this.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
-            var serviceResult = await this.userService.ConfirmEmailAsync(userId, token);
+            var serviceResult = await this.userService.ActivateEmailAsync(userId, token);
 
             if (!serviceResult.Succeeded)
             {
@@ -86,12 +86,40 @@
         }
 
         [HttpPatch]
-        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]/resetpassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto passwordRequestDto)
+        {
+            var serviceResult = await this.userService.ResetPasswordAsync(passwordRequestDto.Token, passwordRequestDto.Username, passwordRequestDto.Password);
+
+            if (!serviceResult.Succeeded)
+            {
+                return new BadRequestObjectResult(serviceResult.Errors);
+            }
+
+            return new StatusCodeResult(204);
+        }
+
+        [HttpPatch]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("api/v1/[controller]/changepassword")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody]ChangePasswordRequestDto password)
         {
             var userId = this.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
             var serviceResult = await this.userService.ChangePasswordAsync(userId, password.OldPassword, password.NewPassword);
+
+            if (!serviceResult.Succeeded)
+            {
+                return new BadRequestObjectResult(serviceResult.Errors);
+            }
+
+            return new StatusCodeResult(204);
+        }
+
+        [HttpGet]
+        [Route("api/v1/[controller]/forgotpassword/{username}")]
+        public async Task<IActionResult> ForgotPasswordAsync([FromRoute]string username)
+        {
+            var serviceResult = await this.userService.ForgotPasswordAsync(username);
 
             if (!serviceResult.Succeeded)
             {
@@ -114,16 +142,6 @@
             }
 
             return new StatusCodeResult(204);
-        }
-
-        [HttpPatch]
-        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Route("api/v1/[controller]")]
-        public async Task<IActionResult> UpdateUserAsync([FromBody] SaveUserRequestDto updateApplicationUserDto)
-        {
-            var userId = this.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
-            var isUpdated = await this.userService.UpdateUserAsync(updateApplicationUserDto);
-            return isUpdated ? new StatusCodeResult(204) : new BadRequestResult();
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-
-namespace Jericho.Identity.Models
+﻿namespace Jericho.Identity.Models
 {
-    public abstract class MongoUserContactRecord : IEquatable<MongoUserEmail>
+    using System;
 
+    public abstract class MongoUserContactRecord : IEquatable<MongoUserEmail>
     {
         protected MongoUserContactRecord(string value)
         {
@@ -12,7 +11,7 @@ namespace Jericho.Identity.Models
                 throw new ArgumentNullException(nameof(value));
             }
 
-            Value = value;
+            this.Value = value;
         }
 
 
@@ -38,7 +37,6 @@ namespace Jericho.Identity.Models
             SetConfirmed(new ConfirmationOccurrence());
         }
 
-
         public void SetConfirmed(ConfirmationOccurrence confirmationRecord)
         {
             if (ConfirmationRecord == null)
@@ -46,7 +44,6 @@ namespace Jericho.Identity.Models
                 ConfirmationRecord = confirmationRecord;
             }
         }
-
 
         public void SetUnconfirmed()
         {
