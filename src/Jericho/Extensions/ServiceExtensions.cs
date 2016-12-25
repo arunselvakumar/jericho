@@ -4,7 +4,7 @@
 
     using AutoMapper;
 
-    using Jericho.Config;
+    using Jericho.Configuration;
     using Jericho.Helpers;
     using Jericho.Helpers.Interfaces;
     using Jericho.Identity;
@@ -12,6 +12,7 @@
     using Jericho.Services;
     using Jericho.Services.Interfaces;
 
+    using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Configuration;
@@ -113,13 +114,25 @@
             service.AddSingleton<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsPrincipalFactory<ApplicationUser>>();
             service.AddSingleton<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
             service.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
+            service.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
         }
 
         public static void AddAutoMapper(this IServiceCollection service, MapperConfiguration mapperConfiguration)
         {
             mapperConfiguration = new MapperConfiguration(config =>
             {
-                config.AddProfile(new AutoMapperConfig());
+                config.AddProfile(new AutoMapperProfile());
             });
 
             service.AddSingleton(sp => mapperConfiguration.CreateMapper());

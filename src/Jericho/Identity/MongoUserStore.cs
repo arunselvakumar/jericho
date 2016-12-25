@@ -457,7 +457,7 @@ namespace Jericho.Identity
                 user.Email.SetUnconfirmed();
             }
 
-            return Task.FromResult(0);
+            return Task.FromResult(user.Email.IsConfirmed());
         }
 
         public Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)

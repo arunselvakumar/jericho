@@ -1,4 +1,4 @@
-namespace Jericho.Controllers.APIs.v1
+namespace Jericho.Controllers.APIs.V1
 {
     using System.Threading.Tasks;
 

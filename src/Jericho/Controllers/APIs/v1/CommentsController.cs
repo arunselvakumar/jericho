@@ -1,9 +1,4 @@
-// ReSharper disable once StyleCop.SA1300
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-
-namespace Jericho.Controllers.APIs.v1
+namespace Jericho.Controllers.APIs.V1
 {
     using System.Threading.Tasks;
 
@@ -14,8 +9,6 @@ namespace Jericho.Controllers.APIs.v1
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Comments Controller.

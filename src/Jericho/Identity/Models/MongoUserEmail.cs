@@ -7,7 +7,7 @@ namespace Jericho.Identity.Models
     {
         public MongoUserEmail(string email) : base(email)
         {
-
+            
         }
 
         public string NormalizedValue { get; private set; }

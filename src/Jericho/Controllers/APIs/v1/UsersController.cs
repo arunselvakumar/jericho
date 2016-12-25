@@ -1,4 +1,4 @@
-﻿namespace Jericho.Controllers.APIs.v1
+﻿namespace Jericho.Controllers.APIs.V1
 {
     using System.IdentityModel.Tokens.Jwt;
     using System.Threading.Tasks;
@@ -55,7 +55,7 @@
             return new OkObjectResult(serviceResult.Value);
         }
 
-        [HttpPost, AllowAnonymous]
+        [HttpPost]
         [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]/confirmemail")]
         public async Task<IActionResult> ConfirmEmailAsync([FromBody] string token)

@@ -1,15 +1,17 @@
-﻿using Jericho.Helpers.Interfaces;
-using Jericho.Config;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Jericho.Helpers
+﻿namespace Jericho.Helpers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using Jericho.Configuration;
+    using Jericho.Helpers.Interfaces;
     using Jericho.Options;
+
+    using Microsoft.Extensions.Options;
+
+    using MongoDB.Driver;
 
     /// <summary>
     /// 

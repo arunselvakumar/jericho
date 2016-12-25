@@ -1,10 +1,7 @@
-﻿// ReSharper disable once StyleCop.SA1300
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-
-namespace Jericho.Controllers.APIs.v1
+﻿namespace Jericho.Controllers.APIs.V1
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using AutoMapper;
@@ -13,9 +10,9 @@ namespace Jericho.Controllers.APIs.v1
     using Jericho.Models.v1.Entities;
     using Jericho.Services.Interfaces;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Posts Controller.
