@@ -43,13 +43,16 @@ namespace Jericho.Services
         {
             var entity = await this.GetFavoriteEntityById(id);
             entity.IsDeleted = true;
+
             var result = await this.UpdateFavoriteEntity(entity);
             return result == null ? new ServiceResult<object>(false) : new ServiceResult<object>(true);
         }
 
-        public Task GetPostsFromFavoritesDirectoryAsync(string directoryId)
+        public async Task<ServiceResult<object>> GetPostsFromFavoritesDirectoryAsync(string directoryId)
         {
-            throw new System.NotImplementedException();
+            var favoritesCollection = this.mongoDbInstance.GetCollection<FavoriteEntity>(this.mongoDbOptions.FavoritesCollectionName);
+            var result = favoritesCollection.Find(filter => filter.ParentId.Equals(directoryId));
+            return result == null ? new ServiceResult<object>(false) : new ServiceResult<object>(true, await result.ToListAsync());
         }
 
         public async Task<ServiceResult<FavoriteEntity>> AddPostToFavoritesDirectoryAsync(string id, FavoriteEntity entity)

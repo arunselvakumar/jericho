@@ -16,7 +16,7 @@ namespace Jericho.Controllers.APIs.V1
 
         private readonly IFavoritesService favoritesService;
 
-        public FavoritesController (IMapper mapper, IFavoritesService favoritesService)
+        public FavoritesController(IMapper mapper, IFavoritesService favoritesService)
         {
             this.mapper = mapper;
             this.favoritesService = favoritesService;
@@ -59,7 +59,13 @@ namespace Jericho.Controllers.APIs.V1
         [Route("api/v1/[controller]/{id}")]
         public async Task<IActionResult> GetPostsFromFavoritesDirectoryAsync([FromRoute]string id)
         {
-            return new StatusCodeResult(200);
+            var serviceResult = await this.favoritesService.GetPostsFromFavoritesDirectoryAsync(id);
+            if (!serviceResult.Succeeded)
+            {
+                return new BadRequestObjectResult(serviceResult.Errors);
+            }
+
+            return new OkObjectResult(serviceResult.Value);
         }
 
         [HttpPost]

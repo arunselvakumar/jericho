@@ -12,7 +12,7 @@ namespace Jericho.Services.Interfaces
 
         Task<ServiceResult<object>> DeleteFavoritesDirectoryAsync(string id);
 
-        Task GetPostsFromFavoritesDirectoryAsync(string directoryId);
+        Task<ServiceResult<object>> GetPostsFromFavoritesDirectoryAsync(string directoryId);
 
         Task<ServiceResult<FavoriteEntity>> AddPostToFavoritesDirectoryAsync(string id, FavoriteEntity entity);
 
