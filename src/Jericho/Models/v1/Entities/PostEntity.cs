@@ -90,6 +90,7 @@ namespace Jericho.Models.v1.Entities
 
             this.RequiredValidationRule(nameof(Title), validationErrors);
             this.RequiredValidationRule(nameof(Content), validationErrors);
+            this.RequiredEnumValidationRule(nameof(Type), validationErrors);
 
             return validationErrors;
         }

@@ -1,8 +1,6 @@
 ﻿using Jericho.Providers.ServiceResultProvider;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Jericho.Validations
 {
@@ -15,6 +13,16 @@ namespace Jericho.Validations
             if (value == null || Convert.ToString(value) == string.Empty)
             {
                 errors.Add(new Error($"{propertyName}Required", $"The {propertyName} is Required"));                
+            }
+        }
+
+        public static void RequiredEnumValidationRule(this object validateObject, string propertyName, IList<Error> errors)
+        {
+            var value = validateObject.GetType().GetProperty(propertyName).GetValue(validateObject);
+
+            if (Convert.ToString(value) == "None")
+            {
+                errors.Add(new Error($"{propertyName}Required", $"The {propertyName} is Required"));
             }
         }
     }

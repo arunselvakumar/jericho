@@ -6,6 +6,8 @@
 
     public static class PostEntityExtensions
     {
+        //ToDo: Consider moving this to AutoMapper.
+        //Previously we placed here, bcoz at that time we had only 1 dto for post.
         public static void ApplyPresets(this PostEntity postEntity)
         {
             postEntity.Id = ObjectId.Empty;

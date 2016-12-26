@@ -40,12 +40,21 @@
 
         private void ConfigurePostMappers()
         {
-            this.CreateMap<PostDto, PostEntity>()
+            this.CreateMap<UpdatePostDto, PostEntity>()
                 .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => string.IsNullOrEmpty(postDto.Id) ? ObjectId.Empty : ObjectId.Parse(postDto.Id)));
 
-            this.CreateMap<PostEntity, PostDto>()
+            this.CreateMap<PostEntity, UpdatePostDto>()
                 .ForMember(postDto => postDto.Id, opt => opt.MapFrom(postEntity => postEntity.Id.ToString()));
         }
+
+
+        private PostTypeEnum GetPostType(string postDtoType)
+        {
+            PostTypeEnum type;
+            Enum.TryParse(postDtoType, out type);
+            return type;
+        }
+
 
         private void ConfigureFavoriteMappers()
         {

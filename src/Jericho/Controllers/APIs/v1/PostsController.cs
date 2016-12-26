@@ -13,6 +13,8 @@
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using System;
+    using Models.v1.DTOs.Post;
 
     /// <summary>
     /// Posts Controller.
@@ -42,12 +44,19 @@
         /// <returns>Service Response</returns>
         [HttpPost]
         //[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> SavePostAsync([FromBody]PostDto postDto)
-        {
-            var postEntity = this.mapper.Map<PostEntity>(postDto);
+        public async Task<IActionResult> SavePostAsync([FromBody]UpdatePostDto postDto)
+        {          
+            var postEntity = this.mapper.Map<PostEntity>(postDto);           
             var result = await this.postService.CreatePostAsync(postEntity);
 
-            return new CreatedResult(string.Empty, result);
+            if(result.Succeeded)
+            {
+                return new CreatedResult(string.Empty, result);
+            }
+            else
+            {
+                return new BadRequestObjectResult(result);
+            }
         }
 
         /// <summary>
@@ -60,7 +69,7 @@
         public async Task<IActionResult> GetPostByIdAsync(string postId)
         {
             var postEntity = await this.postService.GetPostAsync(postId);
-            var postDto = this.mapper.Map<PostDto>(postEntity);
+            var postDto = this.mapper.Map<UpdatePostDto>(postEntity);
 
             if (postDto != null)
             {
@@ -80,7 +89,7 @@
                 return new OkResult();
             }
 
-            var postDtos = this.mapper.Map<IList<PostDto>>(postEntities);
+            var postDtos = this.mapper.Map<IList<UpdatePostDto>>(postEntities);
             return new OkObjectResult(postDtos);
         }
 
@@ -88,7 +97,7 @@
         /// Updates the post from Data Store.
         /// </summary>        
         [HttpPut]
-        public async Task<IActionResult> UpdatePostByIdAsync([FromBody]PostDto postDto)
+        public async Task<IActionResult> UpdatePostByIdAsync([FromBody]UpdatePostDto postDto)
         {
             var postEntity = this.mapper.Map<PostEntity>(postDto);
             var isUpdated = await this.postService.UpdatePostAsync(postEntity);
