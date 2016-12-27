@@ -12,6 +12,7 @@
     using Microsoft.Extensions.Options;
 
     using MongoDB.Driver;
+    using System.Security.Authentication;
 
     /// <summary>
     /// 
@@ -45,7 +46,18 @@
 
         private IMongoDatabase CreateMongoDbInstance()
         {
-            MongoClient client = new MongoClient(this.mongoDbOptions.ConnectionString);
+
+            //string connectionString =   @"mongodb://jericho-dev:D61z5cf4ZPndJBIejojCaUxPWnnZIjGrefZpvUkD5lGlHfQY7ONz1HWoZHBYbQPdEJdLyP8yL324hJWnCxuPAg==@jericho-dev.documents.azure.com:10250/?ssl=true&sslverifycertificate=false";
+            MongoClientSettings settings = MongoClientSettings.FromUrl(
+              new MongoUrl(this.mongoDbOptions.ConnectionString)
+            );
+            settings.SslSettings =
+              new SslSettings() { EnabledSslProtocols = SslProtocols.Tls12 };
+
+
+            //MongoClient client = new MongoClient(this.mongoDbOptions.ConnectionString);
+            MongoClient client = new MongoClient(settings);
+
             return client.GetDatabase(this.mongoDbOptions.DatabaseName);
         }
     }
