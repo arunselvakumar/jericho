@@ -9,7 +9,7 @@ namespace Jericho.Providers.ServiceResultProvider
         public Error (string code, string description)
         {
             this.Code = code;
-            this.Description = Description;
+            this.Description = description;
         }
     }
 }

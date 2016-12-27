@@ -44,7 +44,7 @@
         /// <returns>Service Response</returns>
         [HttpPost]
         //[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> SavePostAsync([FromBody]UpdatePostDto postDto)
+        public async Task<IActionResult> SavePostAsync([FromBody]CreatePostDto postDto)
         {          
             var postEntity = this.mapper.Map<PostEntity>(postDto);           
             var result = await this.postService.CreatePostAsync(postEntity);

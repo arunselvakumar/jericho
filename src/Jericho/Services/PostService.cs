@@ -39,7 +39,6 @@
                 return new ServiceResult<PostEntity>(false, validationErrors);
             }
 
-            postEntity.ApplyPresets();
             var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
             await postCollection.InsertOneAsync(postEntity);
 
