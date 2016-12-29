@@ -4,6 +4,8 @@
 
     using AutoMapper;
 
+    using Extensions;
+
     using Jericho.Identity;
     using Jericho.Models.v1.DTOs;
     using Jericho.Models.v1.DTOs.Favorite;
@@ -14,9 +16,9 @@
 
     using Microsoft.AspNetCore.Identity;
 
-    using MongoDB.Bson;
     using Models.v1.DTOs.Post;
-    using Extensions;
+
+    using MongoDB.Bson;
 
     public class AutoMapperProfile : Profile
     {
