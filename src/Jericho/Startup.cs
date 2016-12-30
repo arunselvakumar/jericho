@@ -60,6 +60,7 @@
             services.AddPostService();
             services.AddCommentService();
             services.AddFavoriteService();
+            services.AddUploadService();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)

@@ -54,8 +54,8 @@
 
         public async Task<ServiceResult<AuthTokenModel>> SaveUserAsync(ApplicationUser user, string password)
         {
-            Ensure.NotNull(user);
-            Ensure.NotNullOrEmpty(password);
+            Ensure.Argument.NotNull(user, nameof(user));
+            Ensure.Argument.NotNullOrEmpty(password, nameof(password));
 
             var saveUserResult = await this.userManager.CreateAsync(user, password);
 
@@ -72,8 +72,8 @@
 
         public async Task<ServiceResult<AuthTokenModel>> AuthorizeUserAsync(string username, string password)
         {
-            Ensure.NotNullOrEmpty(username);
-            Ensure.NotNullOrEmpty(password);
+            Ensure.Argument.NotNullOrEmpty(username, nameof(username));
+            Ensure.Argument.NotNullOrEmpty(password, nameof(password));
 
             var loginUserResult = await this.signInManager.PasswordSignInAsync(username, password, isPersistent: false, lockoutOnFailure: false);
 
@@ -88,8 +88,8 @@
 
         public async Task<ServiceResult<object>> ActivateEmailAsync(string id, string token)
         {
-            Ensure.NotNullOrEmpty(id);
-            Ensure.NotNullOrEmpty(token);
+            Ensure.Argument.NotNullOrEmpty(id, nameof(id));
+            Ensure.Argument.NotNullOrEmpty(token, nameof(token));
 
             var user = await this.FindUserByIdAsync(id);
             var confirmEmailResult = await this.userManager.ConfirmEmailAsync(user, token);
@@ -105,7 +105,7 @@
 
         public async Task<ServiceResult<ApplicationUser>> GetUserByIdAsync(string id)
         {
-            Ensure.NotNullOrEmpty(id);
+            Ensure.Argument.NotNullOrEmpty(id, nameof(id));
 
             var applicationUser = await this.FindUserByIdAsync(id);
             if (applicationUser == null)
@@ -119,7 +119,7 @@
 
         public async Task<ServiceResult<ApplicationUser>> GetUserByUserNameAsync(string username)
         {
-            Ensure.NotNullOrEmpty(username);
+            Ensure.Argument.NotNullOrEmpty(username, nameof(username));
 
             var applicationUser = await this.FindUserByNameAsync(username);
             if (applicationUser == null)
@@ -133,9 +133,9 @@
 
         public async Task<ServiceResult<object>> ChangePasswordAsync(string userId, string oldPassword, string newPassword)
         {
-            Ensure.NotNullOrEmpty(userId);
-            Ensure.NotNullOrEmpty(oldPassword);
-            Ensure.NotNullOrEmpty(newPassword);
+            Ensure.Argument.NotNullOrEmpty(userId, nameof(userId));
+            Ensure.Argument.NotNullOrEmpty(oldPassword, nameof(oldPassword));
+            Ensure.Argument.NotNullOrEmpty(newPassword, nameof(newPassword));
 
             var applicationUser = await this.FindUserByIdAsync(userId);
             var changePasswordResult = await this.userManager.ChangePasswordAsync(applicationUser, oldPassword, newPassword);
@@ -151,7 +151,7 @@
 
         public async Task<ServiceResult<object>> ResetPasswordAsync(string username)
         {
-            Ensure.NotNullOrEmpty(username);
+            Ensure.Argument.NotNullOrEmpty(username, nameof(username));
 
             this.SendPasswordResetTokenEmail(username);
             
@@ -160,7 +160,7 @@
 
         public async Task<ServiceResult<object>> ChangeEmailAddressAsync(string newEmailAddress)
         {
-            Ensure.NotNullOrEmpty(newEmailAddress);
+            Ensure.Argument.NotNullOrEmpty(newEmailAddress, nameof(newEmailAddress));
 
             var applicationUser = await this.FindUserByIdAsync(string.Empty);
             var changePasswordResult = await this.userManager.ChangeEmailAsync(applicationUser, newEmailAddress, null);
@@ -176,7 +176,7 @@
 
         public async Task<ServiceResult<object>> ForgotPasswordAsync(string username)
         {
-            Ensure.NotNullOrEmpty(username);
+            Ensure.Argument.NotNullOrEmpty(username, nameof(username));
 
             var applicationUser = await this.FindUserByNameAsync(username);
             if (applicationUser != null)
@@ -190,9 +190,9 @@
 
         public async Task<ServiceResult<object>> ResetPasswordAsync(string token, string username, string password)
         {
-            Ensure.NotNullOrEmpty(token);
-            Ensure.NotNullOrEmpty(username);
-            Ensure.NotNullOrEmpty(password);
+            Ensure.Argument.NotNullOrEmpty(token, nameof(token));
+            Ensure.Argument.NotNullOrEmpty(username, nameof(username));
+            Ensure.Argument.NotNullOrEmpty(password, nameof(password));
 
             var applicationUser = await this.FindUserByNameAsync(username);
             if (applicationUser != null)

@@ -1,31 +1,35 @@
 {
   "dependencies": {
     "DocumentDB.AspNet.Identity": "1.0.10-beta",
-    "Microsoft.ApplicationInsights.AspNetCore": "1.0.0",
-    "Microsoft.AspNetCore.Authentication.JwtBearer": "1.0.0",
-    "Microsoft.AspNetCore.Mvc": "1.0.0",
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
-    "Microsoft.Azure.DocumentDB": "1.9.4",
-    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
-    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
-    "Microsoft.Extensions.Configuration.Json": "1.0.0",
-    "Microsoft.Extensions.Logging": "1.0.0",
-    "Microsoft.Extensions.Logging.Console": "1.0.0",
-    "Microsoft.Extensions.Logging.Debug": "1.0.0",
-    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
-    "Microsoft.IdentityModel.Tokens": "5.0.0",
     "Microsoft.Framework.Configuration": "1.0.0-beta8",
-    "Microsoft.Framework.Configuration.Json": "1.0.0-beta8",
     "Newtonsoft.Json": "9.0.1",
     "System.IO": "4.1.0",
-    "AutoMapper": "5.1.1",
     "Swashbuckle": "6.0.0-beta902",
-    "MongoDB.Driver": "2.2.4",
-    "Microsoft.AspNetCore.Identity": "1.0.0",
-    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0",
     "SendGrid.NetCore": "1.0.0-rtm-00002",
-    "Microsoft.AspNetCore.Authentication.Facebook": "1.0.0"
+    "AutoMapper": "5.2.0",
+    "Microsoft.ApplicationInsights.AspNetCore": "1.0.2",
+    "Microsoft.AspNetCore.Authentication.Facebook": "1.1.0",
+    "Microsoft.AspNetCore.Authentication.JwtBearer": "1.1.0",
+    "Microsoft.AspNetCore.Identity": "1.1.0",
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.1.0",
+    "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+    "Microsoft.Azure.DocumentDB": "1.11.1",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.Logging": "1.1.0",
+    "Microsoft.Extensions.Logging.Console": "1.1.0",
+    "Microsoft.Extensions.Logging.Debug": "1.1.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.0",
+    "Microsoft.IdentityModel.Tokens": "5.1.0",
+    "MongoDB.Driver": "2.4.0",
+    "System.Spatial": "5.6.3",
+    "Microsoft.Data.Edm": "5.6.3",
+    "Microsoft.Data.OData": "5.6.3",
+    "Microsoft.Data.Services.Client": "5.6.3",
+    "WindowsAzure.Storage": "4.3.2-preview"
   },
 
   "tools": {
@@ -58,5 +62,6 @@
 
   "scripts": {
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
-  }
+  },
+  "userSecretsId": "aspnet-Jericho-20161229032645"
 }

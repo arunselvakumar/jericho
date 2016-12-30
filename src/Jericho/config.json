@@ -1,0 +1,5 @@
+{
+    "MicrosoftAzureStorage": {
+        "jerichodevblob_AzureStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=jerichodevblob;AccountKey=NeyP6OCO9PlrtD4Bqifo5Ii4MbKAM4B8nm/nSpQ9+KXvhc7BjMCnBjqhkVw22jSNP+/il5XD6IRfELZdjQjAVg=="
+    }
+}

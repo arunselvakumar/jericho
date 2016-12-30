@@ -64,6 +64,16 @@
             service.AddSingleton<ICommentService, CommentService>();
         }
 
+        public static void AddUploadService(this IServiceCollection service)
+        {
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            service.AddSingleton<IUploadService, UploadService>();
+        }
+
         public static void AddHttpContextAccessorService(this IServiceCollection service)
         {
             if (service == null)

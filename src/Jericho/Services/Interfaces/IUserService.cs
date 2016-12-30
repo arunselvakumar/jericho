@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
 
     using Jericho.Identity;
-    using Jericho.Models.v1.DTOs.User;
+
     using Models.v1;
     using Providers.ServiceResultProvider;
 
