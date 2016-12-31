@@ -30,6 +30,7 @@
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> SaveUserAsync([FromBody] SaveUserRequestDto saveUser)
         {
+            System.Diagnostics.Debug.WriteLine(saveUser.FirstName);
             var user = this.mapper.Map<ApplicationUser>(saveUser);
             var serviceResult = await this.userService.SaveUserAsync(user, saveUser.Password);
 

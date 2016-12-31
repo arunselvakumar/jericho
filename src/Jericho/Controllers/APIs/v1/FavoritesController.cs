@@ -1,15 +1,19 @@
 namespace Jericho.Controllers.APIs.V1
-{
+{  
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.IdentityModel.Tokens.Jwt;
 
     using AutoMapper;
 
     using Jericho.Models.v1.DTOs.Favorite;
     using Jericho.Models.v1.Entities;
     using Jericho.Services.Interfaces;
-
+    
     using Microsoft.AspNetCore.Mvc;
-
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authorization;
+ 
     public class FavoritesController : Controller
     {
         private readonly IMapper mapper;
@@ -23,17 +27,27 @@ namespace Jericho.Controllers.APIs.V1
         }
 
         [HttpGet]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> GetAllFavoritesDirectoryAsync()
         {
-            return new StatusCodeResult(200);
+            var userId = this.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
+            var serviceResult = await this.favoritesService.GetAllFavoritesDirectoryAsync(userId);
+            if (!serviceResult.Succeeded)
+            {
+                return new BadRequestObjectResult(serviceResult.Errors);
+            }
+
+            return new OkObjectResult(this.mapper.Map<IEnumerable<GetFavoriteResponseDto>>(serviceResult.Value));
         }
 
         [HttpPost]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> SaveFavoritesDirectoryAsync([FromBody]SaveFavoriteDirectoryDto favoriteDto)
         {
-            var serviceResult = await this.favoritesService.SaveFavoritesDirectoryAsync(this.mapper.Map<FavoriteEntity>(favoriteDto));
+            var userId = this.User.FindFirst(JwtRegisteredClaimNames.Sid).Value;
+            var serviceResult = await this.favoritesService.SaveFavoritesDirectoryAsync(this.mapper.Map<FavoriteEntity>(favoriteDto), userId);
             if (!serviceResult.Succeeded)
             {
                 return new BadRequestObjectResult(serviceResult.Errors);
@@ -43,6 +57,7 @@ namespace Jericho.Controllers.APIs.V1
         }
 
         [HttpDelete]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]/{id}")]
         public async Task<IActionResult> DeleteFavoritesDirectoryAsync([FromRoute]string id)
         {
@@ -56,6 +71,7 @@ namespace Jericho.Controllers.APIs.V1
         }
 
         [HttpGet]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]/{id}")]
         public async Task<IActionResult> GetPostsFromFavoritesDirectoryAsync([FromRoute]string id)
         {
@@ -65,10 +81,11 @@ namespace Jericho.Controllers.APIs.V1
                 return new BadRequestObjectResult(serviceResult.Errors);
             }
 
-            return new OkObjectResult(serviceResult.Value);
+            return new OkObjectResult(this.mapper.Map<IEnumerable<GetFavoriteResponseDto>>(serviceResult.Value));
         }
 
         [HttpPost]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]/{id}")]
         public async Task<IActionResult> AddPostToFavoritesDirectoryAsync([FromRoute]string id, [FromBody] SaveFavoritePostDto favoritePostDto)
         {

@@ -75,8 +75,11 @@
             this.CreateMap<SaveFavoritePostDto, FavoriteEntity>()
                 .ForMember(favoriteEntity => favoriteEntity.CreatedOn, opt => opt.MapFrom(x => DateTime.UtcNow))
                 .ForMember(favoriteEntity => favoriteEntity.FavoriteType, opt => opt.MapFrom(x => FavoriteTypeEnum.Post));
-        }
 
+            this.CreateMap<FavoriteEntity, GetFavoriteResponseDto>()
+                .ForMember(getFavoriteDirectoryDto => getFavoriteDirectoryDto.FavoriteType, opt => opt.MapFrom(favoriteEntity => favoriteEntity.FavoriteType.ToString()));                
+        }
+        
         private void ConfigureCommentMappers()
         {
             this.CreateMap<CommentDto, CommentEntity>()
@@ -93,6 +96,7 @@
                 .ForMember(commentDto => commentDto.ParentId, opt => opt.MapFrom(commentEntity => commentEntity.ParentId.ToString()));
         }
 
+        
         private CommentTypeEnum GetCommentType(string commentDTOType)
         {
             CommentTypeEnum type;

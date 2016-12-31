@@ -31,7 +31,11 @@
     "Microsoft.Data.Services.Client": "5.6.3",
     "WindowsAzure.Storage": "4.3.2-preview"
   },
-
+    "version": "1.0.0-*",
+    "buildOptions": {
+      "debugType": "portable",
+      "emitEntryPoint": true
+  },
   "tools": {
     "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-preview2-final"
   },
