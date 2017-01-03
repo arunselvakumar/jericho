@@ -42,48 +42,79 @@
             var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
             await postCollection.InsertOneAsync(postEntity);
 
-            var insertedEntity = await GetPostAsync(postEntity.Id.ToString());
+            var insertedEntity = await GetPostByIdAsync(postEntity.Id.ToString());            
 
             return new ServiceResult<PostEntity>(true, insertedEntity);
         }
 
-        public async Task<PostEntity> GetPostAsync(string id)
+        public async Task<ServiceResult<PostEntity>> GetPostAsync(string id)
         {
-            var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
-            var postEntity = await postCollection.FindAsync(Builders<PostEntity>.Filter.Eq("_id", ObjectId.Parse(id)));
+            var postEntity = await this.GetPostByIdAsync(id);
 
-            return await postEntity.FirstOrDefaultAsync();
+            if(postEntity == null)
+            {
+                return new ServiceResult<PostEntity>(false);
+            }
+
+            return new ServiceResult<PostEntity>(true, postEntity);
         }
 
-        public async Task<IEnumerable<PostEntity>> GetPostsAsync(IQueryCollection query, int page, int limit)
+        public async Task<ServiceResult<IEnumerable<PostEntity>>> GetPostsAsync(IQueryCollection query, int page, int limit)
         {
             var filter = new BsonDocument(query.ToDictionary(kvp => kvp.Key.ToLower(), kvp => kvp.Value[0].ToString().ToCaseInsensitiveRegex()));
             filter.RemoveDefaultPostFilterPresets();
             filter.ApplyDefaultPostFilterPresets();
 
-            return await mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
+            var postEntities = await mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
                 .Find(filter).Skip(page * limit).Limit(limit).ToListAsync();
+
+            return new ServiceResult<IEnumerable<PostEntity>>(true, postEntities); 
         }
 
-        public async Task<bool> UpdatePostAsync(PostEntity postEntity)
+        public async Task<ServiceResult<bool>> UpdatePostAsync(PostEntity postEntity)
         {
-            var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
-            var replaceResult = await postCollection.ReplaceOneAsync(Builders<PostEntity>.Filter.Eq("_id", postEntity.Id), postEntity);
-            return replaceResult.IsAcknowledged && replaceResult.MatchedCount > 0;
+            var validationErrors = postEntity.Validate();
+
+            if (validationErrors.Any())
+            {
+                return new ServiceResult<bool>(false, validationErrors);
+            }
+
+            var isUpdated = await UpdatePostEntityAsync(postEntity);
+
+            return new ServiceResult<bool>(isUpdated);
         }
 
-        public async Task<bool> DeletePostAsync(string id)
+        public async Task<ServiceResult<bool>> DeletePostAsync(string id)
         {
-            var postEntity = await GetPostAsync(id);
+            var postEntity = await GetPostByIdAsync(id);
             if (postEntity == null)
             {
-                return false;
+                return new ServiceResult<bool>(false);
             }
             else
             {
                 postEntity.IsDeleted = true;
-                return await UpdatePostAsync(postEntity);
+                var isDeleted = await UpdatePostEntityAsync(postEntity);
+
+                return new ServiceResult<bool>(true);
             }
+        }
+
+        private async Task<PostEntity> GetPostByIdAsync(string id)
+        {
+            var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
+            var postEntityCollection = await postCollection.FindAsync(Builders<PostEntity>.Filter.Eq("_id", ObjectId.Parse(id)));
+
+            return await postEntityCollection.FirstOrDefaultAsync();
+        }
+
+        private async Task<bool> UpdatePostEntityAsync(PostEntity postEntity)
+        {
+            var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
+            var replaceResult = await postCollection.ReplaceOneAsync(Builders<PostEntity>.Filter.Eq("_id", postEntity.Id), postEntity);
+
+            return replaceResult.IsAcknowledged && replaceResult.MatchedCount > 0;
         }
     }
 }

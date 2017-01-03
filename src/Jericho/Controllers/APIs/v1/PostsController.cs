@@ -49,14 +49,12 @@
             var postEntity = this.mapper.Map<PostEntity>(postDto);           
             var result = await this.postService.CreatePostAsync(postEntity);
 
-            if(result.Succeeded)
+            if(!result.Succeeded)
             {
-                return new CreatedResult(string.Empty, result);
+                return new BadRequestObjectResult(result.Errors);
             }
-            else
-            {
-                return new BadRequestObjectResult(result);
-            }
+
+            return new CreatedResult(string.Empty, result.Value);            
         }
 
         /// <summary>
@@ -68,28 +66,28 @@
         [Produces("application/json")]
         public async Task<IActionResult> GetPostByIdAsync(string postId)
         {
-            var postEntity = await this.postService.GetPostAsync(postId);
-            var postDto = this.mapper.Map<UpdatePostDto>(postEntity);
+            var result = await this.postService.GetPostAsync(postId);
 
-            if (postDto != null)
+            if(!result.Succeeded)
             {
-                return new OkObjectResult(postDto);
+                return new NotFoundResult();
             }
 
-            return new NotFoundObjectResult(null);
+            var postDto = this.mapper.Map<UpdatePostDto>(result.Value);
+            return new OkObjectResult(postDto);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPosts([FromQuery]int page=0, [FromQuery]int limit=10)
+        public async Task<IActionResult> GetPostsAsync([FromQuery]int page=0, [FromQuery]int limit=10)
         {           
-            var postEntities = await this.postService.GetPostsAsync(this.Request.Query, page, limit);
+            var result = await this.postService.GetPostsAsync(this.Request.Query, page, limit);
            
-            if (!postEntities.Any())
+            if (!result.Value.Any())
             {
                 return new OkResult();
             }
 
-            var postDtos = this.mapper.Map<IList<UpdatePostDto>>(postEntities);
+            var postDtos = this.mapper.Map<IEnumerable<UpdatePostDto>>(result.Value);
             return new OkObjectResult(postDtos);
         }
 
@@ -100,29 +98,27 @@
         public async Task<IActionResult> UpdatePostByIdAsync([FromBody]UpdatePostDto postDto)
         {
             var postEntity = this.mapper.Map<PostEntity>(postDto);
-            var isUpdated = await this.postService.UpdatePostAsync(postEntity);
-            if (isUpdated)
-            {
-                return new OkResult();
-            }
-            else
+            var result = await this.postService.UpdatePostAsync(postEntity);
+
+            if (!result.Succeeded)
             {
                 return new NotFoundResult();
             }
+            
+            return new StatusCodeResult(204);            
         }
 
         [HttpDelete("{postId}")]
         public async Task<IActionResult> DeletePostByIdAsync(string postId)
         {
-            var isDeleted =await this.postService.DeletePostAsync(postId);
-            if(isDeleted)
-            {
-                return new OkResult();
-            }
-            else
+            var result = await this.postService.DeletePostAsync(postId);
+
+            if(!result.Succeeded)
             {
                 return new NotFoundResult();
             }
+
+            return new StatusCodeResult(204);
         }
 
     }

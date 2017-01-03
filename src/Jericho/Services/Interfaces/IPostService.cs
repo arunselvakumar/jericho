@@ -14,13 +14,13 @@
     {
         Task<ServiceResult<PostEntity>> CreatePostAsync(PostEntity post);
 
-        Task<PostEntity> GetPostAsync(string id);
+        Task<ServiceResult<PostEntity>> GetPostAsync(string id);
         
-        Task<IEnumerable<PostEntity>> GetPostsAsync(IQueryCollection query, int page, int limit);
+        Task<ServiceResult<IEnumerable<PostEntity>>> GetPostsAsync(IQueryCollection query, int page, int limit);
 
-        Task<bool> UpdatePostAsync(PostEntity postEntity);
+        Task<ServiceResult<bool>> UpdatePostAsync(PostEntity postEntity);
 
-        Task<bool> DeletePostAsync(string id);
+        Task<ServiceResult<bool>> DeletePostAsync(string id);
         
     }
 }
