@@ -19,6 +19,7 @@
     using Models.v1.DTOs.Post;
 
     using MongoDB.Bson;
+    using Models.v1.BOs;
 
     public class AutoMapperProfile : Profile
     {
@@ -55,8 +56,11 @@
             this.CreateMap<UpdatePostDto, PostEntity>()
                 .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => string.IsNullOrEmpty(postDto.Id) ? ObjectId.Empty : ObjectId.Parse(postDto.Id)));
 
-            this.CreateMap<PostEntity, UpdatePostDto>()
+            //Todo: Rename params
+            this.CreateMap<PostEntity, UpdatePostBo>()
                 .ForMember(postDto => postDto.Id, opt => opt.MapFrom(postEntity => postEntity.Id.ToString()));
+
+            this.CreateMap<UpdatePostBo, UpdatePostDto>();
         }
 
         private PostTypeEnum GetPostType(string postType)
@@ -83,25 +87,14 @@
         private void ConfigureCommentMappers()
         {
             this.CreateMap<CommentDto, CommentEntity>()
-                .ForMember(commentEntity => commentEntity.Type, opt => opt.MapFrom(commentDTO => GetCommentType(commentDTO.Type)))
-                .ForMember(commentEntity => commentEntity.Id, opt => opt.MapFrom(commentDto => string.IsNullOrEmpty(commentDto.Id) ? ObjectId.Empty : ObjectId.Parse(commentDto.Id)))
-                .ForMember(commentEntity => commentEntity.PostId, opt => opt.MapFrom(commentDto => string.IsNullOrEmpty(commentDto.PostId) ? ObjectId.Empty : ObjectId.Parse(commentDto.PostId)))
-                .ForMember(commentEntity => commentEntity.ParentId, opt => opt.MapFrom(commentDto => string.IsNullOrEmpty(commentDto.ParentId) ? ObjectId.Empty : ObjectId.Parse(commentDto.ParentId)));
+                .ForMember(commentEntity => commentEntity.Id, opt => opt.MapFrom(commentDto => string.IsNullOrEmpty(commentDto.Id) ? ObjectId.Empty : ObjectId.Parse(commentDto.Id)));
 
+            //Todo: Rename params
+            this.CreateMap<CommentEntity, CommentBo>()
+                .ForMember(commentDto => commentDto.Id, opt => opt.MapFrom(commentEntity => commentEntity.Id.ToString()));
 
-            this.CreateMap<CommentEntity, CommentDto>()
-                .ForMember(commentDto => commentDto.Type, opt => opt.MapFrom(commentEntity => commentEntity.Type.ToString()))
-                .ForMember(commentDto => commentDto.Id, opt => opt.MapFrom(commentEntity => commentEntity.Id.ToString()))
-                .ForMember(commentDto => commentDto.PostId, opt => opt.MapFrom(commentEntity => commentEntity.PostId.ToString()))
-                .ForMember(commentDto => commentDto.ParentId, opt => opt.MapFrom(commentEntity => commentEntity.ParentId.ToString()));
+            this.CreateMap<CommentBo, CommentDto>();
         }
-
-        
-        private CommentTypeEnum GetCommentType(string commentDTOType)
-        {
-            CommentTypeEnum type;
-            Enum.TryParse(commentDTOType, out type);
-            return type;
-        }
+     
     }
 }

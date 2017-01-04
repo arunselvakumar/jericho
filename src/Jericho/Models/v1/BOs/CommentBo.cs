@@ -1,39 +1,31 @@
-namespace Jericho.Models.v1.DTOs
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Jericho.Models.v1.BOs
 {
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    using Newtonsoft.Json;
-    using System;
-
-    public class CommentDto
+    public class CommentBo
     {
         #region Public Properties
 
         public string Id { get; set; }
-            
-        [Required]
-        [DataType(DataType.Text)]
+        
         public string PostId { get; set; }
-
-        [Required]
-        [DataType(DataType.Text)]
+        
         public string ParentId { get; set; }
-
-        [DataType(DataType.Text)]
+        
         public string Text { get; set; }
-
-        [DataType(DataType.Text)]
+        
         public string Url { get; set; }
-
-        [Required]
-        [DataType(DataType.Text)]
+        
         public string PostedBy { get; set; }
 
         public long UpVotes { get; set; }
 
-        public long DownVotes { get; set; }
-            
+        public long DownVotes { get; set; }        
+
         public DateTime CreatedOn { get; set; }
 
         #endregion

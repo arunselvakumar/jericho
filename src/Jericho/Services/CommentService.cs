@@ -19,26 +19,30 @@ namespace Jericho.Services
     using Models.v1.Entities.Extensions;
     using Extensions;
     using System;
+    using AutoMapper;
+    using Models.v1.BOs;
 
     public class CommentService : ICommentService
     {
         private readonly MongoDbOptions mongoDbOptions;
         private readonly IMongoDatabase mongoDbInstance;
+        private readonly IMapper mapper;
 
-        public CommentService(IOptions<MongoDbOptions> MongoDbConfig, IMongoHelper mongoHelper)
+        public CommentService(IOptions<MongoDbOptions> MongoDbConfig, IMongoHelper mongoHelper, IMapper mapper)
         {
             this.mongoDbInstance = mongoHelper.MongoDbInstance;
             this.mongoDbOptions = MongoDbConfig.Value;
+            this.mapper = mapper;
         }
 
-        public async Task<ServiceResult<CommentEntity>> CreateCommentAsync(CommentEntity commentEntity)
+        public async Task<ServiceResult<CommentBo>> CreateCommentAsync(CommentEntity commentEntity)
         {   
             Console.WriteLine("entered");
             var validationErrors = commentEntity.Validate();
 
             if (validationErrors.Any())
             {
-                return new ServiceResult<CommentEntity>(false, validationErrors);
+                return new ServiceResult<CommentBo>(false, validationErrors);
             }
 
             commentEntity.ApplyPresets();
@@ -46,22 +50,34 @@ namespace Jericho.Services
             await commentCollection.InsertOneAsync(commentEntity);
 
             var insertedEntity = await GetCommentAsync(commentEntity.Id.ToString());
+            var insertedBo = this.mapper.Map<CommentBo>(insertedEntity);
 
-            return new ServiceResult<CommentEntity>(true, insertedEntity);
+            return new ServiceResult<CommentBo>(true, insertedBo);
         }
 
-        public async Task<CommentEntity> GetCommentAsync(string id)
+        public async Task<ServiceResult<CommentBo>> GetCommentAsync(string id)
         {
             var commentCollection = mongoDbInstance.GetCollection<CommentEntity>(this.mongoDbOptions.CommentsCollectionName);
-            var commentEntity = await commentCollection.FindAsync(Builders<CommentEntity>.Filter.Eq("_id", ObjectId.Parse(id)));
+            var commentEntities = await commentCollection.FindAsync(Builders<CommentEntity>.Filter.Eq("_id", ObjectId.Parse(id)));
 
-            return await commentEntity.FirstOrDefaultAsync();
+            var commentEntity = await commentEntities.FirstOrDefaultAsync();
+
+            if(commentEntity == null)
+            {
+                return new ServiceResult<CommentBo>(false);
+            }
+
+            var commentBo = this.mapper.Map<CommentBo>(commentEntity);
+
+            return new ServiceResult<CommentBo>(true, commentBo);
         }
 
-        public async Task<IEnumerable<CommentEntity>> GetPostComments(string postId)
+        public async Task<IEnumerable<CommentBo>> GetPostComments(string postId)
         {
             var commentCollection = mongoDbInstance.GetCollection<CommentEntity>(this.mongoDbOptions.CommentsCollectionName);
-            return await commentCollection.Find(Builders<CommentEntity>.Filter.Eq("postid", ObjectId.Parse(postId))).ToListAsync();
+            var commentEntities = await commentCollection.Find(Builders<CommentEntity>.Filter.Eq("postid", ObjectId.Parse(postId))).ToListAsync();
+
+            return this.mapper.Map<IEnumerable<CommentBo>>(commentEntities);
         }
     }
 }

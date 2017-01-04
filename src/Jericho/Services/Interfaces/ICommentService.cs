@@ -9,13 +9,14 @@ namespace Jericho.Services.Interfaces
 
     using Microsoft.Azure.Documents;
     using Microsoft.AspNetCore.Http;
+    using Models.v1.BOs;
 
     public interface ICommentService
     {
-        Task<ServiceResult<CommentEntity>> CreateCommentAsync(CommentEntity post);
+        Task<ServiceResult<CommentBo>> CreateCommentAsync(CommentEntity post);
 
-        Task<CommentEntity> GetCommentAsync(string id);
+        Task<ServiceResult<CommentBo>> GetCommentAsync(string id);
 
-        Task<IEnumerable<CommentEntity>> GetPostComments(string postId);
+        Task<IEnumerable<CommentBo>> GetPostComments(string postId);
     }
 }
