@@ -1,3 +1,7 @@
+body { 
+    padding-top: 70px; 
+}
+
 .post-container {
     margin-bottom: 50px;
     padding: 0 0 20px;
@@ -44,6 +48,14 @@
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: #e1e1e1
+}
+
+.profile-dp {
+    box-sizing: border-box;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
 }
 
 .red {
