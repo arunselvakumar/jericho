@@ -1,17 +1,22 @@
 body { 
     padding-top: 70px; 
+    font-family: 'Open Sans', sans-serif;
+    background: #f7f7f7;
+    color: #354a5f;
 }
 
 .post-container {
     margin-bottom: 50px;
     padding: 0 0 20px;
-    border: 1px solid #e1e1e1;
     border-radius: 5px;
     min-height: 200px;
 }
 
 .post-container .post-entry {
     text-align: left;
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    margin-bottom: 10px;
     padding: 10px;
 }
 
@@ -45,9 +50,13 @@ body {
 }
 
 .border-bottom {
-    border-bottom-width: 1px;
+    border-bottom-width: 0px;
     border-bottom-style: solid;
     border-bottom-color: #e1e1e1
+}
+
+.icons {
+    margin-left: 10px;
 }
 
 .profile-dp {
@@ -68,4 +77,8 @@ body {
 
 .blue {
     color: #0000ff;
+}
+
+.lightgrey {
+    color: #354a5f;
 }
