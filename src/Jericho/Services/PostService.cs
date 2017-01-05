@@ -18,48 +18,59 @@
     using Microsoft.AspNetCore.Http;
     using Models.v1.Entities.Extensions;
     using Extensions;
+    using Aggregators.Interfaces;
+    using AutoMapper;
+    using Models.v1.BOs;
 
     public class PostService : IPostService
     {
         private readonly MongoDbOptions mongoDbOptions;
         private readonly IMongoDatabase mongoDbInstance;
+        private readonly ICommentAggregator commentAggregator;
+        private readonly IMapper mapper;
 
-        public PostService(IOptions<MongoDbOptions> MongoDbConfig, IMongoHelper mongoHelper)
+        public PostService(IOptions<MongoDbOptions> MongoDbConfig, IMongoHelper mongoHelper, IMapper mapper, ICommentAggregator commentAggregator)
         {
             this.mongoDbInstance = mongoHelper.MongoDbInstance;
             this.mongoDbOptions = MongoDbConfig.Value;
+            this.mapper = mapper;
+            this.commentAggregator = commentAggregator;
         }
 
-        public async Task<ServiceResult<PostEntity>> CreatePostAsync(PostEntity postEntity)
+        public async Task<ServiceResult<UpdatePostBo>> CreatePostAsync(PostEntity postEntity)
         {               
             var validationErrors = postEntity.Validate();
 
             if (validationErrors.Any())
             {
-                return new ServiceResult<PostEntity>(false, validationErrors);
+                return new ServiceResult<UpdatePostBo>(false, validationErrors);
             }
 
             var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
             await postCollection.InsertOneAsync(postEntity);
 
-            var insertedEntity = await GetPostByIdAsync(postEntity.Id.ToString());            
+            var insertedEntity = await GetPostByIdAsync(postEntity.Id.ToString());
+            var insertedBo = this.mapper.Map<UpdatePostBo>(insertedEntity);           
 
-            return new ServiceResult<PostEntity>(true, insertedEntity);
+            return new ServiceResult<UpdatePostBo>(true, insertedBo);
         }
 
-        public async Task<ServiceResult<PostEntity>> GetPostAsync(string id)
+        public async Task<ServiceResult<UpdatePostBo>> GetPostAsync(string id)
         {
             var postEntity = await this.GetPostByIdAsync(id);
 
             if(postEntity == null)
             {
-                return new ServiceResult<PostEntity>(false);
+                return new ServiceResult<UpdatePostBo>(false);
             }
 
-            return new ServiceResult<PostEntity>(true, postEntity);
+            var postBo = this.mapper.Map<UpdatePostBo>(postEntity);
+            await this.commentAggregator.AggregateCommentsForPost(postBo);
+
+            return new ServiceResult<UpdatePostBo>(true, postBo);
         }
 
-        public async Task<ServiceResult<IEnumerable<PostEntity>>> GetPostsAsync(IQueryCollection query, int page, int limit)
+        public async Task<ServiceResult<IEnumerable<UpdatePostBo>>> GetPostsAsync(IQueryCollection query, int page, int limit)
         {
             var filter = new BsonDocument(query.ToDictionary(kvp => kvp.Key.ToLower(), kvp => kvp.Value[0].ToString().ToCaseInsensitiveRegex()));
             filter.RemoveDefaultPostFilterPresets();
@@ -68,7 +79,9 @@
             var postEntities = await mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
                 .Find(filter).Skip(page * limit).Limit(limit).ToListAsync();
 
-            return new ServiceResult<IEnumerable<PostEntity>>(true, postEntities); 
+            var postBos = this.mapper.Map<IEnumerable<UpdatePostBo>>(postEntities);
+
+            return new ServiceResult<IEnumerable<UpdatePostBo>>(true, postBos); 
         }
 
         public async Task<ServiceResult<bool>> UpdatePostAsync(PostEntity postEntity)

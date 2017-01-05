@@ -9,14 +9,15 @@
 
     using Microsoft.Azure.Documents;
     using Microsoft.AspNetCore.Http;
+    using Models.v1.BOs;
 
     public interface IPostService
     {
-        Task<ServiceResult<PostEntity>> CreatePostAsync(PostEntity post);
+        Task<ServiceResult<UpdatePostBo>> CreatePostAsync(PostEntity post);
 
-        Task<ServiceResult<PostEntity>> GetPostAsync(string id);
+        Task<ServiceResult<UpdatePostBo>> GetPostAsync(string id);
         
-        Task<ServiceResult<IEnumerable<PostEntity>>> GetPostsAsync(IQueryCollection query, int page, int limit);
+        Task<ServiceResult<IEnumerable<UpdatePostBo>>> GetPostsAsync(IQueryCollection query, int page, int limit);
 
         Task<ServiceResult<bool>> UpdatePostAsync(PostEntity postEntity);
 

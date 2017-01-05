@@ -21,6 +21,8 @@
     using Microsoft.Extensions.Options;
 
     using MongoDB.Driver;
+    using Aggregators.Interfaces;
+    using Aggregators;
 
     public static class ServiceExtensions
     {
@@ -160,6 +162,16 @@
             }
 
             service.AddSingleton<IMongoHelper, MongoHelper>();
+        }
+
+        public static void AddCommentAggregator(this IServiceCollection service)
+        {
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            service.AddSingleton<ICommentAggregator, CommentAggregator>();
         }
     }
 }

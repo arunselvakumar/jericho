@@ -25,21 +25,15 @@ namespace Jericho.Models.v1.Entities
 
         [BsonElement("postid")]
         [JsonProperty(PropertyName = "postid")]
-        public ObjectId PostId { get; set; }
+        public string PostId { get; set; }
 
         [BsonElement("parentid")]
         [JsonProperty(PropertyName = "parentid")]
-        public ObjectId ParentId { get; set; }
+        public string ParentId { get; set; }
 
         [JsonProperty(PropertyName = "url")]
         [BsonElement("url")]
-        public string Url { get; set; }
-
-        [JsonProperty(PropertyName = "type")]
-        [JsonConverter(typeof(StringEnumConverter))]
-        [BsonRepresentation(BsonType.String)]
-        [BsonElement("type")]
-        public CommentTypeEnum Type { get; set; }
+        public string Url { get; set; }       
 
         [JsonProperty(PropertyName = "text")]
         [BsonElement("text")]
@@ -76,21 +70,7 @@ namespace Jericho.Models.v1.Entities
 
             this.RequiredValidationRule(nameof(PostId), validationErrors);
             this.RequiredValidationRule(nameof(ParentId), validationErrors);
-            this.RequiredValidationRule(nameof(Type), validationErrors);
-
-            switch (Type)
-            {
-                case CommentTypeEnum.None:
-                    this.RequiredValidationRule(nameof(Text), validationErrors);
-                    break;
-                case CommentTypeEnum.Image:
-                case CommentTypeEnum.Gif:
-                case CommentTypeEnum.Video:
-                    this.RequiredValidationRule(nameof(Url), validationErrors);
-                break;
-                default:
-                    break;
-            }
+           
             return validationErrors;
         }
 

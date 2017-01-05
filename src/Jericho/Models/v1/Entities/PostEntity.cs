@@ -53,7 +53,7 @@ namespace Jericho.Models.v1.Entities
 
         [JsonProperty(PropertyName = "tags")]
         [BsonElement("tags")]
-        public IEnumerable<string> Tags { get; set; }
+        public IEnumerable<string> Tags { get; set; }        
 
         [JsonProperty(PropertyName = "upvotes")]
         [BsonElement("upvotes")]
