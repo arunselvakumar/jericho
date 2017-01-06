@@ -69,7 +69,7 @@ namespace Jericho.Models.v1.Entities
             var validationErrors = new List<Error>();
 
             this.RequiredValidationRule(nameof(PostId), validationErrors);
-            this.RequiredValidationRule(nameof(ParentId), validationErrors);
+            //this.RequiredValidationRule(nameof(ParentId), validationErrors);
            
             return validationErrors;
         }

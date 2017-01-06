@@ -37,40 +37,41 @@
             this.commentAggregator = commentAggregator;
         }
 
-        public async Task<ServiceResult<UpdatePostBo>> CreatePostAsync(PostEntity postEntity)
-        {               
+        public async Task<ServiceResult<PostBo>> CreatePostAsync(PostBo postBo)
+        {
+            var postEntity = this.mapper.Map<PostEntity>(postBo);
             var validationErrors = postEntity.Validate();
 
             if (validationErrors.Any())
             {
-                return new ServiceResult<UpdatePostBo>(false, validationErrors);
+                return new ServiceResult<PostBo>(false, validationErrors);
             }
 
             var postCollection = mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName);
             await postCollection.InsertOneAsync(postEntity);
 
             var insertedEntity = await GetPostByIdAsync(postEntity.Id.ToString());
-            var insertedBo = this.mapper.Map<UpdatePostBo>(insertedEntity);           
+            var insertedBo = this.mapper.Map<PostBo>(insertedEntity);           
 
-            return new ServiceResult<UpdatePostBo>(true, insertedBo);
+            return new ServiceResult<PostBo>(true, insertedBo);
         }
 
-        public async Task<ServiceResult<UpdatePostBo>> GetPostAsync(string id)
+        public async Task<ServiceResult<PostBo>> GetPostAsync(string id)
         {
             var postEntity = await this.GetPostByIdAsync(id);
 
             if(postEntity == null)
             {
-                return new ServiceResult<UpdatePostBo>(false);
+                return new ServiceResult<PostBo>(false);
             }
 
-            var postBo = this.mapper.Map<UpdatePostBo>(postEntity);
+            var postBo = this.mapper.Map<PostBo>(postEntity);
             await this.commentAggregator.AggregateCommentsForPost(postBo);
 
-            return new ServiceResult<UpdatePostBo>(true, postBo);
+            return new ServiceResult<PostBo>(true, postBo);
         }
 
-        public async Task<ServiceResult<IEnumerable<UpdatePostBo>>> GetPostsAsync(IQueryCollection query, int page, int limit)
+        public async Task<ServiceResult<IEnumerable<PostBo>>> GetPostsAsync(IQueryCollection query, int page, int limit)
         {
             var filter = new BsonDocument(query.ToDictionary(kvp => kvp.Key.ToLower(), kvp => kvp.Value[0].ToString().ToCaseInsensitiveRegex()));
             filter.RemoveDefaultPostFilterPresets();
@@ -79,13 +80,14 @@
             var postEntities = await mongoDbInstance.GetCollection<PostEntity>(this.mongoDbOptions.PostsCollectionName)
                 .Find(filter).Skip(page * limit).Limit(limit).ToListAsync();
 
-            var postBos = this.mapper.Map<IEnumerable<UpdatePostBo>>(postEntities);
+            var postBos = this.mapper.Map<IEnumerable<PostBo>>(postEntities);
 
-            return new ServiceResult<IEnumerable<UpdatePostBo>>(true, postBos); 
+            return new ServiceResult<IEnumerable<PostBo>>(true, postBos); 
         }
 
-        public async Task<ServiceResult<bool>> UpdatePostAsync(PostEntity postEntity)
+        public async Task<ServiceResult<bool>> UpdatePostAsync(PostBo postBo)
         {
+            var postEntity = this.mapper.Map<PostEntity>(postBo);
             var validationErrors = postEntity.Validate();
 
             if (validationErrors.Any())

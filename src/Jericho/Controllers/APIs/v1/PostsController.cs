@@ -15,6 +15,7 @@
     using Microsoft.AspNetCore.Mvc;
     using System;
     using Models.v1.DTOs.Post;
+    using Models.v1.BOs;
 
     /// <summary>
     /// Posts Controller.
@@ -46,8 +47,8 @@
         //[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> SavePostAsync([FromBody]CreatePostDto postDto)
         {          
-            var postEntity = this.mapper.Map<PostEntity>(postDto);           
-            var result = await this.postService.CreatePostAsync(postEntity);
+            var postBo = this.mapper.Map<PostBo>(postDto);           
+            var result = await this.postService.CreatePostAsync(postBo);
 
             if(!result.Succeeded)
             {
@@ -97,8 +98,8 @@
         [HttpPut]
         public async Task<IActionResult> UpdatePostByIdAsync([FromBody]UpdatePostDto postDto)
         {
-            var postEntity = this.mapper.Map<PostEntity>(postDto);
-            var result = await this.postService.UpdatePostAsync(postEntity);
+            var postBo = this.mapper.Map<PostBo>(postDto);
+            var result = await this.postService.UpdatePostAsync(postBo);
 
             if (!result.Succeeded)
             {

@@ -13,13 +13,13 @@
 
     public interface IPostService
     {
-        Task<ServiceResult<UpdatePostBo>> CreatePostAsync(PostEntity post);
+        Task<ServiceResult<PostBo>> CreatePostAsync(PostBo postBo);
 
-        Task<ServiceResult<UpdatePostBo>> GetPostAsync(string id);
+        Task<ServiceResult<PostBo>> GetPostAsync(string id);
         
-        Task<ServiceResult<IEnumerable<UpdatePostBo>>> GetPostsAsync(IQueryCollection query, int page, int limit);
+        Task<ServiceResult<IEnumerable<PostBo>>> GetPostsAsync(IQueryCollection query, int page, int limit);
 
-        Task<ServiceResult<bool>> UpdatePostAsync(PostEntity postEntity);
+        Task<ServiceResult<bool>> UpdatePostAsync(PostBo postEntity);
 
         Task<ServiceResult<bool>> DeletePostAsync(string id);
         

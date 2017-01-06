@@ -35,9 +35,9 @@ namespace Jericho.Services
             this.mapper = mapper;
         }
 
-        public async Task<ServiceResult<CommentBo>> CreateCommentAsync(CommentEntity commentEntity)
-        {   
-            Console.WriteLine("entered");
+        public async Task<ServiceResult<CommentBo>> CreateCommentAsync(CommentBo commentBo)
+        {
+            var commentEntity = this.mapper.Map<CommentEntity>(commentBo);
             var validationErrors = commentEntity.Validate();
 
             if (validationErrors.Any())
@@ -49,10 +49,9 @@ namespace Jericho.Services
             var commentCollection = mongoDbInstance.GetCollection<CommentEntity>(this.mongoDbOptions.CommentsCollectionName);
             await commentCollection.InsertOneAsync(commentEntity);
 
-            var insertedEntity = await GetCommentAsync(commentEntity.Id.ToString());
-            var insertedBo = this.mapper.Map<CommentBo>(insertedEntity);
+            var result = await GetCommentAsync(commentEntity.Id.ToString());
 
-            return new ServiceResult<CommentBo>(true, insertedBo);
+            return new ServiceResult<CommentBo>(true, result.Value);
         }
 
         public async Task<ServiceResult<CommentBo>> GetCommentAsync(string id)
@@ -75,7 +74,7 @@ namespace Jericho.Services
         public async Task<IEnumerable<CommentBo>> GetPostComments(string postId)
         {
             var commentCollection = mongoDbInstance.GetCollection<CommentEntity>(this.mongoDbOptions.CommentsCollectionName);
-            var commentEntities = await commentCollection.Find(Builders<CommentEntity>.Filter.Eq("postid", ObjectId.Parse(postId))).ToListAsync();
+            var commentEntities = await commentCollection.Find(Builders<CommentEntity>.Filter.Eq("postid", postId)).ToListAsync();
 
             return this.mapper.Map<IEnumerable<CommentBo>>(commentEntities);
         }

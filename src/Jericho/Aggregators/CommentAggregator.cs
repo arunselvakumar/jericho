@@ -18,7 +18,7 @@ namespace Jericho.Aggregators
             this.commentService = commentService;
         }
 
-        public async Task AggregateCommentsForPost(UpdatePostBo postBo)
+        public async Task AggregateCommentsForPost(PostBo postBo)
         {
             var postComments = await this.commentService.GetPostComments(postBo.Id);
             postBo.Comments = postComments;            

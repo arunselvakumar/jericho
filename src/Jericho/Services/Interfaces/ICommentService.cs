@@ -13,7 +13,7 @@ namespace Jericho.Services.Interfaces
 
     public interface ICommentService
     {
-        Task<ServiceResult<CommentBo>> CreateCommentAsync(CommentEntity post);
+        Task<ServiceResult<CommentBo>> CreateCommentAsync(CommentBo commentBo);
 
         Task<ServiceResult<CommentBo>> GetCommentAsync(string id);
 

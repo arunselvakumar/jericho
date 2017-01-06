@@ -45,22 +45,25 @@
 
         private void ConfigurePostMappers()
         {
-            this.CreateMap<CreatePostDto, PostEntity>()
-                .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => ObjectId.Empty))
-                .ForMember(postEntity => postEntity.Type, opt => opt.MapFrom(postDto => GetPostType(postDto.Type)))
-                .ForMember(postEntity => postEntity.Url, opt=>opt.MapFrom(postDto => $"{postDto.Title.Trim().Replace(' ', '_').ToLower()}_{DateTime.UtcNow.ToTimeStamp()}"))
-                .ForMember(postEntity => postEntity.UpVotes, opt => opt.MapFrom(postDto => 0))
-                .ForMember(postEntity => postEntity.DownVotes, opt => opt.MapFrom(postDto => 0))
+            this.CreateMap<CreatePostDto, PostBo>()
                 .ForMember(postEntity => postEntity.CreatedOn, opt => opt.MapFrom(postDto => DateTime.Now));
 
-            this.CreateMap<UpdatePostDto, PostEntity>()
-                .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => string.IsNullOrEmpty(postDto.Id) ? ObjectId.Empty : ObjectId.Parse(postDto.Id)));
+            this.CreateMap<PostBo, PostEntity>()
+                .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => ObjectId.Empty))
+                .ForMember(postEntity => postEntity.Type, opt => opt.MapFrom(postDto => GetPostType(postDto.Type)))
+                .ForMember(postEntity => postEntity.Url, opt => opt.MapFrom(postDto => $"{postDto.Title.Trim().Replace(' ', '_').ToLower()}_{DateTime.UtcNow.ToTimeStamp()}"))
+                .ForMember(postEntity => postEntity.UpVotes, opt => opt.MapFrom(postDto => 0))
+                .ForMember(postEntity => postEntity.DownVotes, opt => opt.MapFrom(postDto => 0));
+                
+            //this.CreateMap<UpdatePostDto, PostEntity>()
+            //    .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => string.IsNullOrEmpty(postDto.Id) ? ObjectId.Empty : ObjectId.Parse(postDto.Id)));
 
-            //Todo: Rename params
-            this.CreateMap<PostEntity, UpdatePostBo>()
-                .ForMember(postDto => postDto.Id, opt => opt.MapFrom(postEntity => postEntity.Id.ToString()));
+            this.CreateMap<UpdatePostDto, PostBo>();
 
-            this.CreateMap<UpdatePostBo, UpdatePostDto>();
+            this.CreateMap<PostEntity, PostBo>()
+                .ForMember(postBo => postBo.Id, opt => opt.MapFrom(postEntity => postEntity.Id.ToString()));
+
+            this.CreateMap<PostBo, UpdatePostDto>();
         }
 
         private PostTypeEnum GetPostType(string postType)
@@ -86,12 +89,13 @@
         
         private void ConfigureCommentMappers()
         {
-            this.CreateMap<CommentDto, CommentEntity>()
+            this.CreateMap<CommentDto, CommentBo>();
+
+            this.CreateMap<CommentBo, CommentEntity>()
                 .ForMember(commentEntity => commentEntity.Id, opt => opt.MapFrom(commentDto => string.IsNullOrEmpty(commentDto.Id) ? ObjectId.Empty : ObjectId.Parse(commentDto.Id)));
 
-            //Todo: Rename params
             this.CreateMap<CommentEntity, CommentBo>()
-                .ForMember(commentDto => commentDto.Id, opt => opt.MapFrom(commentEntity => commentEntity.Id.ToString()));
+                .ForMember(commentBo => commentBo.Id, opt => opt.MapFrom(commentEntity => commentEntity.Id.ToString()));
 
             this.CreateMap<CommentBo, CommentDto>();
         }

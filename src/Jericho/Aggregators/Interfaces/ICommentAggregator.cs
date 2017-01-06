@@ -9,6 +9,6 @@ namespace Jericho.Aggregators.Interfaces
 {
     public interface ICommentAggregator
     {
-        Task AggregateCommentsForPost(UpdatePostBo postBo);
+        Task AggregateCommentsForPost(PostBo postBo);
     }
 }

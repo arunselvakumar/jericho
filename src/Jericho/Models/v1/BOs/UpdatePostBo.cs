@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Jericho.Models.v1.BOs
 {
-    public class UpdatePostBo
+    public class PostBo
     {
         #region Public Properties
 

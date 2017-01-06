@@ -9,6 +9,7 @@ namespace Jericho.Controllers.APIs.V1
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Mvc;
+    using Models.v1.BOs;
 
     /// <summary>
     /// Comments Controller.
@@ -40,8 +41,8 @@ namespace Jericho.Controllers.APIs.V1
         //[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> SaveCommentAsync([FromBody]CommentDto commentDto)
         {
-            var commentEntity = this.mapper.Map<CommentEntity>(commentDto);
-            var result = await this.commentService.CreateCommentAsync(commentEntity);
+            var commentBo = this.mapper.Map<CommentBo>(commentDto);
+            var result = await this.commentService.CreateCommentAsync(commentBo);
 
             return new CreatedResult(string.Empty, result);
         }
