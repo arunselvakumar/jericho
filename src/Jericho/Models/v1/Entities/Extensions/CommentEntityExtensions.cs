@@ -6,6 +6,7 @@ namespace Jericho.Models.v1.Entities.Extensions
 
     public static class CommentEntityExtensions
     {
+        //ToDo : Create a CreateCommentDto class and move the below code to Automapper
         public static void ApplyPresets(this CommentEntity commentEntity)
         {
             commentEntity.Id = ObjectId.Empty;

@@ -18,33 +18,27 @@ namespace Jericho.Controllers.APIs.V1
     public class CommentsController : Controller
     {
         private readonly ICommentService commentService;
-
         private readonly IMapper mapper;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CommentsController"/> class. 
-        /// </summary>
-        /// <param name="commentService">Comment Service </param>
-        /// <param name="mapper">Auto Mapper </param>
+       
         public CommentsController([FromServices]ICommentService commentService, IMapper mapper)
         {
             this.commentService = commentService;
             this.mapper = mapper;
         }
-
-        /// <summary>
-        /// Validates the Model States and Adds new comments to the Data Store.
-        /// </summary>
-        /// <param name="commentDto">Comment DTO</param>
-        /// <returns>Service Response</returns>
-        [HttpPost]
-        //[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        
+        [HttpPost]        
         public async Task<IActionResult> SaveCommentAsync([FromBody]CommentDto commentDto)
         {
             var commentBo = this.mapper.Map<CommentBo>(commentDto);
             var result = await this.commentService.CreateCommentAsync(commentBo);
 
-            return new CreatedResult(string.Empty, result);
+            if(!result.Succeeded)
+            {
+                return new BadRequestObjectResult(result.Errors);
+            }
+
+            var insertedDto = this.mapper.Map<CommentDto>(result.Value);
+            return new CreatedResult(string.Empty, insertedDto);
         }
     }
 }

@@ -21,14 +21,12 @@ namespace Jericho.Models.v1.DTOs
         public string ParentId { get; set; }
 
         [DataType(DataType.Text)]
-        public string Text { get; set; }
+        public string Comment { get; set; }
 
-        [DataType(DataType.Text)]
-        public string Url { get; set; }
-
+        //ToDo: Is this needs [Required] ?
         [Required]
         [DataType(DataType.Text)]
-        public string PostedBy { get; set; }
+        public string CommentedBy { get; set; }
 
         public long UpVotes { get; set; }
 

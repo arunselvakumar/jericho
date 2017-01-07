@@ -16,11 +16,9 @@ namespace Jericho.Models.v1.BOs
         
         public string ParentId { get; set; }
         
-        public string Text { get; set; }
-        
-        public string Url { get; set; }
-        
-        public string PostedBy { get; set; }
+        public string Comment { get; set; }
+       
+        public string CommentedBy { get; set; }
 
         public long UpVotes { get; set; }
 

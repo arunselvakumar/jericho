@@ -24,25 +24,14 @@
     public class PostsController : Controller
     {
         private readonly IPostService postService;
-
         private readonly IMapper mapper;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PostsController"/> class. 
-        /// </summary>
-        /// <param name="postService">Post Service </param>
-        /// <param name="mapper">Auto Mapper </param>
+        
         public PostsController([FromServices]IPostService postService, IMapper mapper)
         {
             this.postService = postService;
             this.mapper = mapper;
         }
-
-        /// <summary>
-        /// Validates the Model States and Adds new posts to the Data Store.
-        /// </summary>
-        /// <param name="postDto">Post DTO</param>
-        /// <returns>Service Response</returns>
+        
         [HttpPost]
         //[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> SavePostAsync([FromBody]CreatePostDto postDto)
@@ -55,14 +44,10 @@
                 return new BadRequestObjectResult(result.Errors);
             }
 
-            return new CreatedResult(string.Empty, result.Value);            
+            var insertedDto = this.mapper.Map<UpdatePostDto>(result.Value);            
+            return new CreatedResult(string.Empty, insertedDto);            
         }
-
-        /// <summary>
-        /// Get the post from the Data Store.
-        /// </summary>
-        /// <param name="postId">Post ID</param>
-        /// <returns>Post Document</returns>
+        
         [HttpGet("{postId}")]
         [Produces("application/json")]
         public async Task<IActionResult> GetPostByIdAsync(string postId)
@@ -91,10 +76,7 @@
             var postDtos = this.mapper.Map<IEnumerable<UpdatePostDto>>(result.Value);
             return new OkObjectResult(postDtos);
         }
-
-        /// <summary>
-        /// Updates the post from Data Store.
-        /// </summary>        
+                
         [HttpPut]
         public async Task<IActionResult> UpdatePostByIdAsync([FromBody]UpdatePostDto postDto)
         {
