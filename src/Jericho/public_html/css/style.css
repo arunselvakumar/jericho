@@ -1,8 +1,12 @@
 body { 
     padding-top: 70px; 
     font-family: 'Open Sans', sans-serif;
-    background: #f7f7f7;
-    color: #354a5f;
+}
+
+.widget-box {
+    border: 1px solid #e1e1e1;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 .post-container {
@@ -23,6 +27,7 @@ body {
 .post-container .post-entry .post-title-container {
     text-align: left;
     padding: 10px;
+    border-bottom: 1px solid #e1e1e1;;
 }
 
 .post-container .post-entry .post-title-container h3 {
@@ -53,6 +58,18 @@ body {
     border-bottom-width: 0px;
     border-bottom-style: solid;
     border-bottom-color: #e1e1e1
+}
+
+.theme-blue {
+    color: #548bc9;
+}
+
+.theme-lightblue {
+    color: #90aedd;
+}
+
+.theme-red {
+    color: #ec5c3e;
 }
 
 .icons {
