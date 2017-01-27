@@ -7,12 +7,13 @@ var gulp = require("gulp"),
     uglify = require("gulp-uglify");
 
 var webroot = "./wwwroot/";
+var clientPath = "./Client/";
 
 var paths = {
-    js: webroot + "js/**/*.js",
-    minJs: webroot + "js/**/*.min.js",
-    css: webroot + "css/**/*.css",
-    minCss: webroot + "css/**/*.min.css",
+    js: clientPath + "js/**/*.js",
+    minJs: clientPath + "js/**/*.min.js",
+    css: clientPath + "css/**/*.css",
+    minCss: clientPath + "css/**/*.min.css",
     concatJsDest: webroot + "js/site.min.js",
     concatCssDest: webroot + "css/site.min.css"
 };

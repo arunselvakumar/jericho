@@ -10,7 +10,7 @@ module.exports = [
       system: './node_modules/systemjs/dist/system.src.js'
     },
     output: {
-      filename: './wwwroot/js/[name].js'
+      filename: './Client/js/[name].js'
     },
     target: 'web',
     node: {
@@ -19,18 +19,19 @@ module.exports = [
   },
   {
     entry: {
-      app: './wwwroot/app/main.ts'
+      app: './Client/app/main.ts'
     },
     output: {
-      filename: './wwwroot/app/bundle.js'
+      filename: './Client/app/bundle.js'
     },
     devtool: 'source-map',
     resolve: {
-      extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
+      extensions: ['', '.ts', '.js', '.json', '.css', '.scss', '.html', '.eot', '.ttf', '.svg', '.woff', '.woff2', '.otf']
     },
     module: {
       loaders: [
-        { test: /\.ts$/, loader: 'ts-loader' }
+        { test: /\.ts$/, loader: 'ts-loader' },
+        { test: /\.html$/, loader: 'html' }
       ]
     }
   }];
