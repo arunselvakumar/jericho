@@ -2,8 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    using Jericho.Identity;
-    using Jericho.Providers.ServiceResultProvider;
+    using Jericho.Providers;
     using Microsoft.AspNetCore.Http;
 
     public interface IUploadService

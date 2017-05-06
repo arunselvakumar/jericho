@@ -1,19 +1,16 @@
-using System.ComponentModel.DataAnnotations;
-using Jericho.Validations;
-using Jericho.Validations.Interfaces;
-
 namespace Jericho.Models.v1.Entities
 {
     using System;
     using System.Collections.Generic;
 
-    using Jericho.Models.v1.Entities.Enums;
+    using Jericho.Providers;
+    using Jericho.Validations;
+    using Jericho.Validations.Interfaces;
+
+    using MongoDB.Bson;
+    using MongoDB.Bson.Serialization.Attributes;
 
     using Newtonsoft.Json;
-    using MongoDB.Bson.Serialization.Attributes;
-    using MongoDB.Bson;
-    using Newtonsoft.Json.Converters;
-    using Providers.ServiceResultProvider;
 
     public class CommentEntity : IValidatableEntity
     {

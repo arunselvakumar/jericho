@@ -4,7 +4,7 @@ namespace Jericho.Services.Interfaces
     using System.Threading.Tasks;
 
     using Jericho.Models.v1.Entities;
-    using Jericho.Providers.ServiceResultProvider;
+    using Jericho.Providers;
 
     public interface IFavoritesService
     {

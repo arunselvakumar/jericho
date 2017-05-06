@@ -2,13 +2,16 @@
 {
     using System;
 
+    using Aggregators;
+    using Aggregators.Interfaces;
+
     using AutoMapper;
 
     using Jericho.Configuration;
-    using Jericho.Helpers;
-    using Jericho.Helpers.Interfaces;
     using Jericho.Identity;
     using Jericho.Options;
+    using Jericho.Providers;
+    using Jericho.Providers.Interfaces;
     using Jericho.Services;
     using Jericho.Services.Interfaces;
 
@@ -21,8 +24,6 @@
     using Microsoft.Extensions.Options;
 
     using MongoDB.Driver;
-    using Aggregators.Interfaces;
-    using Aggregators;
 
     public static class ServiceExtensions
     {
@@ -161,7 +162,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<IMongoHelper, MongoHelper>();
+            service.AddSingleton<IDataProvider, DataProvider>();
         }
 
         public static void AddCommentAggregator(this IServiceCollection service)

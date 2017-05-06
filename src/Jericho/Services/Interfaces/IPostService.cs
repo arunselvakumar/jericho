@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Jericho.Providers.ServiceResultProvider;
+    using Jericho.Providers;
     using Microsoft.AspNetCore.Http;
     using Models.v1.BOs;
 

@@ -106,23 +106,6 @@
         }
 
         /// <summary>
-        /// Credit for this method goes to http://stackoverflow.com/questions/2920744/url-slugify-alrogithm-in-cs
-        /// </summary>
-        private static string GenerateSlug(string value, int? maxLength = null)
-        {
-            // prepare string, remove accents, lower case and convert hyphens to whitespace
-            var result = RemoveAccent(value).Replace("-", " ").ToLowerInvariant();
-
-            result = Regex.Replace(result, @"[^a-z0-9\s-]", string.Empty); // remove invalid characters
-            result = Regex.Replace(result, @"\s+", " ").Trim(); // convert multiple spaces into one space
-
-            if (maxLength.HasValue) // cut and trim
-                result = result.Substring(0, result.Length <= maxLength ? result.Length : maxLength.Value).Trim();
-
-            return Regex.Replace(result, @"\s", "-"); // replace all spaces with hyphens
-        }
-
-        /// <summary>
         /// Returns a string array containing the trimmed substrings in this <paramref name="value"/>
         /// that are delimited by the provided <paramref name="separators"/>.
         /// </summary>
@@ -156,6 +139,25 @@
             }
 
             return string.Concat(source.Substring(0, maxLength).Trim(), suffix ?? string.Empty);
+        }
+
+        /// <summary>
+        /// Credit for this method goes to http://stackoverflow.com/questions/2920744/url-slugify-alrogithm-in-cs
+        /// </summary>
+        private static string GenerateSlug(string value, int? maxLength = null)
+        {
+            // prepare string, remove accents, lower case and convert hyphens to whitespace
+            var result = RemoveAccent(value).Replace("-", " ").ToLowerInvariant();
+
+            result = Regex.Replace(result, @"[^a-z0-9\s-]", string.Empty); // remove invalid characters
+            result = Regex.Replace(result, @"\s+", " ").Trim(); // convert multiple spaces into one space
+
+            if (maxLength.HasValue)
+            {
+                result = result.Substring(0, result.Length <= maxLength ? result.Length : maxLength.Value).Trim();
+            }
+
+            return Regex.Replace(result, @"\s", "-"); // replace all spaces with hyphens
         }
 
         private static string RemoveAccent(string value)

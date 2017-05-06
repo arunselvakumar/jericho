@@ -1,12 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Jericho.Models.v1.BOs
+﻿namespace Jericho.Models.v1.BOs
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
+    using Newtonsoft.Json;
+
     public class PostBo
     {
         #region Public Properties

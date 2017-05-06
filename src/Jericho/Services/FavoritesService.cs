@@ -1,13 +1,13 @@
 namespace Jericho.Services
 {
-    using System.Threading.Tasks;
     using System.Collections.Generic;
-    
+    using System.Threading.Tasks;
+
     using Jericho.Common;
-    using Jericho.Helpers.Interfaces;
     using Jericho.Models.v1.Entities;
     using Jericho.Options;
-    using Jericho.Providers.ServiceResultProvider;
+    using Jericho.Providers;
+    using Jericho.Providers.Interfaces;
     using Jericho.Services.Interfaces;
 
     using Microsoft.Extensions.Options;
@@ -20,10 +20,10 @@ namespace Jericho.Services
         private readonly MongoDbOptions mongoDbOptions;
         private readonly IMongoDatabase mongoDbInstance;
 
-        public FavoritesService (IOptions<MongoDbOptions> MongoDbConfig, IMongoHelper mongoHelper)
+        public FavoritesService (IOptions<MongoDbOptions> MongoDbConfig, IDataProvider dataAccessProvider)
         {
             this.mongoDbOptions = MongoDbConfig.Value;
-            this.mongoDbInstance = mongoHelper.MongoDbInstance;
+            this.mongoDbInstance = dataAccessProvider.Connection;
         }
 
         public async Task<ServiceResult<IEnumerable<FavoriteEntity>>> GetAllFavoritesDirectoryAsync(string userId)

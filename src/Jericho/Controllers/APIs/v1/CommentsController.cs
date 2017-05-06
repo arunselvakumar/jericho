@@ -5,7 +5,6 @@ namespace Jericho.Controllers.APIs.V1
     using AutoMapper;
 
     using Jericho.Models.v1.DTOs;
-    using Jericho.Models.v1.Entities;
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Mvc;
@@ -32,7 +31,7 @@ namespace Jericho.Controllers.APIs.V1
             var commentBo = this.mapper.Map<CommentBo>(commentDto);
             var result = await this.commentService.CreateCommentAsync(commentBo);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 return new BadRequestObjectResult(result.Errors);
             }

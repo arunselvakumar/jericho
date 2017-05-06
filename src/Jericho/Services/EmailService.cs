@@ -1,13 +1,16 @@
 namespace Jericho.Services
 {
-    using System;
-    using System.Threading.Tasks;
-    using Options;
-    using Jericho.Services.Interfaces;
-    using Microsoft.Extensions.Options;
-    using SendGrid;
     using System.Net;
     using System.Net.Mail;
+    using System.Threading.Tasks;
+
+    using Jericho.Services.Interfaces;
+
+    using Microsoft.Extensions.Options;
+
+    using Options;
+
+    using SendGrid;
 
     public class EmailService : IEmailService
     {

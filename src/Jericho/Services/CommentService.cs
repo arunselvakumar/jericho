@@ -3,19 +3,22 @@ namespace Jericho.Services
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Jericho.Helpers.Interfaces;
+
+    using AutoMapper;
+
     using Jericho.Models.v1.Entities;
     using Jericho.Options;
+    using Jericho.Providers;
+    using Jericho.Providers.Interfaces;
     using Jericho.Services.Interfaces;
-    using Jericho.Providers.ServiceResultProvider;
 
     using Microsoft.Extensions.Options;
 
-    using MongoDB.Driver;
-    using MongoDB.Bson;
-    using Models.v1.Entities.Extensions;
-    using AutoMapper;
     using Models.v1.BOs;
+    using Models.v1.Entities.Extensions;
+
+    using MongoDB.Bson;
+    using MongoDB.Driver;
 
     public class CommentService : ICommentService
     {
@@ -23,9 +26,9 @@ namespace Jericho.Services
         private readonly IMongoDatabase mongoDbInstance;
         private readonly IMapper mapper;
 
-        public CommentService(IOptions<MongoDbOptions> MongoDbConfig, IMongoHelper mongoHelper, IMapper mapper)
+        public CommentService(IOptions<MongoDbOptions> MongoDbConfig, IDataProvider dataAccessProvider, IMapper mapper)
         {
-            this.mongoDbInstance = mongoHelper.MongoDbInstance;
+            this.mongoDbInstance = dataAccessProvider.Connection;
             this.mongoDbOptions = MongoDbConfig.Value;
             this.mapper = mapper;
         }

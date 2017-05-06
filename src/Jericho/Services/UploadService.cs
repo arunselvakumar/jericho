@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
 
     using Jericho.Common;
-    using Jericho.Providers.ServiceResultProvider;
+    using Jericho.Providers;
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Http;

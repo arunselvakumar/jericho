@@ -1,11 +1,7 @@
-﻿using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Jericho.Extensions
+﻿namespace Jericho.Extensions
 {
+    using MongoDB.Bson;
+
     public static class StringExtensions
     {        
         internal static BsonRegularExpression ToCaseInsensitiveRegex(this string source)

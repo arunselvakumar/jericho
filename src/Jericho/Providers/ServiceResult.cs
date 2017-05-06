@@ -1,20 +1,11 @@
-﻿namespace Jericho.Providers.ServiceResultProvider
+﻿namespace Jericho.Providers
 {
-    using System;
     using System.Collections.Generic;
 
-    using Jericho.Providers.ServiceResultProvider.Interfaces;
+    using Jericho.Providers.Interfaces;
 
     public sealed class ServiceResult<T> : IServiceResult<T>
     {
-        public IEnumerable<Error> Errors { get; set; }
-
-        public bool Succeeded { get; set; }
-
-        public T Value { get; set; }
-
-        public string Message { get; set; }
-
         public ServiceResult(bool isSuccess)
         {
             this.Succeeded = isSuccess;
@@ -31,5 +22,13 @@
             this.Succeeded = isSuccess;
             this.Errors = errors;
         }
+
+        public IEnumerable<Error> Errors { get; set; }
+
+        public bool Succeeded { get; set; }
+
+        public T Value { get; set; }
+
+        public string Message { get; set; }
     }
 }

@@ -1,10 +1,11 @@
-﻿namespace Jericho.Providers.ServiceResultProvider.Interfaces
+﻿namespace Jericho.Providers.Interfaces
 {
     using System.Collections.Generic;
 
-    interface IServiceResult<T>
+    public interface IServiceResult<T>
     {
         string Message { get; set; }
+
         bool Succeeded { get; set; }    
 
         T Value { get; set; }

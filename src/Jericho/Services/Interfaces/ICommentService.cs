@@ -3,7 +3,7 @@ namespace Jericho.Services.Interfaces
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Jericho.Providers.ServiceResultProvider;
+    using Jericho.Providers;
     using Models.v1.BOs;
 
     public interface ICommentService

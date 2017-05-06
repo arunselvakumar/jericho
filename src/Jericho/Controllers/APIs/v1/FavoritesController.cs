@@ -1,19 +1,19 @@
 namespace Jericho.Controllers.APIs.V1
-{  
+{
     using System.Collections.Generic;
-    using System.Threading.Tasks;
     using System.IdentityModel.Tokens.Jwt;
+    using System.Threading.Tasks;
 
     using AutoMapper;
 
     using Jericho.Models.v1.DTOs.Favorite;
     using Jericho.Models.v1.Entities;
     using Jericho.Services.Interfaces;
-    
-    using Microsoft.AspNetCore.Mvc;
+
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
- 
+    using Microsoft.AspNetCore.Mvc;
+
     public class FavoritesController : Controller
     {
         private readonly IMapper mapper;

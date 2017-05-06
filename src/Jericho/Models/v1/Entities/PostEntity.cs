@@ -1,19 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Jericho.Validations;
-using Jericho.Validations.Interfaces;
-
-namespace Jericho.Models.v1.Entities
+﻿namespace Jericho.Models.v1.Entities
 {
     using System;
     using System.Collections.Generic;
 
     using Jericho.Models.v1.Entities.Enums;
+    using Jericho.Providers;
+    using Jericho.Validations;
+    using Jericho.Validations.Interfaces;
+
+    using MongoDB.Bson;
+    using MongoDB.Bson.Serialization.Attributes;
 
     using Newtonsoft.Json;
-    using MongoDB.Bson.Serialization.Attributes;
-    using MongoDB.Bson;
     using Newtonsoft.Json.Converters;
-    using Providers.ServiceResultProvider;
 
     public class PostEntity : IValidatableEntity
     {
@@ -88,9 +87,9 @@ namespace Jericho.Models.v1.Entities
         {
             var validationErrors = new List<Error>();
 
-            this.RequiredValidationRule(nameof(Title), validationErrors);
-            this.RequiredValidationRule(nameof(Content), validationErrors);
-            this.RequiredEnumValidationRule(nameof(Type), validationErrors);
+            this.RequiredValidationRule(nameof(this.Title), validationErrors);
+            this.RequiredValidationRule(nameof(this.Content), validationErrors);
+            this.RequiredEnumValidationRule(nameof(this.Type), validationErrors);
 
             return validationErrors;
         }

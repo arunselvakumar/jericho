@@ -1,11 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Jericho.Models.v1.BOs
+﻿namespace Jericho.Models.v1.BOs
 {
+    using System;
+
+    using Newtonsoft.Json;
+
     public class CommentBo
     {
         #region Public Properties

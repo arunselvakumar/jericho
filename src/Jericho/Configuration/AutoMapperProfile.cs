@@ -12,14 +12,14 @@
     using Jericho.Models.v1.DTOs.User;
     using Jericho.Models.v1.Entities;
     using Jericho.Models.v1.Entities.Enums;
-    using Jericho.Providers.ServiceResultProvider;
+    using Jericho.Providers;
 
     using Microsoft.AspNetCore.Identity;
 
+    using Models.v1.BOs;
     using Models.v1.DTOs.Post;
 
     using MongoDB.Bson;
-    using Models.v1.BOs;
 
     public class AutoMapperProfile : Profile
     {
@@ -50,7 +50,7 @@
 
             this.CreateMap<PostBo, PostEntity>()
                 .ForMember(postEntity => postEntity.Id, opt => opt.MapFrom(postDto => ObjectId.Empty))
-                .ForMember(postEntity => postEntity.Type, opt => opt.MapFrom(postDto => GetPostType(postDto.Type)))
+                .ForMember(postEntity => postEntity.Type, opt => opt.MapFrom(postDto => this.GetPostType(postDto.Type)))
                 .ForMember(postEntity => postEntity.Url, opt => opt.MapFrom(postDto => $"{postDto.Title.Trim().Replace(' ', '_').ToLower()}_{DateTime.UtcNow.ToTimeStamp()}"))
                 .ForMember(postEntity => postEntity.UpVotes, opt => opt.MapFrom(postDto => 0))
                 .ForMember(postEntity => postEntity.DownVotes, opt => opt.MapFrom(postDto => 0));
@@ -96,6 +96,5 @@
 
             this.CreateMap<CommentBo, CommentDto>();
         }
-     
     }
 }

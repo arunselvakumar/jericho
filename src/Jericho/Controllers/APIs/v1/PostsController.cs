@@ -7,15 +7,12 @@
     using AutoMapper;
 
     using Jericho.Models.v1.DTOs;
-    using Jericho.Models.v1.Entities;
     using Jericho.Services.Interfaces;
 
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using System;
-    using Models.v1.DTOs.Post;
+
     using Models.v1.BOs;
+    using Models.v1.DTOs.Post;
 
     /// <summary>
     /// Posts Controller.
@@ -33,13 +30,13 @@
         }
         
         [HttpPost]
-        //[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        ////[Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> SavePostAsync([FromBody]CreatePostDto postDto)
         {          
             var postBo = this.mapper.Map<PostBo>(postDto);           
             var result = await this.postService.CreatePostAsync(postBo);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 return new BadRequestObjectResult(result.Errors);
             }
@@ -54,7 +51,7 @@
         {
             var result = await this.postService.GetPostAsync(postId);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 return new NotFoundResult();
             }
@@ -64,7 +61,7 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPostsAsync([FromQuery]int page=0, [FromQuery]int limit=10)
+        public async Task<IActionResult> GetPostsAsync([FromQuery]int page = 0, [FromQuery]int limit = 10)
         {           
             var result = await this.postService.GetPostsAsync(this.Request.Query, page, limit);
            
@@ -96,13 +93,12 @@
         {
             var result = await this.postService.DeletePostAsync(postId);
 
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 return new NotFoundResult();
             }
 
             return new StatusCodeResult(204);
         }
-
     }
 }

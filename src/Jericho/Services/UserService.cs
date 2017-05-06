@@ -11,7 +11,7 @@
 
     using Jericho.Common;
     using Jericho.Identity;
-    using Jericho.Providers.ServiceResultProvider;
+    using Jericho.Providers;
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Identity;

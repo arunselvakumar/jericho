@@ -5,7 +5,7 @@
     using Jericho.Identity;
 
     using Models.v1;
-    using Providers.ServiceResultProvider;
+    using Providers;
 
     public interface IUserService
     { 

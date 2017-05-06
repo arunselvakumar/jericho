@@ -1,9 +1,10 @@
-﻿using Jericho.Providers.ServiceResultProvider;
-using System;
-using System.Collections.Generic;
-
-namespace Jericho.Validations
+﻿namespace Jericho.Validations
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Jericho.Providers;
+
     public static class ObjectValidationExtensions
     {
         public static void RequiredValidationRule(this object validateObject, string propertyName, IList<Error> errors)

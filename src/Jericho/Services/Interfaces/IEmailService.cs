@@ -1,7 +1,8 @@
 ﻿namespace Jericho.Services.Interfaces
 {
-    using Jericho.Options;
     using System.Threading.Tasks;
+
+    using Jericho.Options;
 
     public interface IEmailService
     {
