@@ -8,6 +8,7 @@
     using Identity;
 
     using Jericho.Models.v1.DTOs.User;
+    using Jericho.Models.V1.DTOs.User.Request;
     using Jericho.Services.Interfaces;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,7 +31,6 @@
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> SaveUserAsync([FromBody] SaveUserRequestDto saveUser)
         {
-            System.Diagnostics.Debug.WriteLine(saveUser.FirstName);
             var user = this.mapper.Map<ApplicationUser>(saveUser);
             var serviceResult = await this.userService.SaveUserAsync(user, saveUser.Password);
 
@@ -50,7 +50,7 @@
 
             if (!serviceResult.Succeeded)
             {
-                return new UnauthorizedResult();
+                return new StatusCodeResult(401);
             }
 
             return new OkObjectResult(serviceResult.Value);

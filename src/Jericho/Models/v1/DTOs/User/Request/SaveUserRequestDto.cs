@@ -1,6 +1,7 @@
-﻿namespace Jericho.Models.v1.DTOs.User
+﻿namespace Jericho.Models.V1.DTOs.User.Request
 {
     using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics.CodeAnalysis;
 
     using Newtonsoft.Json;
 

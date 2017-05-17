@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
-
-namespace Jericho.Models.v1.DTOs.User
+﻿namespace Jericho.Models.V1.DTOs.User.Request
 {
+    using System.ComponentModel.DataAnnotations;
+
+    using Newtonsoft.Json;
+
     public sealed class ChangePasswordRequestDto
     {
         [Required, DataType(DataType.Text)]

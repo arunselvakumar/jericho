@@ -12,6 +12,7 @@
     using Jericho.Models.v1.DTOs.User;
     using Jericho.Models.v1.Entities;
     using Jericho.Models.v1.Entities.Enums;
+    using Jericho.Models.V1.DTOs.User.Request;
     using Jericho.Providers;
 
     using Microsoft.AspNetCore.Identity;

@@ -6,7 +6,7 @@
 
     public interface IEmailService
     {
-        SendGridOptions SendGridOptions { get; set; }
+        MailJetOptions MailJetOptions { get; set; }
 
         Task SendEmailAsync(string email, string subject, string message);
     }

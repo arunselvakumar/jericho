@@ -42,7 +42,7 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MongoDbOptions>(this.Configuration.GetSection("MongoDb"));
-            services.Configure<SendGridOptions>(this.Configuration.GetSection("SendGrid"));
+            services.Configure<MailJetOptions>(this.Configuration.GetSection("MailJet"));
             services.Configure<Options.AuthenticationOptions>(this.Configuration.GetSection("Authentication"));
 
             services.AddApplicationInsightsTelemetry(this.Configuration);

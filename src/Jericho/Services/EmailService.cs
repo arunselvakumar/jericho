@@ -6,33 +6,38 @@ namespace Jericho.Services
 
     using Jericho.Services.Interfaces;
 
+    using Mailjet.Client;
+    using Mailjet.Client.Resources;
+
     using Microsoft.Extensions.Options;
+
+    using Newtonsoft.Json.Linq;
 
     using Options;
 
-    using SendGrid;
-
     public class EmailService : IEmailService
     {
-        public EmailService(IOptions<SendGridOptions> sendGridOptionsAccessor)
+        public EmailService(IOptions<MailJetOptions> mailJetOptions)
         {
-            this.SendGridOptions = sendGridOptionsAccessor.Value;
+            this.MailJetOptions = mailJetOptions.Value;
         }
 
-        public SendGridOptions SendGridOptions { get; set; }
+        public MailJetOptions MailJetOptions { get; set; }
 
-        public Task SendEmailAsync(string email, string subject, string message)
+        public async Task SendEmailAsync(string email, string subject, string message)
         {
-            var myMessage = new SendGridMessage();
-            myMessage.AddTo(email);
-            myMessage.From = new MailAddress("b.arunselvakumar@outlook.com", "Arun Selva Kumar");
-            myMessage.Subject = subject;
-            myMessage.Text = message;
-            myMessage.Html = message;
+            var client = new MailjetClient(this.MailJetOptions.APIKey, this.MailJetOptions.SecretKey);
+            var request =
+                new MailjetRequest { Resource = Send.Resource, }.Property(Send.FromEmail, "b.arunselvakumar@outlook.com")
+                    .Property(Send.FromName, "Jericho")
+                    .Property(Send.Subject, subject)
+                    .Property(Send.TextPart, message)
+                    .Property(
+                        Send.HtmlPart,
+                        "<h3>May Jericho be with you! </h3>")
+                    .Property(Send.Recipients, new JArray { new JObject { { "Email", email } } });
 
-            var credentials = new NetworkCredential(SendGridOptions.SendGridUser, SendGridOptions.SendGridKey);
-            var transportWeb = new SendGrid.Web(credentials);
-            return transportWeb.DeliverAsync(myMessage);
+            await client.PostAsync(request);            
         }
     }
 }

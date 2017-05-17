@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Text;
@@ -65,7 +66,7 @@
                 return new ServiceResult<AuthTokenModel>(false, errors);
             }
 
-            this.SendConfirmationEmail(await this.FindUserByNameAsync(user.UserName));
+            this.SendConfirmationEmail(user.UserName);
 
             return new ServiceResult<AuthTokenModel>(true, await this.GenerateJwtSecurityToken(user.UserName));
         }
@@ -255,10 +256,12 @@
             return await Task.FromResult(new AuthTokenModel(jwt));
         }
 
-        private async void SendConfirmationEmail(ApplicationUser user)
+        private async void SendConfirmationEmail(string userName)
         {
+            var user = await this.FindUserByNameAsync(userName);
             var token = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-            // await this.emailService.SendEmailAsync(user.Email.NormalizedValue, "Activate Account", token);
+
+            this.emailService.SendEmailAsync(user.Email.NormalizedValue, "Activate Account", token);
         }
 
         private async void SendResetPasswordEmail(ApplicationUser user)
