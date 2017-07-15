@@ -34,7 +34,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<IUserService, UserService>();
+            service.AddScoped<IUserService, UserService>();
         }
 
         public static void AddPostService(this IServiceCollection service)
@@ -44,7 +44,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<IPostService, PostService>();
+            service.AddScoped<IPostService, PostService>();
         }
 
         public static void AddFavoriteService(this IServiceCollection service)
@@ -54,7 +54,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<IFavoritesService, FavoritesService>();
+            service.AddScoped<IFavoritesService, FavoritesService>();
         }
 
         public static void AddCommentService(this IServiceCollection service)
@@ -64,7 +64,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<ICommentService, CommentService>();
+            service.AddScoped<ICommentService, CommentService>();
         }
 
         public static void AddUploadService(this IServiceCollection service)
@@ -74,7 +74,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<IUploadService, UploadService>();
+            service.AddScoped<IUploadService, UploadService>();
         }
 
         public static void AddHttpContextAccessorService(this IServiceCollection service)
@@ -84,7 +84,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            service.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public static void AddEmailService(this IServiceCollection service)
@@ -94,7 +94,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<IEmailService, EmailService>();
+            service.AddScoped<IEmailService, EmailService>();
         }
 
         public static void AddIdentityService(this IServiceCollection service, IConfigurationRoot configuration)
@@ -104,7 +104,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<IUserStore<ApplicationUser>>(provider =>
+            service.AddScoped<IUserStore<ApplicationUser>>(provider =>
             {
                 var options = provider.GetService<IOptions<MongoDbOptions>>();
                 var client = new MongoClient(options.Value.ConnectionString);
@@ -117,15 +117,15 @@
 
         public static void AddMongoIdentityService(this IServiceCollection service)
         {
-            service.AddSingleton<IdentityMarkerService>();
-            service.AddSingleton<IUserValidator<ApplicationUser>, UserValidator<ApplicationUser>>();
-            service.AddSingleton<IPasswordValidator<ApplicationUser>, PasswordValidator<ApplicationUser>>();
-            service.AddSingleton<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
-            service.AddSingleton<ILookupNormalizer, UpperInvariantLookupNormalizer>();
-            service.AddSingleton<IdentityErrorDescriber>();
-            service.AddSingleton<ISecurityStampValidator, SecurityStampValidator<ApplicationUser>>();
-            service.AddSingleton<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsPrincipalFactory<ApplicationUser>>();
-            service.AddSingleton<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
+            service.AddScoped<IdentityMarkerService>();
+            service.AddScoped<IUserValidator<ApplicationUser>, UserValidator<ApplicationUser>>();
+            service.AddScoped<IPasswordValidator<ApplicationUser>, PasswordValidator<ApplicationUser>>();
+            service.AddScoped<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
+            service.AddScoped<ILookupNormalizer, UpperInvariantLookupNormalizer>();
+            service.AddScoped<IdentityErrorDescriber>();
+            service.AddScoped<ISecurityStampValidator, SecurityStampValidator<ApplicationUser>>();
+            service.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, UserClaimsPrincipalFactory<ApplicationUser>>();
+            service.AddScoped<UserManager<ApplicationUser>, UserManager<ApplicationUser>>();
             service.AddScoped<SignInManager<ApplicationUser>, SignInManager<ApplicationUser>>();
             service.Configure<IdentityOptions>(options =>
             {
@@ -148,7 +148,7 @@
                 config.AddProfile(new AutoMapperProfile());
             });
 
-            service.AddSingleton(sp => mapperConfiguration.CreateMapper());
+            service.AddScoped(sp => mapperConfiguration.CreateMapper());
         }
 
         /// <summary>
@@ -172,7 +172,7 @@
                 throw new ArgumentNullException(nameof(service));
             }
 
-            service.AddSingleton<ICommentAggregator, CommentAggregator>();
+            service.AddScoped<ICommentAggregator, CommentAggregator>();
         }
     }
 }

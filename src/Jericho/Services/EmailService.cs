@@ -1,7 +1,5 @@
 namespace Jericho.Services
 {
-    using System.Net;
-    using System.Net.Mail;
     using System.Threading.Tasks;
 
     using Jericho.Services.Interfaces;
@@ -32,9 +30,7 @@ namespace Jericho.Services
                     .Property(Send.FromName, "Jericho")
                     .Property(Send.Subject, subject)
                     .Property(Send.TextPart, message)
-                    .Property(
-                        Send.HtmlPart,
-                        "<h3>May Jericho be with you! </h3>")
+                    .Property(Send.HtmlPart, message)
                     .Property(Send.Recipients, new JArray { new JObject { { "Email", email } } });
 
             await client.PostAsync(request);            

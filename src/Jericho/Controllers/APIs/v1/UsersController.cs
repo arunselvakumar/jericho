@@ -15,7 +15,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    public class UsersController : Controller
+    public sealed class UsersController : Controller
     {
         private readonly IMapper mapper;
 
@@ -73,6 +73,7 @@
         }
 
         [HttpGet, AllowAnonymous]
+        [Authorize(ActiveAuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [Route("api/v1/[controller]")]
         public async Task<IActionResult> GetUserAsync([FromQuery] string id = null, [FromQuery] string username = null)
         {
